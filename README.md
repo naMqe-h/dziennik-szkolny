@@ -1,2 +1,1 @@
 Dziennik szkolny
-
