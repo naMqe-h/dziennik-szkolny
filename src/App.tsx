@@ -12,12 +12,12 @@ function App() {
       <BrowserRouter>
         <Navbar />
 
-        <main>
+        <main className="">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/add:type" element={<Add />} />
+            <Route path="/add/:type" element={<Add />} />
           </Routes>
         </main>
       </BrowserRouter>

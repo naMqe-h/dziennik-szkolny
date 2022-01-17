@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-export interface FormData {
-  login: string;
-  password: string;
-}
+import { FormData } from "../interfaces";
 export const Login = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<FormData>({
@@ -70,6 +66,10 @@ export const Login = () => {
         >
           Wyślij
         </button>
+        <div className="text-primary text-bold text-2xl mt-4 flex justify-center items-center flex-col">
+          <span>Jesteś Dyrektorem?</span>
+          <Link to={"/signup"}>Zarejestruj Szkołe</Link>
+        </div>
       </form>
     </section>
   );
