@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FormData } from "../interfaces";
+import { FormData } from "../utils/interfaces";
 export const Login = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<FormData>({
@@ -33,13 +33,10 @@ export const Login = () => {
     });
   }
   return (
-    <section className="mt-12 flex items-center justify-center">
-      <form
-        className="flex-col flex rounded-lg  justify-center items-center max-w-screen"
-        action="none"
-      >
+    <div className="mt-12 flex items-center justify-center">
+      <form className="form-control card bg-base-200 p-14" action="none">
         <label className="input-group my-4">
-          <span className="bg-secondary">Login</span>
+          <span className="bg-primary">Login</span>
           <input
             type="text"
             name="login"
@@ -50,7 +47,7 @@ export const Login = () => {
           />
         </label>
         <label className="input-group my-4">
-          <span className="bg-secondary">Hasło</span>
+          <span className="bg-primary">Hasło</span>
           <input
             type="password"
             name="password"
@@ -60,17 +57,21 @@ export const Login = () => {
             onChange={handleChange}
           />
         </label>
-        <button
-          className="btn-secondary btn font-bold w-[40%]"
-          onClick={(e) => validateData(e)}
-        >
-          Wyślij
-        </button>
-        <div className="text-primary text-bold text-2xl mt-4 flex justify-center items-center flex-col">
+        <div className="flex items-center justify-center w-full">
+          <button
+            className="btn-primary text-white btn w-[40%]"
+            onClick={(e) => validateData(e)}
+          >
+            Wyślij
+          </button>
+        </div>
+        <div className=" text-bold text-2xl mt-4 flex justify-center items-center flex-col">
           <span>Jesteś Dyrektorem?</span>
-          <Link to={"/signup"}>Zarejestruj Szkołe</Link>
+          <Link to={"/signup"} className="text-accent">
+            Zarejestruj Szkołe
+          </Link>
         </div>
       </form>
-    </section>
+    </div>
   );
 };

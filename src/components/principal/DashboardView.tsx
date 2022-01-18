@@ -1,6 +1,6 @@
-import { Stats } from "../dashboard/Stats";
-import { Events } from "../dashboard/Events";
-import { Card } from "../dashboard/Card";
+import { Stats } from "./dashboard/Stats";
+import { Events } from "./dashboard/Events";
+import { Card } from "./dashboard/Card";
 
 import { RiNumbersLine } from "react-icons/ri";
 import { BsJournalBookmark } from "react-icons/bs";
@@ -9,7 +9,7 @@ import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
 export const DashboardView = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-      <div className="md:row-span-2 p-5">
+      <div className="md:row-span-4 p-5">
         <Stats />
       </div>
 
@@ -38,7 +38,7 @@ export const DashboardView = () => {
         <AiOutlinePartition size={70} />
       </Card>
 
-      <div className="p-10 row-span-2 md:col-span-3 bg-primary rounded-xl mt-1">
+      <div className="p-10 mt-2 row-span-2 md:col-span-2 bg-base-200 rounded-xl flex flex-col items-center">
         <Events />
       </div>
     </div>

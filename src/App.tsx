@@ -8,11 +8,11 @@ import { Signup } from "./pages/Signup";
 import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
-    <div className="w-screen h-screen bg-base-300">
+    <div className="">
       <BrowserRouter>
         <Navbar />
 
-        <main className="">
+        <main className="mt-20">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />

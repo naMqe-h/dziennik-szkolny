@@ -27,7 +27,7 @@ interface Address {
 export interface PrincipalPersonalInformation {
   firstName: string;
   lastName: string;
-  pesel: number;
+  pesel: string;
   birth: string;
   gender: genderType;
   address: Address;
@@ -35,8 +35,26 @@ export interface PrincipalPersonalInformation {
 export interface SchoolInformation {
   name: string;
   address: Address;
+  domain: string;
   type: schoolType;
 }
-export interface Plan {
-  type: "Free" | "Premium";
+export type PlanTypes = "Basic" | "Premium";
+
+export interface Event {
+  id: number;
+  name: string;
+  date: string;
+  done: boolean;
 }
+export interface Teacher {
+  firstName: string;
+  lastName: string;
+  gender: genderType;
+  subject: schoolSubject;
+}
+type schoolSubject =
+  | "Matematyka"
+  | "Angielski"
+  | "Język Polski"
+  | "WF"
+  | "Historia";
