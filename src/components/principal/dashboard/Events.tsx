@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ImArrowLeft, ImArrowRight, ImCross } from "react-icons/im";
 import Moment from "react-moment";
 import moment from "moment";
@@ -22,9 +22,6 @@ export const Events: React.FC = () => {
     { id: 8, name: "Zamówić książki", date: "18.01.2022", done: true },
   ];
 
-  // useEffect(() => {
-  //   setEvents([]);
-  // }, []);
   const [date, setDate] = useState<moment.Moment>(moment());
   const [events, setEvents] = useState<Event[]>(eventsInitial);
 

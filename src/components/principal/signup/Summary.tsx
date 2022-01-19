@@ -1,8 +1,3 @@
-import { createUserWithEmailAndPassword, AuthError } from "firebase/auth";
-import nProgress from "nprogress";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { auth } from "../../../firebase/firebase.config";
 import {
   PrincipalLoginCredentials,
   PrincipalPersonalInformation,
@@ -24,7 +19,6 @@ export const Summary: React.FC<summaryProps> = ({
   SchoolInformation,
   chosenPlan,
 }) => {
-  const navigate = useNavigate();
   const { email, password } = PrincipalLoginCredentials;
   const { firstName, birth, lastName, address, gender, pesel } =
     PrincipalPersonalInformation;
