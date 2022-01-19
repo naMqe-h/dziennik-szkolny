@@ -9,7 +9,7 @@ export const ChoosePlanForm: React.FC<ChoosePlanFormProps> = ({
   set,
 }) => {
   return (
-    <div className="flex flex-row gap-3 mt-10">
+    <div className="flex flex-col md:flex-row gap-3 mt-10">
       <PaymentPlanCard
         name="Basic"
         badge=""

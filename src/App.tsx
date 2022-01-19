@@ -6,6 +6,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import "react-toastify/dist/ReactToastify.css";
+import "nprogress/nprogress.css";
 function App() {
   return (
     <div className="">

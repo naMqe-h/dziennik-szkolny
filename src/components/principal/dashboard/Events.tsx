@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
-import { ImArrowLeft, ImArrowRight } from "react-icons/im";
+import { ImArrowLeft, ImArrowRight, ImCross } from "react-icons/im";
 import Moment from "react-moment";
 import moment from "moment";
 import { Event } from "../../../utils/interfaces";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const Events: React.FC = () => {
   const eventsInitial: Event[] = [
-    { id: 1, name: "Ustalić plan", date: "18.01.2022", done: false },
-    { id: 2, name: "Spotkanie", date: "18.01.2022", done: false },
-    { id: 3, name: "Zadzwonic do urzędu", date: "18.01.2022", done: false },
-    { id: 4, name: "Zamówić komputery", date: "18.01.2022", done: true },
+    { id: 1, name: "Ustalić plan", date: "19.01.2022", done: false },
+    { id: 2, name: "Spotkanie", date: "19.01.2022", done: false },
+    { id: 3, name: "Zadzwonic do urzędu", date: "19.01.2022", done: false },
+    { id: 4, name: "Zamówić komputery", date: "19.01.2022", done: true },
+    { id: 5, name: "Zrobic cos", date: "18.01.2022", done: false },
+    { id: 6, name: "Zjesc sniadanie", date: "18.01.2022", done: false },
+    {
+      id: 7,
+      name: "Zadzwonic do nauczycielki",
+      date: "18.01.2022",
+      done: false,
+    },
+    { id: 8, name: "Zamówić książki", date: "18.01.2022", done: true },
   ];
 
-  useEffect(() => {
-    setEvents([]);
-  }, []);
+  // useEffect(() => {
+  //   setEvents([]);
+  // }, []);
   const [date, setDate] = useState<moment.Moment>(moment());
   const [events, setEvents] = useState<Event[]>(eventsInitial);
 
@@ -23,16 +33,15 @@ export const Events: React.FC = () => {
     setDate(moment(date).add(step, "days"));
   };
 
-  const handleCheckbox = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    event: Event
-  ) => {};
+  const onDelete = (eventId: number) => {
+    setEvents(events.filter((event) => event.id !== eventId));
+  };
 
   return (
     <div className="w-full max-w-screen-lg">
       <div className="flex justify-between mb-6">
         <div
-          className="cursor-pointer hover:text-[#F28C18] ease-in duration-200"
+          className="cursor-pointer hover:text-primary ease-in duration-200"
           onClick={() => handleDateChange(-1)}
         >
           <ImArrowLeft size={40} />
@@ -42,7 +51,7 @@ export const Events: React.FC = () => {
           <Moment format="DD.MM.YYYY" date={date} />
         </div>
         <div
-          className="cursor-pointer hover:text-[#F28C18] ease-in duration-200"
+          className="cursor-pointer hover:text-primary ease-in duration-200"
           onClick={() => handleDateChange(1)}
         >
           <ImArrowRight size={40} />
@@ -50,26 +59,30 @@ export const Events: React.FC = () => {
       </div>
 
       <div>
-        {events
-          .filter((event) => event.date === date.format("DD.MM.YYYY"))
-          .map((ev) => (
-            <div key={ev.id}>
-              <div className="p-1 m-1 card">
-                <div className="form-control">
-                  <label className="cursor-pointer label">
-                    <span className="label-text text-lg">{ev.name}</span>
-                    <input
-                      type="checkbox"
-                      defaultChecked={ev.done}
-                      className="checkbox checkbox-accent"
-                      onChange={(e) => handleCheckbox(e, ev)}
-                    />
-                  </label>
+        <AnimatePresence>
+          {events
+            .filter((event) => event.date === date.format("DD.MM.YYYY"))
+            .map((ev) => (
+              <motion.div
+                key={ev.id}
+                initial={{ opacity: 0, x: -200 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                exit={{ opacity: 0, x: -200 }}
+                transition={{ duration: ev.id * 0.2 }}
+              >
+                <div className="p-1 m-1 card flex-row items-center justify-between">
+                  <span className="text-lg">{ev.name}</span>
+                  <div
+                    className="cursor-pointer hover:text-error ease-in duration-200"
+                    onClick={() => onDelete(ev.id)}
+                  >
+                    <ImCross size={20} />
+                  </div>
                 </div>
-              </div>
-              <div className="divider" />
-            </div>
-          ))}
+                <div className="divider" />
+              </motion.div>
+            ))}
+        </AnimatePresence>
       </div>
     </div>
   );

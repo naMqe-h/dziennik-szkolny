@@ -1,6 +1,8 @@
 import { FaArrowRight } from "react-icons/fa";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { PlanTypes } from "../../../utils/interfaces";
 import { ChoosePlanFormProps } from "./ChoosePlanForm";
+import "../../../../node_modules/react-lazy-load-image-component/src/effects/blur.css";
 interface cardProps extends ChoosePlanFormProps {
   name: PlanTypes;
   badge: string;
@@ -33,7 +35,12 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
   return (
     <div className="card card-bordered bg-base-200 w-96">
       <figure>
-        <img className="h-52" src={`/images/${image}`} alt="Plan card" />
+        <LazyLoadImage
+          className="h-52 w-full"
+          src={`/images/${image}`}
+          alt="Plan card"
+          effect="blur"
+        />
       </figure>
       <div className="card-body">
         <h2 className="card-title text-3xl">
