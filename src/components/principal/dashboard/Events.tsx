@@ -15,12 +15,12 @@ export const Events: React.FC = () => {
   useEffect(() => {
     setEvents([]);
   }, []);
-
-  const [date, setDate] = useState<any>(moment());
+  const [date, setDate] = useState<moment.Moment>(moment());
   const [events, setEvents] = useState<Event[]>(eventsInitial);
 
   const handleDateChange = (step: number) => {
-    setDate(date.add(step, "days"));
+    //Poprawiłem tutaj date - Mateusz
+    setDate(moment(date).add(step, "days"));
   };
 
   const handleCheckbox = (
