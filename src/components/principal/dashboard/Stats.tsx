@@ -5,7 +5,7 @@ import { AiFillCalendar } from "react-icons/ai";
 
 export const Stats = () => {
   return (
-    <div className="stats grid-flow-row shadow w-full">
+    <div className="stats grid-flow-row w-full">
       <div className="stat bg-base-200">
         <div className="stat-figure text-info">
           <div className="avatar online">

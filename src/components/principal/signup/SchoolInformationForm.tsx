@@ -41,7 +41,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
     )
       return toast.error("Podaj wszystkie dane", { autoClose: 2000 });
     if (userData.address.street.length === 0)
-      return toast.error("Podaj Ulice na której mieszkasz", {
+      return toast.error("Podaj Ulice na której znajduję się szkoła", {
         autoClose: 2000,
       });
     if (userData.address.city.length === 0)
@@ -52,7 +52,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
     )
       return toast.error("Podaj poprawny Kod Pocztowy", { autoClose: 2000 });
     if (userData.address.houseNumber === 0)
-      return toast.error("Podaj poprawny Numer Domu", { autoClose: 2000 });
+      return toast.error("Podaj poprawny Numer Szkoły", { autoClose: 2000 });
     if (userData.domain.length === 0)
       return toast.error("Podaj poprawną domene", { autoClose: 2000 });
     if (userData.domain.split("").find((x) => x === "@"))

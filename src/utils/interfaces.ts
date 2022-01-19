@@ -2,16 +2,18 @@ export interface StepsProps {
   currentStep: number;
 }
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
+export type userType = "principals" | "teachers" | "students";
 export interface FormData {
-  login: string;
+  email: string;
   password: string;
+  role: userType;
 }
 export interface PrincipalLoginCredentials {
   email: string;
   password: string;
   repeatedPassword: string;
 }
-type genderType = "Kobieta" | "Mężczyzna" | "Inna";
+export type genderType = "Kobieta" | "Mężczyzna" | "Inna";
 type schoolType =
   | "Liceum"
   | "Technikum"
@@ -37,6 +39,15 @@ export interface SchoolInformation {
   address: Address;
   domain: string;
   type: schoolType;
+}
+//Tworze nowy typ który jest tylko emailem z PrincipalLoginCredentials
+type PrincipalEmail = Pick<PrincipalLoginCredentials, "email">;
+//Interfejs danych o dyrektorze
+export interface CombinedPrincipalData
+  extends PrincipalEmail,
+    PrincipalPersonalInformation {
+  PlanType: PlanTypes;
+  schoolInformation: SchoolInformation;
 }
 export type PlanTypes = "Basic" | "Premium";
 

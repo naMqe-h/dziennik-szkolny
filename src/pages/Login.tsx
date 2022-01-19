@@ -1,48 +1,63 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FormData } from "../utils/interfaces";
+import { useLogin } from "../hooks/useLogin";
+import { useDispatch } from "react-redux";
+import { setUserType } from "../redux/userSlice";
+import nProgress from "nprogress";
+import { validateEmail } from "../utils/utils";
+
 export const Login = () => {
-  const navigate = useNavigate();
+  const { login } = useLogin();
+
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState<FormData>({
-    login: "",
+    email: "",
     password: "",
+    role: "principals",
   });
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    if (userData.login.length === 0 && userData.login.length === 0)
+    if (userData.email.length === 0 && userData.password.length === 0)
       return toast.error("Podaj dane", { autoClose: 2000 });
-    if (userData.login.length === 0)
-      return toast.error("Podaj Login", { autoClose: 2000 });
+    if (userData.email.length === 0)
+      return toast.error("Podaj Email", { autoClose: 2000 });
     if (userData.password.length === 0)
       return toast.error("Podaj Hasło", { autoClose: 2000 });
+    if (!validateEmail(userData.email))
+      return toast.error("Podaj Poprawny Email", { autoClose: 2000 });
     //Todo Add auth
-    // if (userData.password.length < 6)
-    //   return toast.error("Hasło musi mieć 6 liter ", { autoClose: 2000 });
-    if (userData.login === "admin" && userData.password === "admin") {
-      toast.success("Udało ci się zalogować", { autoClose: 2000 });
-      navigate("/");
-    } else {
-      toast.error("Błędny login lub hasło", { autoClose: 2000 });
-    }
+    handleLogin();
   }
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
     const { name, value } = e.target;
     setUserData((prev) => {
       return { ...prev, [name]: value };
     });
   }
+
+  const handleLogin = async () => {
+    nProgress.start();
+    dispatch(setUserType(userData.role));
+    await login(userData.email, userData.password, "principals");
+    nProgress.done();
+  };
+
   return (
     <div className="mt-12 flex items-center justify-center">
       <form className="form-control card bg-base-200 p-14" action="none">
         <label className="input-group my-4">
-          <span className="bg-primary">Login</span>
+          <span className="bg-primary">Email</span>
           <input
             type="text"
-            name="login"
+            name="email"
             className="input"
-            value={userData.login}
-            placeholder="your@email.com"
+            autoComplete="email"
+            value={userData.email}
+            placeholder="Email"
             onChange={handleChange}
           />
         </label>
@@ -52,17 +67,31 @@ export const Login = () => {
             type="password"
             name="password"
             className=" input"
+            autoComplete="current-password"
             value={userData.password}
             placeholder="********"
             onChange={handleChange}
           />
+        </label>
+        <label className="input-group my-4  ">
+          <span className="bg-primary">Zaloguj jako</span>
+          <select
+            name="role"
+            className="select"
+            value={userData.role}
+            onChange={handleChange}
+          >
+            <option value="principals">Dyrektor</option>
+            <option value="teachers">Nauczyciel</option>
+            <option value="students">Uczeń</option>
+          </select>
         </label>
         <div className="flex items-center justify-center w-full">
           <button
             className="btn-primary text-white btn w-[40%]"
             onClick={(e) => validateData(e)}
           >
-            Wyślij
+            Zaloguj
           </button>
         </div>
         <div className=" text-bold text-2xl mt-4 flex justify-center items-center flex-col">

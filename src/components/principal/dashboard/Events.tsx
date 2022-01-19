@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImArrowLeft, ImArrowRight, ImCross } from "react-icons/im";
 import Moment from "react-moment";
 import moment from "moment";
@@ -22,16 +22,36 @@ export const Events: React.FC = () => {
     { id: 8, name: "Zamówić książki", date: "18.01.2022", done: true },
   ];
 
-  const [date, setDate] = useState<moment.Moment>(moment());
   const [events, setEvents] = useState<Event[]>(eventsInitial);
+  const [date, setDate] = useState<moment.Moment>(moment());
+  const [todayEvents, setTodayEvents] = useState<Event[] | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    setTodayEvents(
+      events.filter((event) => event.date === date.format("DD.MM.YYYY"))
+    );
+  }, [date, events]);
 
   const handleDateChange = (step: number) => {
-    //Poprawiłem tutaj date - Mateusz
     setDate(moment(date).add(step, "days"));
   };
 
   const onDelete = (eventId: number) => {
     setEvents(events.filter((event) => event.id !== eventId));
+  };
+
+  const eventAnimate = {
+    hidden: {
+      opacity: 0,
+      x: -200,
+    },
+    show: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+    },
   };
 
   return (
@@ -54,18 +74,17 @@ export const Events: React.FC = () => {
           <ImArrowRight size={40} />
         </div>
       </div>
-
-      <div>
-        <AnimatePresence>
-          {events
-            .filter((event) => event.date === date.format("DD.MM.YYYY"))
-            .map((ev) => (
+      <AnimatePresence>
+        <motion.div>
+          {todayEvents?.length ? (
+            todayEvents.map((ev, id) => (
               <motion.div
                 key={ev.id}
-                initial={{ opacity: 0, x: -200 }}
-                animate={{ opacity: 1, x: 0, y: 0 }}
-                exit={{ opacity: 0, x: -200 }}
-                transition={{ duration: ev.id * 0.2 }}
+                variants={eventAnimate}
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                transition={{ duration: id * 0.25 }}
               >
                 <div className="p-1 m-1 card flex-row items-center justify-between">
                   <span className="text-lg">{ev.name}</span>
@@ -78,9 +97,22 @@ export const Events: React.FC = () => {
                 </div>
                 <div className="divider" />
               </motion.div>
-            ))}
-        </AnimatePresence>
-      </div>
+            ))
+          ) : (
+            <motion.div
+              className="card p-1 m-1 text-center"
+              variants={eventAnimate}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+              transition={{ transition: 0.25 }}
+            >
+              <span className="text-lg">Brak zadań</span>
+              <div className="divider" />
+            </motion.div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

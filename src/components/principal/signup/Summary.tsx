@@ -3,6 +3,7 @@ import {
   PrincipalPersonalInformation,
   SchoolInformation,
   PlanTypes,
+  CombinedPrincipalData,
 } from "../../../utils/interfaces";
 import { useSignup } from "../../../hooks/useSignup";
 
@@ -23,6 +24,28 @@ export const Summary: React.FC<summaryProps> = ({
   const { firstName, birth, lastName, address, gender, pesel } =
     PrincipalPersonalInformation;
   const { signupPrincipal } = useSignup();
+  const data: CombinedPrincipalData = {
+    PlanType: chosenPlan,
+    address,
+    birth,
+    email,
+    firstName,
+    gender,
+    lastName,
+    pesel,
+    schoolInformation: {
+      address: SchoolInformation.address,
+      domain: SchoolInformation.domain,
+      name: SchoolInformation.name,
+      type: SchoolInformation.type,
+    },
+  };
+
+  const handleSignup = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    console.log(SchoolInformation);
+    signupPrincipal(email, password, data);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 card card-bordered p-10 m-2 bg-base-200 break-words md:gap-8">
@@ -62,10 +85,7 @@ export const Summary: React.FC<summaryProps> = ({
         <p>{chosenPlan}</p>
       </div>
       <div className="md:col-span-2 flex items-center justify-center mt-2">
-        <button
-          className="btn btn-success"
-          onClick={() => signupPrincipal(email, password)}
-        >
+        <button className="btn btn-success" onClick={(e) => handleSignup(e)}>
           Potwierdzam
         </button>
       </div>

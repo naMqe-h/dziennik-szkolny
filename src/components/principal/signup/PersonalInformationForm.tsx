@@ -2,8 +2,10 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
+  genderType,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
+import { validatePesel } from "../../../utils/utils";
 
 interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
@@ -79,6 +81,9 @@ export const PersonalInformationForm: React.FC<
       return toast.error("Podaj poprawny Kod Pocztowy", { autoClose: 2000 });
     if (userData.address.houseNumber === 0)
       return toast.error("Podaj poprawny Numer Domu", { autoClose: 2000 });
+
+    if (!validatePesel(userData.pesel))
+      return toast.error("Podaj poprawny Pesel", { autoClose: 2000 });
     set({
       address: userData.address,
       birth: userData.birth,

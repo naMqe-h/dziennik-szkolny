@@ -66,6 +66,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="email"
             onChange={handleChange}
             className="input"
+            autoComplete="email"
             placeholder="your@email.com"
             value={userData.email}
           />
@@ -76,6 +77,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
           <input
             type="password"
             name="password"
+            autoComplete="new-password"
             onChange={handleChange}
             className="input"
             value={userData.password}
@@ -87,6 +89,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
           <input
             type="password"
             name="repeatedPassword"
+            autoComplete="repeat-password"
             onChange={handleChange}
             className="input"
             value={userData.repeatedPassword}
