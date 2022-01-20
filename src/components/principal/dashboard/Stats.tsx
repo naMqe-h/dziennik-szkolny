@@ -2,8 +2,13 @@ import { AiFillInfoCircle } from "react-icons/ai";
 import { RiBookMarkFill } from "react-icons/ri";
 import { GiTeacher } from "react-icons/gi";
 import { AiFillCalendar } from "react-icons/ai";
+import { PlanTypes } from "../../../utils/interfaces";
+interface statsProps {
+  name: string;
+  plan: PlanTypes;
+}
 
-export const Stats = () => {
+export const Stats: React.FC<statsProps> = ({ name, plan }) => {
   return (
     <div className="stats grid-flow-row w-full">
       <div className="stat bg-base-200">
@@ -19,7 +24,7 @@ export const Stats = () => {
           </div>
         </div>
         <div className="stat-title">Witaj,</div>
-        <div className="stat-value">Grzegorz</div>
+        <div className="stat-value">{name}</div>
       </div>
 
       <div className="stat bg-base-200">
@@ -50,7 +55,7 @@ export const Stats = () => {
           <AiFillCalendar size={35} className="text-primary" />
         </div>
         <div className="stat-title">Aktualny Plan</div>
-        <div className="stat-value">Basic</div>
+        <div className="stat-value">{plan}</div>
         <div className="stat-actions">
           <button className="btn btn-sm btn-primary">Zmień plan</button>
         </div>

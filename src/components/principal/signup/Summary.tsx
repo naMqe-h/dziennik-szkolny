@@ -25,7 +25,7 @@ export const Summary: React.FC<summaryProps> = ({
     PrincipalPersonalInformation;
   const { signupPrincipal } = useSignup();
   const data: CombinedPrincipalData = {
-    PlanType: chosenPlan,
+    planType: chosenPlan,
     address,
     birth,
     email,

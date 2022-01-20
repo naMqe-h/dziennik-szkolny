@@ -1,17 +1,24 @@
 import { Stats } from "./dashboard/Stats";
 import { Events } from "./dashboard/Events";
 import { Card } from "./dashboard/Card";
-
 import { RiNumbersLine } from "react-icons/ri";
 import { BsJournalBookmark } from "react-icons/bs";
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { CombinedPrincipalData } from "../../utils/interfaces";
 
 export const DashboardView = () => {
+  const totalState = useSelector((state: RootState) => state.user);
+  const userData = useSelector(
+    (state: RootState) => state.user.data
+  ) as CombinedPrincipalData;
+  console.log(totalState);
   return (
     <div className="flex justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
         <div className="md:row-span-4 p-5 bg-base-200 rounded-xl flex flex-col justify-center">
-          <Stats />
+          <Stats name={userData.firstName} plan={userData.planType} />
         </div>
 
         <Card text="Oceny">
@@ -39,7 +46,7 @@ export const DashboardView = () => {
           <AiOutlinePartition size={70} />
         </Card>
 
-        <div className="p-10 mt-2 row-span-2 md:col-span-2 bg-base-200 rounded-xl flex flex-col items-center min-h-[420px]">
+        <div className="p-10 mt-2 row-span-2 md:col-span-2 bg-base-200 rounded-xl flex flex-col items-center min-h-[480px]">
           <Events />
         </div>
       </div>

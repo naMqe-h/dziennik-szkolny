@@ -3,15 +3,17 @@ import { User } from "firebase/auth";
 import { CombinedPrincipalData, userType } from "../utils/interfaces";
 import type { RootState } from "./store";
 interface UserState {
-  user: User | undefined;
+  user: User | null;
   data: null | CombinedPrincipalData;
   userType: userType | undefined;
+  schoolData: null;
 }
 
 const initialState: UserState = {
-  user: undefined,
+  user: null,
   data: null,
   userType: undefined,
+  schoolData: null,
 };
 export const userSlice = createSlice({
   name: "user",
@@ -29,9 +31,7 @@ export const userSlice = createSlice({
       const data = action.payload;
       state.data = data;
     },
-    logout: (state) => {
-      state = initialState;
-    },
+    logout: () => initialState,
   },
 });
 

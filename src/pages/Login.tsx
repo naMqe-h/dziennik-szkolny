@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FormData } from "../utils/interfaces";
 import { useLogin } from "../hooks/useLogin";
@@ -7,16 +7,18 @@ import { useDispatch } from "react-redux";
 import { setUserType } from "../redux/userSlice";
 import nProgress from "nprogress";
 import { validateEmail } from "../utils/utils";
+import { useAuthStatus } from "../hooks/useAuthStatus";
 
 export const Login = () => {
   const { login } = useLogin();
-
+  const { isLogged, loading } = useAuthStatus();
   const dispatch = useDispatch();
   const [userData, setUserData] = useState<FormData>({
     email: "",
     password: "",
     role: "principals",
   });
+
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
     if (userData.email.length === 0 && userData.password.length === 0)
@@ -46,61 +48,67 @@ export const Login = () => {
     nProgress.done();
   };
 
-  return (
-    <div className="mt-12 flex items-center justify-center">
-      <form className="form-control card bg-base-200 p-14" action="none">
-        <label className="input-group my-4">
-          <span className="bg-primary">Email</span>
-          <input
-            type="text"
-            name="email"
-            className="input"
-            autoComplete="email"
-            value={userData.email}
-            placeholder="Email"
-            onChange={handleChange}
-          />
-        </label>
-        <label className="input-group my-4">
-          <span className="bg-primary">Hasło</span>
-          <input
-            type="password"
-            name="password"
-            className=" input"
-            autoComplete="current-password"
-            value={userData.password}
-            placeholder="********"
-            onChange={handleChange}
-          />
-        </label>
-        <label className="input-group my-4  ">
-          <span className="bg-primary">Zaloguj jako</span>
-          <select
-            name="role"
-            className="select"
-            value={userData.role}
-            onChange={handleChange}
-          >
-            <option value="principals">Dyrektor</option>
-            <option value="teachers">Nauczyciel</option>
-            <option value="students">Uczeń</option>
-          </select>
-        </label>
-        <div className="flex items-center justify-center w-full">
-          <button
-            className="btn-primary text-white btn w-[40%]"
-            onClick={(e) => validateData(e)}
-          >
-            Zaloguj
-          </button>
-        </div>
-        <div className=" text-bold text-2xl mt-4 flex justify-center items-center flex-col">
-          <span>Jesteś Dyrektorem?</span>
-          <Link to={"/signup"} className="text-accent">
-            Zarejestruj Szkołe
-          </Link>
-        </div>
-      </form>
-    </div>
-  );
+  if (!loading) {
+    return isLogged ? (
+      <Navigate to="/" />
+    ) : (
+      <div className="mt-12 flex items-center justify-center">
+        <form className="form-control card bg-base-200 p-14" action="none">
+          <label className="input-group my-4">
+            <span className="bg-primary">Email</span>
+            <input
+              type="text"
+              name="email"
+              className="input"
+              autoComplete="email"
+              value={userData.email}
+              placeholder="Email"
+              onChange={handleChange}
+            />
+          </label>
+          <label className="input-group my-4">
+            <span className="bg-primary">Hasło</span>
+            <input
+              type="password"
+              name="password"
+              className=" input"
+              autoComplete="current-password"
+              value={userData.password}
+              placeholder="********"
+              onChange={handleChange}
+            />
+          </label>
+          <label className="input-group my-4  ">
+            <span className="bg-primary">Zaloguj jako</span>
+            <select
+              name="role"
+              className="select"
+              value={userData.role}
+              onChange={handleChange}
+            >
+              <option value="principals">Dyrektor</option>
+              <option value="teachers">Nauczyciel</option>
+              <option value="students">Uczeń</option>
+            </select>
+          </label>
+          <div className="flex items-center justify-center w-full">
+            <button
+              className="btn-primary text-white btn w-[40%]"
+              onClick={(e) => validateData(e)}
+            >
+              Zaloguj
+            </button>
+          </div>
+          <div className=" text-bold text-2xl mt-4 flex justify-center items-center flex-col">
+            <span>Jesteś Dyrektorem?</span>
+            <Link to={"/signup"} className="text-accent">
+              Zarejestruj Szkołe
+            </Link>
+          </div>
+        </form>
+      </div>
+    );
+  } else {
+    return null;
+  }
 };

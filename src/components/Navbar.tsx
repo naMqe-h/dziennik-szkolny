@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaBook, FaUserTie, FaPlus } from "react-icons/fa";
+import { useLogout } from "../hooks/useLogout";
 
 export const Navbar = () => {
-  const [auth, setAuth] = useState<boolean>(false);
-  useEffect(() => {
-    setAuth(true);
-  }, []);
+  const { logoutUser } = useLogout();
+
+  const handleLogout = () => {
+    logoutUser();
+  };
+
   return (
     <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content fixed top-0 z-20 w-screen">
       <div className="flex-none px-2 mx-2">
@@ -16,7 +18,7 @@ export const Navbar = () => {
         </NavLink>
       </div>
 
-      {auth ? (
+      {true ? (
         <>
           <div className="flex-1 px-2 mx-2">
             <div className="items-stretch hidden lg:flex">
@@ -70,6 +72,9 @@ export const Navbar = () => {
                 </li>
                 <li>
                   <Link to="/signup">Zarejestruj się</Link>
+                </li>
+                <li>
+                  <button onClick={handleLogout}>Wyloguj się</button>
                 </li>
               </ul>
             </div>

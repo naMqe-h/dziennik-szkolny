@@ -8,6 +8,8 @@ export const Teacher = () => {
     lastName: "",
     gender: "Mężczyzna",
     subject: "Matematyka",
+    email: "",
+    password: "",
   });
 
   const genders = ["Kobieta", "Mężczyzna", "Inna"];
@@ -100,7 +102,7 @@ export const Teacher = () => {
         ))}
       </select>
 
-      <div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-end w-full">
         <button
           className="btn btn-primary mt-4 self-end"
           onClick={(e) => handleSubmit(e)}

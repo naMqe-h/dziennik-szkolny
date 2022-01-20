@@ -46,7 +46,7 @@ type PrincipalEmail = Pick<PrincipalLoginCredentials, "email">;
 export interface CombinedPrincipalData
   extends PrincipalEmail,
     PrincipalPersonalInformation {
-  PlanType: PlanTypes;
+  planType: PlanTypes;
   schoolInformation: SchoolInformation;
 }
 export type PlanTypes = "Basic" | "Premium";
@@ -62,6 +62,8 @@ export interface Teacher {
   lastName: string;
   gender: genderType;
   subject: schoolSubject;
+  email: string;
+  password: string;
 }
 type schoolSubject =
   | "Matematyka"
@@ -69,3 +71,9 @@ type schoolSubject =
   | "Język Polski"
   | "WF"
   | "Historia";
+export interface CombinedSchoolInformation extends SchoolInformation {
+  teachersCount: number;
+  studentsCount: number;
+  subjectsCount: number;
+  planType: PlanTypes;
+}

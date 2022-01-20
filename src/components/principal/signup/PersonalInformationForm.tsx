@@ -2,7 +2,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
-  genderType,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
 import { validatePesel } from "../../../utils/utils";
@@ -136,7 +135,7 @@ export const PersonalInformationForm: React.FC<
                 type="date"
                 name="birth"
                 value={userData.birth}
-                min={new Date().toISOString().split("T")[0]}
+                max={new Date().toISOString().split("T")[0]}
                 className="input"
                 onChange={handleChange}
                 placeholder={new Date().toLocaleDateString()}

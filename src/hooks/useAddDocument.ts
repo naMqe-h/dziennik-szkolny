@@ -5,13 +5,14 @@ import { CombinedPrincipalData } from "../utils/interfaces";
 
 export const useAddDocument = () => {
   const [document, setDocument] = useState<DocumentData | undefined>(undefined);
+  setDocument(undefined);
 
   const addDocument = async (
     c: string,
-    uid: string,
+    id: string,
     data: CombinedPrincipalData
   ) => {
-    await setDoc(doc(db, c, uid), data)
+    await setDoc(doc(db, c, id), data)
       .then((doc) => {
         console.log(doc);
       })
