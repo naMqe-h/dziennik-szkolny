@@ -57,7 +57,8 @@ export interface Event {
   date: string;
   done: boolean;
 }
-export interface Teacher {
+//? Interfejs do dodawania z formularza nowego nauczyciela
+export interface TeacherData {
   firstName: string;
   lastName: string;
   gender: genderType;
@@ -65,15 +66,73 @@ export interface Teacher {
   email: string;
   password: string;
 }
+//! Domyslne zmienic
 type schoolSubject =
   | "Matematyka"
   | "Angielski"
   | "Język Polski"
   | "WF"
   | "Historia";
-export interface CombinedSchoolInformation extends SchoolInformation {
+//?? Interfejs przy dodawaniu formularza dla nowego studenta
+export interface StudentData {
+  firstName: string;
+  lastName: string;
+  gender: genderType;
+  email: string;
+  password: string;
+  login: string;
+  pesel: string;
+  birth: string;
+  class: string;
+}
+//?Interfejs Pojedynczej oceny
+export interface SchoolGrade {
+  grade: number;
+  topic: string;
+  date: string;
+  addedBy: string;
+}
+//? Interfejs Klasy do formularza dodawania
+export interface ClassData {
+  name: string;
+  fullName: string;
+  classTeacher: string; //?Mail
+  profile: string;
+  subjects: string[];
+}
+//?Interfejs dla pojedynczego przedmiotu szkolnego
+export interface SubjectData {
+  name: string;
+  teachers: string[];
+  includedAvg: boolean;
+}
+//? Interfejs Klasy ze Studentami do np sprawdzania frekwencji  || Wyświetlania informacji o danej klasie
+export interface SingleClassData extends ClassData {
+  students: string[];
+}
+//! Here are the interaces from Firebase
+//? Interfejs Danych z firebasa o pojedynczym uczniu
+export interface StudentDataFromFirebase extends StudentData {
+  grades: { [key: string]: SchoolGrade[] };
+}
+//? Interfejs Danych z firebasa o pojedynczym nauczycielu
+export interface TeacherDataFromFirebase extends TeacherData {
+  classTeacher: string;
+}
+//? Interfejs Danych z firebasa o wszystkich klasach
+export interface ClassDataFromFirebase {
+  classes: SingleClassData[];
+}
+//? Interfejt Danych z firebasa o szkole
+export interface CombinedSchoolInformationFromFirebase
+  extends SchoolInformation {
+  classesCount: number;
   teachersCount: number;
   studentsCount: number;
   subjectsCount: number;
   planType: PlanTypes;
+}
+//?Interfejs dla dokumentu z firebasa z wszystkimi przedmiotami szkolnymi oraz nauczycielami którzy ich uczą
+export interface schoolSubjectDataFromFirebase {
+  subjects: { [key: string]: SubjectData };
 }

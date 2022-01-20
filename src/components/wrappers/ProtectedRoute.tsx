@@ -8,6 +8,7 @@ import { setUserAuth, setUserData, setUserType } from "../../redux/userSlice";
 import { CombinedPrincipalData } from "../../utils/interfaces";
 import { onAuthStateChanged } from "firebase/auth";
 import nProgress from "nprogress";
+import { Loader } from "../../loader/Loader";
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -46,7 +47,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, []);
 
   if (loading) {
-    return null;
+    return <Loader />;
   } else {
     if (state.data) {
       return children;

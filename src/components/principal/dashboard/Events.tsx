@@ -63,7 +63,7 @@ export const Events: React.FC = () => {
         >
           <ImArrowLeft size={40} />
         </div>
-        <div className="text-xl">
+        <div className="text-xl text-center">
           <span>Zadania na: </span>
           <Moment format="DD.MM.YYYY" date={date} />
         </div>

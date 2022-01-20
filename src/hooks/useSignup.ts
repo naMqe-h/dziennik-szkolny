@@ -1,27 +1,38 @@
 import nProgress from "nprogress";
-import { createUserWithEmailAndPassword, AuthError } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  AuthError,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import { showToastError } from "../utils/utils";
 import { useAddDocument } from "./useAddDocument";
-import { CombinedPrincipalData } from "../utils/interfaces";
+import {
+  CombinedPrincipalData,
+  CombinedSchoolInformationFromFirebase,
+} from "../utils/interfaces";
 import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
   const { addDocument } = useAddDocument();
   const navigate = useNavigate();
-
   const signupPrincipal = async (
     email: string,
     password: string,
-    data: CombinedPrincipalData
+    data: CombinedPrincipalData,
+    schoolData: CombinedSchoolInformationFromFirebase
   ) => {
     nProgress.start();
     await createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
-        //dodac displayName
-        addDocument("principals", res.user.uid, data);
-        navigate("/");
-        nProgress.done();
+        updateProfile(res.user, {
+          displayName: data.schoolInformation.domain,
+        }).then(() => {
+          addDocument("principals", res.user.uid, data);
+          addDocument(data.schoolInformation.domain, "information", schoolData);
+          navigate("/");
+          nProgress.done();
+        });
       })
       .catch((error: AuthError) => {
         showToastError(error);

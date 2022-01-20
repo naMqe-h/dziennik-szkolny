@@ -1,20 +1,26 @@
-// import { useState, useEffect } from "react";
-// import { db } from "../firebase/firebase.config";
+import { useState, useEffect } from "react";
+import { db } from "../firebase/firebase.config";
+import { collection, getDocs } from "firebase/firestore";
 
-// import { collection, onSnapshot } from "firebase/firestore";
+export const useCollection = () => {
+  const [documents, setDocuments] = useState({});
 
-export const useCollection = (c: string) => {
-  //   const [documents, setDoccuments] = useState(null);
+  useEffect(() => {
+    console.log(documents);
+  }, [documents]);
 
-  //   useEffect(() => {
-  //     let ref = collection(db, c);
+  const getCollection = async (c: string) => {
+    const ref = collection(db, c);
+    let data: any = {};
+    let tempData = {};
 
-  //     const unsub = onSnapshot(ref, (snapshot) => {
-  //       let result = [];
-  //       snapshot.docs.forEach(doc => {
-  //           results.push({})
-  //       })
-  //     });
-  //   });
-  return null;
+    const snapshot = await getDocs(ref);
+    snapshot.forEach((doc) => {
+      tempData = { [doc.id]: doc.data() };
+      data = { ...data, ...tempData };
+    });
+    setDocuments(data);
+  };
+
+  return { getCollection };
 };

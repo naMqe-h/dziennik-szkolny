@@ -118,7 +118,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
         <select
           className="select select-bordered w-full"
           value={userData.type}
-          id="classTeacher"
+          name="type"
           onChange={(e) => handleChange(e)}
         >
           {schoolTypes.map((type) => (

@@ -1,24 +1,22 @@
 import { useState } from "react";
 import { db } from "../firebase/firebase.config";
-import { doc, setDoc, DocumentData } from "firebase/firestore";
-import { CombinedPrincipalData } from "../utils/interfaces";
+import { doc, setDoc, DocumentData, FirestoreError } from "firebase/firestore";
+import {
+  CombinedPrincipalData,
+  CombinedSchoolInformationFromFirebase,
+} from "../utils/interfaces";
+import { toast } from "react-toastify";
 
 export const useAddDocument = () => {
-  const [document, setDocument] = useState<DocumentData | undefined>(undefined);
-  setDocument(undefined);
-
+  const [document] = useState<DocumentData | undefined>(undefined);
   const addDocument = async (
     c: string,
     id: string,
-    data: CombinedPrincipalData
+    data: CombinedPrincipalData | CombinedSchoolInformationFromFirebase
   ) => {
-    await setDoc(doc(db, c, id), data)
-      .then((doc) => {
-        console.log(doc);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    await setDoc(doc(db, c, id), data).catch((err: FirestoreError) => {
+      toast.error(`${err.message}`);
+    });
   };
 
   return { addDocument, document };

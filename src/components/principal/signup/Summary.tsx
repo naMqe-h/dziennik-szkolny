@@ -4,6 +4,7 @@ import {
   SchoolInformation,
   PlanTypes,
   CombinedPrincipalData,
+  CombinedSchoolInformationFromFirebase,
 } from "../../../utils/interfaces";
 import { useSignup } from "../../../hooks/useSignup";
 
@@ -24,6 +25,7 @@ export const Summary: React.FC<summaryProps> = ({
   const { firstName, birth, lastName, address, gender, pesel } =
     PrincipalPersonalInformation;
   const { signupPrincipal } = useSignup();
+  console.log("render");
   const data: CombinedPrincipalData = {
     planType: chosenPlan,
     address,
@@ -40,11 +42,23 @@ export const Summary: React.FC<summaryProps> = ({
       type: SchoolInformation.type,
     },
   };
+  const schoolData: CombinedSchoolInformationFromFirebase = {
+    address: SchoolInformation.address,
+    domain: SchoolInformation.domain,
+    name: SchoolInformation.name,
+    type: SchoolInformation.type,
+    teachersCount: 0,
+    studentsCount: 0,
+    subjectsCount: 0,
+    classesCount: 0,
+    planType: chosenPlan,
+  };
 
   const handleSignup = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(SchoolInformation);
-    signupPrincipal(email, password, data);
+    console.log(data);
+    console.log(schoolData);
+    signupPrincipal(email, password, data, schoolData);
   };
 
   return (
