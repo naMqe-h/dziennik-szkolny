@@ -12,6 +12,7 @@ import {
   CombinedSchoolInformationFromFirebase,
 } from "../utils/interfaces";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const useSignup = () => {
   const { addDocument } = useAddDocument();
@@ -26,10 +27,12 @@ export const useSignup = () => {
     await createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
         updateProfile(res.user, {
-          displayName: data.schoolInformation.domain,
+          displayName: `${data.schoolInformation.domain}~principals`
         }).then(() => {
+          schoolData.principalUID = res.user.uid
           addDocument("principals", res.user.uid, data);
           addDocument(data.schoolInformation.domain, "information", schoolData);
+          toast.success('Udało ci się utworzyć konto 😎')
           navigate("/");
           nProgress.done();
         });

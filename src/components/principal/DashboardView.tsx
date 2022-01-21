@@ -4,29 +4,14 @@ import { Card } from "./dashboard/Card";
 import { RiNumbersLine } from "react-icons/ri";
 import { BsJournalBookmark } from "react-icons/bs";
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { CombinedPrincipalData } from "../../utils/interfaces";
-import { useEffect } from "react";
-import { useCollection } from "../../hooks/useCollection";
 
 export const DashboardView = () => {
-  const { getCollection } = useCollection();
-  const totalState = useSelector((state: RootState) => state.user);
-  const userData = useSelector(
-    (state: RootState) => state.user.data
-  ) as CombinedPrincipalData;
-  console.log(totalState);
 
-  useEffect(() => {
-    getCollection("zst.pl");
-    // eslint-disable-next-line
-  }, []);
   return (
     <div className="flex justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
         <div className="md:row-span-4 p-5 bg-base-200 rounded-xl flex flex-col justify-center">
-          <Stats name={userData.firstName} plan={userData.planType} />
+          <Stats />
         </div>
 
         <Card text="Oceny">

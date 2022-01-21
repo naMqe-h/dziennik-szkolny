@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Add } from "./pages/Add";
 import { Dashboard } from "./pages/Dashboard";
@@ -28,6 +28,34 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Add />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <p>
+                    Profile
+                  </p>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <p>
+                    Settings
+                  </p>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <Navigate to='/' />
                 </ProtectedRoute>
               }
             />

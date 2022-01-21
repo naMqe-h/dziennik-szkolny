@@ -1,13 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { db } from "../firebase/firebase.config";
 import { collection, getDocs } from "firebase/firestore";
 
 export const useCollection = () => {
   const [documents, setDocuments] = useState({});
-
-  useEffect(() => {
-    console.log(documents);
-  }, [documents]);
 
   const getCollection = async (c: string) => {
     const ref = collection(db, c);
@@ -22,5 +18,5 @@ export const useCollection = () => {
     setDocuments(data);
   };
 
-  return { getCollection };
+  return { getCollection, documents };
 };

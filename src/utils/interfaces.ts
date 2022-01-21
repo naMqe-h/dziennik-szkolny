@@ -80,7 +80,6 @@ export interface StudentData {
   gender: genderType;
   email: string;
   password: string;
-  login: string;
   pesel: string;
   birth: string;
   class: string;
@@ -101,6 +100,7 @@ export interface ClassData {
   subjects: string[];
 }
 //?Interfejs dla pojedynczego przedmiotu szkolnego
+  
 export interface SubjectData {
   name: string;
   teachers: string[];
@@ -112,27 +112,52 @@ export interface SingleClassData extends ClassData {
 }
 //! Here are the interaces from Firebase
 //? Interfejs Danych z firebasa o pojedynczym uczniu
-export interface StudentDataFromFirebase extends StudentData {
+export interface StudentsDataFromFirebase {
+  [key:string]:{
+  firstName: string;
+  lastName: string;
+  gender: genderType;
+  email: string;
+  password: string;
+  pesel: string;
+  birth: string;
+  class: string;
   grades: { [key: string]: SchoolGrade[] };
+  }
 }
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
-export interface TeacherDataFromFirebase extends TeacherData {
+export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
-export interface ClassDataFromFirebase {
-  classes: SingleClassData[];
+export interface ClassesDataFromFirebase {
+  [key:string]:SingleClassData
 }
 //? Interfejt Danych z firebasa o szkole
 export interface CombinedSchoolInformationFromFirebase
   extends SchoolInformation {
-  classesCount: number;
-  teachersCount: number;
-  studentsCount: number;
-  subjectsCount: number;
-  planType: PlanTypes;
+      principalUID:string;
+      classesCount: number;
+      teachersCount: number;
+      studentsCount: number;
+      subjectsCount: number;
+      planType: PlanTypes;
 }
 //?Interfejs dla dokumentu z firebasa z wszystkimi przedmiotami szkolnymi oraz nauczycielami którzy ich uczą
-export interface schoolSubjectDataFromFirebase {
-  subjects: { [key: string]: SubjectData };
+export interface SchoolSubjectsDataFromFirebase {
+  [key: string]: SubjectData ;
 }
+
+//? Interfejs Danych z firebasa o wszystkich nauczycielach
+export interface TeachersDataFromFirebase {
+  [key: string]: SingleTeacherData
+}
+
+//?Interfejs dla całej kolekcji szkoły z firebase
+export interface CombinedSchoolDataFromFirebase  {
+classes:ClassesDataFromFirebase,
+information:CombinedSchoolInformationFromFirebase,
+students:StudentsDataFromFirebase,
+subjects:SchoolSubjectsDataFromFirebase,
+teachers:TeachersDataFromFirebase,
+  }

@@ -44,7 +44,7 @@ export const Login = () => {
   const handleLogin = async () => {
     nProgress.start();
     dispatch(setUserType(userData.role));
-    await login(userData.email, userData.password, "principals");
+    await login(userData.email, userData.password, userData.role);
     nProgress.done();
   };
 

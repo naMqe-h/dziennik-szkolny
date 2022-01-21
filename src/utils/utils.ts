@@ -21,6 +21,23 @@ export const validatePesel = (pesel: string): boolean => {
   total = total % 10;
   return 10 - total === controlSum;
 };
+export const generateEmail = (firstName:string, lastName:string, domain:string):string => {
+  const login = (firstName.slice(0,3) + lastName.slice(0, 3) + Math.floor(Math.random() * 1000)).toLowerCase()
+  const email = `${login.toLowerCase()}@${domain}`
+  return email
+}
+export const generatePassword = ():string => {
+  const characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_-+=";
+  let password = "",
+    temp;
+
+  for (let i = 0; i < 10; i++) {
+    temp = Math.floor(Math.random() * characters.length);
+    password += characters.charAt(temp);
+  }
+  return password
+};
 export const showToastError = (error: AuthError) => {
   switch (error.code) {
     case "auth/wrong-password":

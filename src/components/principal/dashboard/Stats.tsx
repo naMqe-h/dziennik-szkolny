@@ -2,13 +2,17 @@ import { AiFillInfoCircle } from "react-icons/ai";
 import { RiBookMarkFill } from "react-icons/ri";
 import { GiTeacher } from "react-icons/gi";
 import { AiFillCalendar } from "react-icons/ai";
-import { PlanTypes } from "../../../utils/interfaces";
-interface statsProps {
-  name: string;
-  plan: PlanTypes;
-}
+import { CombinedPrincipalData, CombinedSchoolDataFromFirebase } from "../../../utils/interfaces";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
-export const Stats: React.FC<statsProps> = ({ name, plan }) => {
+export const Stats: React.FC = () => {
+  const userData = useSelector((state: RootState) => state.user.data) as CombinedPrincipalData;
+  const schoolData = useSelector((state: RootState) => state.user.schoolData) as CombinedSchoolDataFromFirebase;
+
+  const { firstName } = userData
+  const { classesCount, studentsCount, teachersCount, planType } = schoolData.information
+
   return (
     <div className="stats grid-flow-row w-full">
       <div className="stat bg-base-200">
@@ -24,7 +28,7 @@ export const Stats: React.FC<statsProps> = ({ name, plan }) => {
           </div>
         </div>
         <div className="stat-title">Witaj,</div>
-        <div className="stat-value">{name}</div>
+        <div className="stat-value">{firstName}</div>
       </div>
 
       <div className="stat bg-base-200">
@@ -32,7 +36,7 @@ export const Stats: React.FC<statsProps> = ({ name, plan }) => {
           <AiFillInfoCircle size={35} className="text-primary" />
         </div>
         <div className="stat-title">Liczba klas</div>
-        <div className="stat-value">5</div>
+        <div className="stat-value">{classesCount}</div>
       </div>
 
       <div className="stat bg-base-200">
@@ -40,7 +44,7 @@ export const Stats: React.FC<statsProps> = ({ name, plan }) => {
           <RiBookMarkFill size={35} className="text-primary" />
         </div>
         <div className="stat-title">Liczba uczniów</div>
-        <div className="stat-value">250</div>
+        <div className="stat-value">{studentsCount}</div>
       </div>
 
       <div className="stat bg-base-200">
@@ -48,14 +52,14 @@ export const Stats: React.FC<statsProps> = ({ name, plan }) => {
           <GiTeacher size={35} className="text-primary" />
         </div>
         <div className="stat-title">Liczba nauczycieli</div>
-        <div className="stat-value">48</div>
+        <div className="stat-value">{teachersCount}</div>
       </div>
       <div className="stat bg-base-200">
         <div className="stat-figure text-secondary">
           <AiFillCalendar size={35} className="text-primary" />
         </div>
         <div className="stat-title">Aktualny Plan</div>
-        <div className="stat-value">{plan}</div>
+        <div className="stat-value">{planType}</div>
         <div className="stat-actions">
           <button className="btn btn-sm btn-primary">Zmień plan</button>
         </div>
