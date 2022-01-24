@@ -32,7 +32,6 @@ export const Class = () => {
     profile: "",
     classTeacher: "",
   });
-
   useEffect(() => {
     if (schoolData?.teachers) {
       const teachersData = Object.values(
@@ -53,14 +52,13 @@ export const Class = () => {
       };
     });
   };
-
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (classCredential.name.length === 0) {
       return toast.error("Podaj nazwę klasy", { autoClose: 2000 });
     }
-    if (schoolData) {
+    if (schoolData?.classes) {
       const classes = Object.keys(schoolData?.classes);
       if (classes) {
         if (classes.some((x) => x === classCredential.name)) {
@@ -81,7 +79,6 @@ export const Class = () => {
     const objWrapper: ClassesDataFromFirebase = {
       [name]: { ...classCredential, fullName, subjects: [], students: [] },
     };
-
     // update firebase
     addDocument(domain as string, "classes", objWrapper);
     addDocument(domain as string, "teachers", {
@@ -90,7 +87,7 @@ export const Class = () => {
       },
     });
 
-    updateCounter(domain as string, "classesCounter");
+    updateCounter(domain as string, "classesCount");
 
     // update state
     dispatch(addNewClass(objWrapper));

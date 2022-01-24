@@ -9,12 +9,14 @@ import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { addNewSubject } from "../../redux/userSlice";
 import { useAddDocument } from "../../hooks/useAddDocument";
+import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 type OptionsType = { value: string; label: string }[];
 interface SubjectDataForm extends Omit<SubjectData, "teachers"> {
   teachers: OptionsType;
 }
 export const Subject: React.FC = () => {
   const { addDocument } = useAddDocument();
+  const { updateCounter } = useUpdateInfoCounter();
   const dispatch = useDispatch();
   const teachers = useSelector((state: RootState) =>
     state.user.schoolData?.teachers !== undefined
@@ -80,6 +82,7 @@ export const Subject: React.FC = () => {
       "subjects",
       objForFirebase
     );
+    updateCounter(schoolData?.information.domain as string, "subjectsCount");
     dispatch(addNewSubject({ [nameWithoutWhitespace]: wrapperObj }));
     toast.success("Udało ci się dodać przedmiot", { autoClose: 2000 });
   }
