@@ -6,7 +6,6 @@ import { BsJournalBookmark } from "react-icons/bs";
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
 
 export const DashboardView = () => {
-
   return (
     <div className="flex justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">

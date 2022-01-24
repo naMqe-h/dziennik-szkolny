@@ -51,7 +51,7 @@ export const SignupPrincipalView: React.FC = () => {
   const [chosenPlan, setchosenPlan] = useState<PlanTypes>("Basic");
   return (
     <div className="flex justify-center">
-      <section className="flex justify-center items-center p-4 px-2 m-4  rounded-xl w-[80%] md:w-[60%] lg:w-[40%] flex-col">
+      <section className="flex justify-center items-center p-4 px-2 m-4  rounded-xl w-[80%] flex-col">
         <Steps currentStep={currentStep} />
         <AnimatePresence exitBeforeEnter>
           <motion.div

@@ -1,40 +1,108 @@
-import { useState } from "react";
-
-type teacherExample = {
-  id: string;
-  text: string;
-};
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import {
+  SingleTeacherData,
+  ClassesDataFromFirebase,
+  updateTeacherClass,
+} from "../../utils/interfaces";
+import { toast } from "react-toastify";
+import { useAddDocument } from "../../hooks/useAddDocument";
+import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { addNewClass } from "../../redux/userSlice";
 
 type classCredentials = {
   name: string;
+  profile: string;
   classTeacher: string;
 };
 
-const teachers: teacherExample[] = [
-  { id: "nauczyciel-1", text: "Nauczyciel 1" },
-  { id: "nauczyciel-2", text: "Nauczyciel 2" },
-  { id: "nauczyciel-3", text: "Nauczyciel 3" },
-  { id: "nauczyciel-4", text: "Nauczyciel 4" },
-];
-
 export const Class = () => {
+  const { addDocument } = useAddDocument();
+  const { updateCounter } = useUpdateInfoCounter();
+  const dispatch = useDispatch();
+
+  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
+  const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
+
+  const domain = schoolData?.information?.domain;
+
   const [classCredential, setClassCredential] = useState<classCredentials>({
     name: "",
+    profile: "",
     classTeacher: "",
   });
 
-  const handleChange = (id: string, value: string) => {
+  useEffect(() => {
+    if (schoolData?.teachers) {
+      const teachersData = Object.values(
+        schoolData?.teachers
+      ) as SingleTeacherData[];
+
+      setTeachers(
+        teachersData.filter((teacher) => teacher.classTeacher.length === 0)
+      );
+    }
+  }, [schoolData?.classes]);
+
+  const handleChange = (name: string, value: string) => {
     setClassCredential((prevState) => {
       return {
         ...prevState,
-        [id]: value,
+        [name]: value,
       };
     });
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(classCredential);
+
+    if (classCredential.name.length === 0) {
+      return toast.error("Podaj nazwę klasy", { autoClose: 2000 });
+    }
+    if (schoolData) {
+      const classes = Object.keys(schoolData?.classes);
+      if (classes) {
+        if (classes.some((x) => x === classCredential.name)) {
+          return toast.error("Podana klasa już istenije", { autoClose: 2000 });
+        }
+      }
+    }
+    if (classCredential.profile.length === 0) {
+      return toast.error("Podaj Profil", { autoClose: 2000 });
+    }
+    if (classCredential.classTeacher.length === 0) {
+      return toast.error("Wybierz wychowawcę", { autoClose: 2000 });
+    }
+
+    const { name, profile, classTeacher } = classCredential;
+    const fullName = name + "-" + profile;
+
+    const objWrapper: ClassesDataFromFirebase = {
+      [name]: { ...classCredential, fullName, subjects: [], students: [] },
+    };
+
+    // update firebase
+    addDocument(domain as string, "classes", objWrapper);
+    addDocument(domain as string, "teachers", {
+      [classTeacher]: {
+        classTeacher: name,
+      },
+    });
+
+    updateCounter(domain as string, "classesCounter");
+
+    // update state
+    dispatch(addNewClass(objWrapper));
+
+    // reset form
+    setClassCredential({
+      name: "",
+      profile: "",
+      classTeacher: "",
+    });
+
+    return toast.success("Udało ci się dodać klasę 😀", { autoClose: 2000 });
   };
 
   return (
@@ -46,8 +114,20 @@ export const Class = () => {
         className="input"
         type="text"
         placeholder="Nazwa klasy"
-        id="name"
-        onChange={(e) => handleChange(e.target.id, e.target.value)}
+        name="name"
+        value={classCredential.name}
+        onChange={(e) => handleChange(e.target.name, e.target.value)}
+      />
+      <label className="label">
+        <span className="label-text">Profil</span>
+      </label>
+      <input
+        className="input"
+        type="text"
+        placeholder="Profil (Mat-fiz)"
+        name="profile"
+        value={classCredential.profile}
+        onChange={(e) => handleChange(e.target.name, e.target.value)}
       />
 
       <label className="label">
@@ -55,15 +135,23 @@ export const Class = () => {
       </label>
       <select
         className="select select-bordered w-full max-w-xs"
-        id="classTeacher"
-        onChange={(e) => handleChange(e.target.id, e.target.value)}
+        name="classTeacher"
+        onChange={(e) => handleChange(e.target.name, e.target.value)}
+        value={classCredential.classTeacher}
       >
         <option></option>
-        {teachers.map((teacher) => (
-          <option key={teacher.id} value={teacher.text}>
-            {teacher.text}
-          </option>
-        ))}
+        {teachers ? (
+          teachers.map((teacher, id) => (
+            <option
+              key={teacher.firstName + id.toString()}
+              value={teacher.email}
+            >
+              {teacher.firstName + " " + teacher.lastName}
+            </option>
+          ))
+        ) : (
+          <option></option>
+        )}
       </select>
       <div className="flex items-center justify-center w-full">
         <button

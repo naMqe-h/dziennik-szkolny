@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { currentStepType, SchoolInformation } from "../../../utils/interfaces";
+import { useDocument } from "../../../hooks/useDocument";
 
 const schoolTypes = [
   "Szkoła Podstawowa",
@@ -17,6 +18,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   set,
   setStep,
 }) => {
+  const { getDocument, document: takenDomains } = useDocument();
   const [userData, setUserData] = useState<SchoolInformation>({
     name: "",
     address: {
@@ -29,8 +31,21 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
     domain: "",
   });
 
+  useEffect(() => {
+    getDocument("utils", "domains");
+  }, []);
+
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (takenDomains) {
+      for (const item of takenDomains.names) {
+        if (userData.domain === item) {
+          return toast.error("Szkoła z podaną domena jest już zarejestrowana", {
+            autoClose: 3000,
+          });
+        }
+      }
+    }
     if (
       userData.name.length === 0 &&
       userData.address.city.length === 0 &&
@@ -39,24 +54,30 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       userData.address.city.length === 0 &&
       userData.domain.length === 0
     )
-      return toast.error("Podaj wszystkie dane", { autoClose: 2000 });
-    if (userData.address.street.length === 0)
-      return toast.error("Podaj Ulice na której znajduję się szkoła", {
-        autoClose: 2000,
-      });
-    if (userData.address.city.length === 0)
-      return toast.error("Podaj Miasto", { autoClose: 2000 });
-    if (
-      userData.address.postCode.length !== 6 ||
-      userData.address.postCode[2] !== "-"
-    )
-      return toast.error("Podaj poprawny Kod Pocztowy", { autoClose: 2000 });
-    if (userData.address.houseNumber === 0)
-      return toast.error("Podaj poprawny Numer Szkoły", { autoClose: 2000 });
+      return toast.error("Podaj poprawnie wszystkie dane", { autoClose: 2000 });
+    if (userData.name.length === 0) {
+      return toast.error("Podaj nazwę szkoły", { autoClose: 2000 });
+    }
     if (userData.domain.length === 0)
       return toast.error("Podaj poprawną domene", { autoClose: 2000 });
     if (userData.domain.split("").find((x) => x === "@"))
       return toast.error("Podaj domenę bez @", { autoClose: 2000 });
+    if (userData.address.city.length === 0)
+      return toast.error("Podaj miasto", { autoClose: 2000 });
+    if (userData.address.street.length === 0)
+      return toast.error("Podaj ulicę, na której znajduje się szkoła", {
+        autoClose: 2000,
+      });
+    if (
+      userData.address.postCode.length !== 6 ||
+      userData.address.postCode[2] !== "-"
+    )
+      return toast.error("Podaj poprawny kod pocztowy", { autoClose: 2000 });
+    if (userData.address.houseNumber === 0)
+      return toast.error("Podaj poprawny numer budynku szkoły", {
+        autoClose: 2000,
+      });
+
     set({
       address: userData.address,
       name: userData.name,
@@ -97,7 +118,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
         <input
           className="input w-full"
           type="text"
-          placeholder="Nazwa szkoł"
+          placeholder="Nazwa szkoły"
           name="name"
           onChange={handleChange}
         />

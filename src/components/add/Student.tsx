@@ -2,26 +2,29 @@ import { useState, useEffect } from "react";
 import {
   genderType,
   StudentData,
-  StudentsDataFromFirebase
+  StudentsDataFromFirebase,
 } from "../../utils/interfaces";
-import { validatePesel, generatePassword, generateEmail } from '../../utils/utils';
+import {
+  validatePesel,
+  generatePassword,
+  generateEmail,
+} from "../../utils/utils";
 import { toast } from "react-toastify";
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
 import { useAddDocument } from "../../hooks/useAddDocument";
 import { addNewStudent } from "../../redux/userSlice";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 
-
 export const Student = () => {
-  const { updateCounter } = useUpdateInfoCounter()
+  const { updateCounter } = useUpdateInfoCounter();
   const dispatch = useDispatch();
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.user?.schoolData  );
+  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);
-  const {addDocument} = useAddDocument()
+  const { addDocument } = useAddDocument();
   const [student, setStudent] = useState<StudentData>({
     firstName: "",
     lastName: "",
@@ -30,15 +33,15 @@ export const Student = () => {
     pesel: "",
     birth: "",
     class: "",
-    email: ""
+    email: "",
   });
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
   useEffect(() => {
-    if(student.firstName.length>=3&&student.lastName.length>=3){
+    if (student.firstName.length >= 3 && student.lastName.length >= 3) {
       setCanBeGenerated(true);
     }
-  }, [student.firstName,student.lastName]);
+  }, [student.firstName, student.lastName]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -61,38 +64,43 @@ export const Student = () => {
     if (student.lastName.length === 0) {
       return toast.error("Podaj Nazwisko", { autoClose: 2000 });
     }
-    if(student.birth.length === 0){
+    if (student.birth.length === 0) {
       return toast.error("Podaj Datę urodzenia", { autoClose: 2000 });
     }
-    if(student.pesel.length === 0 || !validatePesel(student.pesel) ){
+    if (student.pesel.length === 0 || !validatePesel(student.pesel)) {
       return toast.error("Niepoprawny pesel", { autoClose: 2000 });
     }
-    if(student.class.length === 0){
-      return toast.error('Wybierz klasę', {autoClose: 2000});
+    if (student.class.length === 0) {
+      return toast.error("Wybierz klasę", { autoClose: 2000 });
     }
-    if(student.email.length === 0 || student.password.length === 0){
-        return toast.error('Brak wygenerowanego emaila lub hasła', {autoClose:2000});
+    if (student.email.length === 0 || student.password.length === 0) {
+      return toast.error("Brak wygenerowanego emaila lub hasła", {
+        autoClose: 2000,
+      });
     }
 
+    const objWrapper: StudentsDataFromFirebase = {
+      [student.email]: { ...student, grades: {} },
+    };
 
-    const objWrapper:StudentsDataFromFirebase = {
-        [student.email]:{ ...student, grades:{} },
-    }
-    
-    addDocument(domain as string,'students',objWrapper);
-    updateCounter(domain as string, 'studentsCount');
-    dispatch(addNewStudent({...schoolData?.students,[student.email]: {...student, grades:{}} }));
+    addDocument(domain as string, "students", objWrapper);
+    updateCounter(domain as string, "studentsCount");
+    dispatch(addNewStudent(objWrapper));
     return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
   };
 
-  const generateEmailAndPassword  = (e: React.SyntheticEvent) =>{
+  const generateEmailAndPassword = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const newPassword =generatePassword();
-    const newEmail = generateEmail(student.firstName,student.lastName, domain as string);
+    const newPassword = generatePassword();
+    const newEmail = generateEmail(
+      student.firstName,
+      student.lastName,
+      domain as string
+    );
     setStudent((prev) => {
-      return { ...prev,email:newEmail,password:newPassword};
+      return { ...prev, email: newEmail, password: newPassword };
     });
-  }
+  };
 
   return (
     <form className="form-control w-96 mt-12 p-10 card bg-base-200">
@@ -122,19 +130,19 @@ export const Student = () => {
           />
         </div>
       </div>
-      <div>
-              <label className="label">
-                <span className="label-text">Data Urodzenia</span>
-              </label>
-              <input
-                type="date"
-                name="birth"
-                value={student.birth}
-                max={new Date().toISOString().split("T")[0]}
-                className="input"
-                onChange={(e) => handleChange(e)}
-                placeholder={new Date().toLocaleDateString()}
-              />
+      <div className="form-control items-center">
+        <label className="label">
+          <span className="label-text">Data Urodzenia</span>
+        </label>
+        <input
+          type="date"
+          name="birth"
+          value={student.birth}
+          max={new Date().toISOString().split("T")[0]}
+          className="input"
+          onChange={(e) => handleChange(e)}
+          placeholder={new Date().toLocaleDateString()}
+        />
       </div>
       <div>
         <label className="label">
@@ -150,64 +158,72 @@ export const Student = () => {
       </div>
       <div>
         <label className="label">
-            <span className="label-text">Płeć</span>
+          <span className="label-text">Płeć</span>
         </label>
         <select
-            className="select select-bordered w-full max-w-xs"
-            name="gender"
-            onChange={(e) => handleChange(e)}
-            value={student.gender}
+          className="select select-bordered w-full max-w-xs"
+          name="gender"
+          onChange={(e) => handleChange(e)}
+          value={student.gender}
         >
-            {genders.map((gender) => (
+          {genders.map((gender) => (
             <option key={gender} value={gender}>
-                {gender}
+              {gender}
             </option>
-            ))}
+          ))}
         </select>
       </div>
       <div>
         <label className="label">
-            <span className="label-text">Klasa</span>
+          <span className="label-text">Klasa</span>
         </label>
         <select
-            className="select select-bordered w-full max-w-xs"
-            name="class"
-            onChange={(e) => handleChange(e)}
-            value={student.class}
+          className="select select-bordered w-full max-w-xs"
+          name="class"
+          onChange={(e) => handleChange(e)}
+          value={student.class}
         >
-            <option></option>
-            {classNames && classNames.map((item) => (
-            <option key={item} value={item}>
+          <option></option>
+          {classNames &&
+            classNames.map((item) => (
+              <option key={item} value={item}>
                 {item}
-            </option>
+              </option>
             ))}
         </select>
       </div>
       <fieldset className="border border-solid border-secondary rounded-md p-4 mt-4">
         <legend className="text-center font-bold">Generuj Email i Hasło</legend>
-      <label className="form-control items-center "> 
-        <label className="label input-group">
-          <span className="label-text font-bold">Email</span>
-        <input
-          className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
-          type="text"
-          name="Password"
-          disabled={true}
-          defaultValue={student.email}
-          />
+        <label className="form-control items-center ">
+          <label className="label input-group">
+            <span className="label-text font-bold">Email</span>
+            <input
+              className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
+              type="text"
+              name="Password"
+              disabled={true}
+              defaultValue={student.email}
+            />
           </label>
-      <label className="label input-group">
-          <span className="label-text font-bold">Hasło</span>
-        <input
-          className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
-          type="text"
-          name="Password"
-          disabled={true}
-          defaultValue={student.password}
-        />
+          <label className="label input-group">
+            <span className="label-text font-bold">Hasło</span>
+            <input
+              className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
+              type="text"
+              name="Password"
+              disabled={true}
+              defaultValue={student.password}
+            />
           </label>
-          <button className={`btn ${canBeGenerated ? 'btn-secondary' : 'btn-disabled'} mt-2`} onClick={generateEmailAndPassword}>Generuj</button>
-      </label>
+          <button
+            className={`btn ${
+              canBeGenerated ? "btn-secondary" : "btn-disabled"
+            } mt-2`}
+            onClick={generateEmailAndPassword}
+          >
+            Generuj
+          </button>
+        </label>
       </fieldset>
       <div className="flex items-center justify-end w-full">
         <button
@@ -220,5 +236,3 @@ export const Student = () => {
     </form>
   );
 };
-
-

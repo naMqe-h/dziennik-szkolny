@@ -2,16 +2,29 @@ import { AiFillInfoCircle } from "react-icons/ai";
 import { RiBookMarkFill } from "react-icons/ri";
 import { GiTeacher } from "react-icons/gi";
 import { AiFillCalendar } from "react-icons/ai";
-import { CombinedPrincipalData, CombinedSchoolDataFromFirebase } from "../../../utils/interfaces";
+import {
+  CombinedPrincipalData,
+  CombinedSchoolDataFromFirebase,
+} from "../../../utils/interfaces";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 
 export const Stats: React.FC = () => {
-  const userData = useSelector((state: RootState) => state.user.data) as CombinedPrincipalData;
-  const schoolData = useSelector((state: RootState) => state.user.schoolData) as CombinedSchoolDataFromFirebase;
+  const userData = useSelector(
+    (state: RootState) => state.user.data
+  ) as CombinedPrincipalData;
 
-  const { firstName } = userData
-  const { classesCount, studentsCount, teachersCount, planType } = schoolData.information
+  const schoolData = useSelector(
+    (state: RootState) => state.user.schoolData
+  ) as CombinedSchoolDataFromFirebase;
+
+  const { firstName } = userData;
+  const {
+    classesCount = 0,
+    studentsCount = 0,
+    teachersCount = 0,
+    planType = "Basic",
+  } = schoolData.information;
 
   return (
     <div className="stats grid-flow-row w-full">

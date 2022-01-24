@@ -5,51 +5,59 @@ import {
   TeacherData as teacherInterface,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
-import { generateEmail,generatePassword } from "../../utils/utils"; 
-import {  useDispatch, useSelector } from "react-redux";
-import { RootState } from '../../redux/store';
+import { generateEmail, generatePassword } from "../../utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 import { useAddDocument } from "../../hooks/useAddDocument";
-import { addNewTeacher, } from "../../redux/userSlice";
+import { addNewTeacher } from "../../redux/userSlice";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { updateDoc } from "firebase/firestore";
 
 export const Teacher = () => {
-  const { updateCounter } = useUpdateInfoCounter()
-  const { addDocument } = useAddDocument()
-  const dispatch = useDispatch()
-  const user = useSelector((state: RootState) => state.user)
+  const { updateCounter } = useUpdateInfoCounter();
+  const { addDocument } = useAddDocument();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+  const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
     firstName: "",
     lastName: "",
     gender: "Mężczyzna",
-    subject: "Matematyka",
+    subject: subjects[0],
     email: "",
-    password:"",
+    password: "",
   });
+
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
-  const subjects = [
-    "Matematyka",
-    "Angielski",
-    "Język Polski",
-    "WF",
-    "Historia",
-  ];
-
   useEffect(() => {
-    if(teacher.firstName.length>=3&&teacher.lastName.length>=3){
+    if (teacher.firstName.length >= 3 && teacher.lastName.length >= 3) {
       setCanBeGenerated(true);
     }
-  }, [teacher.firstName,teacher.lastName]);
-
-
-  const generateEmailAndPassword  = (e: React.SyntheticEvent) =>{
+  }, [teacher.firstName, teacher.lastName]);
+  useEffect(() => {
+    if (user.schoolData?.subjects) {
+      const temp: string[] = Object.values(user.schoolData.subjects).map(
+        (x) => x.name
+      );
+      setSubjects(temp);
+      setTeacher((prev) => {
+        return { ...prev, subject: temp[0] };
+      });
+    }
+  }, [user.schoolData?.subjects]);
+  const generateEmailAndPassword = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const newPassword =generatePassword();
-    const newEmail = generateEmail(teacher.firstName,teacher.lastName,user.schoolData?.information.domain as string);
+    const newPassword = generatePassword();
+    const newEmail = generateEmail(
+      teacher.firstName,
+      teacher.lastName,
+      user.schoolData?.information.domain as string
+    );
     setTeacher((prev) => {
-      return { ...prev,email:newEmail,password:newPassword};
+      return { ...prev, email: newEmail, password: newPassword };
     });
-  }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -63,7 +71,7 @@ export const Teacher = () => {
     });
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (teacher.firstName.length === 0 && teacher.lastName.length === 0) {
       return toast.error("Podaj wszystkie dane", { autoClose: 2000 });
@@ -77,20 +85,34 @@ export const Teacher = () => {
     }
     //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
     // const newObj:single
-    if(user.schoolData){
-      const objForRTK:TeachersDataFromFirebase = {
-        ...user.schoolData.teachers,
+    if (user.schoolData) {
+      const objWrapper: TeachersDataFromFirebase = {
         [teacher.email]: { ...teacher, classTeacher: "" },
-      }
-      const objForFirebase:TeachersDataFromFirebase = {
-        [teacher.email]: { ...teacher, classTeacher: "" }
-      }
-      addDocument(user.schoolData?.information.domain as string,'teachers',objForFirebase);
-      updateCounter(user.schoolData.information.domain, 'teachersCount')
-      dispatch(addNewTeacher(objForRTK))
+      };
+      addDocument(
+        user.schoolData?.information.domain as string,
+        "teachers",
+        objWrapper
+      );
+      const teachersSubjectArray =
+        user.schoolData.subjects[teacher.subject].teachers;
+      updateCounter(user.schoolData.information.domain, "teachersCount");
+      //Dodaje tutaj nauczyciela do przedmiotu
+      const domain = user.schoolData.information.domain;
+      const { subject, email } = teacher;
+      const previousTeachers =
+        user.schoolData.subjects[teacher.subject].teachers;
+      addDocument(domain as string, "subjects", {
+        [subject]: {
+          teachers: [...previousTeachers, email],
+        },
+      });
+
+      dispatch(addNewTeacher(objWrapper));
+      toast.success("Udało ci się dodać nowego nauczyciela", {
+        autoClose: 2000,
+      });
     }
-    
-    return toast.success("Udało ci się dodać nauczyciela 😀", { autoClose: 2000 });
   };
   return (
     <form className="form-control w-96 mt-12 p-10 card bg-base-200">
@@ -153,33 +175,44 @@ export const Teacher = () => {
       </select>
       <fieldset className="border border-solid border-secondary rounded-md p-4 mt-4">
         <legend className="text-center font-bold">Generuj Email i Hasło</legend>
-      <label className="form-control items-center "> 
-        <label className="label input-group">
-          <span className="label-text font-bold">Email</span>
-        <input
-          className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
-          type="text"
-          name="Password"
-          disabled={true}
-          defaultValue={teacher.email}
-          />
+        <label className="form-control items-center ">
+          <label className="label input-group">
+            <span className="label-text font-bold">Email</span>
+            <input
+              className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
+              type="text"
+              name="Password"
+              disabled={true}
+              defaultValue={teacher.email}
+            />
           </label>
-      <label className="label input-group">
-          <span className="label-text font-bold"> Hasło</span>
-        <input
-          className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
-          type="text"
-          name="Password"
-          disabled={true}
-          defaultValue={teacher.password}
-        />
+          <label className="label input-group">
+            <span className="label-text font-bold"> Hasło</span>
+            <input
+              className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
+              type="text"
+              name="Password"
+              disabled={true}
+              defaultValue={teacher.password}
+            />
           </label>
-          <button className={`btn ${canBeGenerated ? 'btn-secondary' : 'btn-disabled'} mt-2`} onClick={generateEmailAndPassword}>Generuj</button>
-      </label>
+          <button
+            className={`btn ${
+              canBeGenerated ? "btn-secondary" : "btn-disabled"
+            } mt-2`}
+            onClick={generateEmailAndPassword}
+          >
+            Generuj
+          </button>
+        </label>
       </fieldset>
       <div className="flex items-center justify-end w-full">
         <button
-          className={`btn ${teacher.password===""&&teacher.email==="" ? 'btn-disabled':'btn-primary'} mt-4 self-end`}
+          className={`btn ${
+            teacher.password === "" && teacher.email === ""
+              ? "btn-disabled"
+              : "btn-primary"
+          } mt-4 self-end`}
           onClick={(e) => handleSubmit(e)}
         >
           Dodaj
@@ -188,4 +221,3 @@ export const Teacher = () => {
     </form>
   );
 };
-

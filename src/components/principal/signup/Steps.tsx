@@ -3,7 +3,7 @@ import { StepsProps } from "../../../utils/interfaces";
 
 const Steps: React.FC<StepsProps> = ({ currentStep }) => {
   return (
-    <ul className=" hidden md:visible steps steps-vertical md:steps-horizontal transition-all duration-1000 ">
+    <ul className="hidden md:visible steps steps-vertical md:steps-horizontal transition-all duration-1000 ">
       <li
         className={`step  ${
           currentStep >= 1 && "step-primary cursor-pointer"
