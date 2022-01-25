@@ -82,7 +82,7 @@ function App() {
     return <Loader />;
   } else {
     return (
-      <div className="">
+      <div>
         <BrowserRouter>
           <LayoutWrapper>
             <Routes>

@@ -197,7 +197,7 @@ export const Teacher = () => {
             />
           </label>
           <label className="label input-group">
-            <span className="label-text font-bold"> Hasło</span>
+            <span className="label-text font-bold">Hasło</span>
             <input
               className="input-info input input-disabled  !bg-secondary justify-center items-center w-full"
               type="text"
