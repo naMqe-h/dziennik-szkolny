@@ -10,31 +10,30 @@ import {
   generateEmail,
 } from "../../utils/utils";
 import { toast } from "react-toastify";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useAddDocument } from "../../hooks/useAddDocument";
-import { addNewStudent } from "../../redux/userSlice";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
-
+const defaultState: StudentData = {
+  firstName: "",
+  lastName: "",
+  gender: "Mężczyzna",
+  password: "",
+  pesel: "",
+  birth: "",
+  class: "",
+  email: "",
+};
 export const Student = () => {
   const { updateCounter } = useUpdateInfoCounter();
-  const dispatch = useDispatch();
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.user?.schoolData);
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);
   const { addDocument } = useAddDocument();
-  const [student, setStudent] = useState<StudentData>({
-    firstName: "",
-    lastName: "",
-    gender: "Mężczyzna",
-    password: "",
-    pesel: "",
-    birth: "",
-    class: "",
-    email: "",
-  });
+  const [student, setStudent] = useState<StudentData>(defaultState);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
   useEffect(() => {
@@ -54,10 +53,12 @@ export const Student = () => {
       };
     });
   };
-
+  function clearForm() {
+    setStudent(defaultState);
+  }
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-
+    if (isAdding) return;
     if (student.firstName.length === 0) {
       return toast.error("Podaj Imię", { autoClose: 2000 });
     }
@@ -78,14 +79,15 @@ export const Student = () => {
         autoClose: 2000,
       });
     }
-
+    setIsAdding(true);
     const objWrapper: StudentsDataFromFirebase = {
       [student.email]: { ...student, grades: {} },
     };
 
     addDocument(domain as string, "students", objWrapper);
     updateCounter(domain as string, "studentsCount");
-    dispatch(addNewStudent(objWrapper));
+    clearForm();
+    setIsAdding(false);
     return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
   };
 
@@ -227,7 +229,11 @@ export const Student = () => {
       </fieldset>
       <div className="flex items-center justify-end w-full">
         <button
-          className="btn btn-primary mt-4 self-end"
+          className={`btn ${
+            student.email !== "" && student.password !== ""
+              ? "btn-primary"
+              : "btn-disabled"
+          } mt-4 self-end`}
           onClick={(e) => handleSubmit(e)}
         >
           Dodaj

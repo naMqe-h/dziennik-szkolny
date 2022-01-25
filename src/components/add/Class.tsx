@@ -1,37 +1,35 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
   SingleTeacherData,
   ClassesDataFromFirebase,
-  updateTeacherClass,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { useAddDocument } from "../../hooks/useAddDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
-import { addNewClass } from "../../redux/userSlice";
 
 type classCredentials = {
   name: string;
   profile: string;
   classTeacher: string;
 };
-
+const defaultState: classCredentials = {
+  name: "",
+  profile: "",
+  classTeacher: "",
+};
 export const Class = () => {
   const { addDocument } = useAddDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const dispatch = useDispatch();
-
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.user?.schoolData);
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const domain = schoolData?.information?.domain;
 
-  const [classCredential, setClassCredential] = useState<classCredentials>({
-    name: "",
-    profile: "",
-    classTeacher: "",
-  });
+  const [classCredential, setClassCredential] =
+    useState<classCredentials>(defaultState);
   useEffect(() => {
     if (schoolData?.teachers) {
       const teachersData = Object.values(
@@ -43,7 +41,9 @@ export const Class = () => {
       );
     }
   }, [schoolData?.classes]);
-
+  function clearForm() {
+    setClassCredential(defaultState);
+  }
   const handleChange = (name: string, value: string) => {
     setClassCredential((prevState) => {
       return {
@@ -54,7 +54,7 @@ export const Class = () => {
   };
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-
+    if (isAdding) return;
     if (classCredential.name.length === 0) {
       return toast.error("Podaj nazwę klasy", { autoClose: 2000 });
     }
@@ -72,7 +72,7 @@ export const Class = () => {
     if (classCredential.classTeacher.length === 0) {
       return toast.error("Wybierz wychowawcę", { autoClose: 2000 });
     }
-
+    setIsAdding(true);
     const { name, profile, classTeacher } = classCredential;
     const fullName = name + "-" + profile;
 
@@ -89,16 +89,9 @@ export const Class = () => {
 
     updateCounter(domain as string, "classesCount");
 
-    // update state
-    dispatch(addNewClass(objWrapper));
-
     // reset form
-    setClassCredential({
-      name: "",
-      profile: "",
-      classTeacher: "",
-    });
-
+    clearForm();
+    setIsAdding(false);
     return toast.success("Udało ci się dodać klasę 😀", { autoClose: 2000 });
   };
 

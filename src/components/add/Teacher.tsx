@@ -6,17 +6,15 @@ import {
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { generateEmail, generatePassword } from "../../utils/utils";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useAddDocument } from "../../hooks/useAddDocument";
-import { addNewTeacher } from "../../redux/userSlice";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
-import { updateDoc } from "firebase/firestore";
 
 export const Teacher = () => {
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
   const { addDocument } = useAddDocument();
-  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
@@ -27,7 +25,16 @@ export const Teacher = () => {
     email: "",
     password: "",
   });
-
+  function clearForm() {
+    setTeacher({
+      firstName: "",
+      lastName: "",
+      gender: "Mężczyzna",
+      subject: subjects[0],
+      email: "",
+      password: "",
+    });
+  }
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   useEffect(() => {
@@ -73,6 +80,7 @@ export const Teacher = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (isAdding) return;
     if (teacher.firstName.length === 0 && teacher.lastName.length === 0) {
       return toast.error("Podaj wszystkie dane", { autoClose: 2000 });
     }
@@ -86,6 +94,7 @@ export const Teacher = () => {
     //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
     // const newObj:single
     if (user.schoolData) {
+      setIsAdding(true);
       const objWrapper: TeachersDataFromFirebase = {
         [teacher.email]: { ...teacher, classTeacher: "" },
       };
@@ -108,7 +117,8 @@ export const Teacher = () => {
         },
       });
 
-      dispatch(addNewTeacher(objWrapper));
+      clearForm();
+      setIsAdding(false);
       toast.success("Udało ci się dodać nowego nauczyciela", {
         autoClose: 2000,
       });

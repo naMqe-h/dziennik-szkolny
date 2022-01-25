@@ -3,16 +3,16 @@ import { Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FormData } from "../utils/interfaces";
 import { useLogin } from "../hooks/useLogin";
-import { useDispatch } from "react-redux";
-import { setUserType } from "../redux/userSlice";
 import nProgress from "nprogress";
 import { validateEmail } from "../utils/utils";
 import { useAuthStatus } from "../hooks/useAuthStatus";
+import { useDispatch } from "react-redux";
+import { setUserType } from "../redux/userSlice";
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const { login } = useLogin();
   const { isLogged, loading } = useAuthStatus();
-  const dispatch = useDispatch();
   const [userData, setUserData] = useState<FormData>({
     email: "",
     password: "",

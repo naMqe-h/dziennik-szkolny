@@ -3,32 +3,32 @@ import {
   SchoolSubjectsDataFromFirebase,
   SubjectData,
 } from "../../utils/interfaces";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
-import { addNewSubject } from "../../redux/userSlice";
 import { useAddDocument } from "../../hooks/useAddDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 type OptionsType = { value: string; label: string }[];
 interface SubjectDataForm extends Omit<SubjectData, "teachers"> {
   teachers: OptionsType;
 }
+const defaultState: SubjectDataForm = {
+  includedAvg: true,
+  name: "",
+  teachers: [],
+};
 export const Subject: React.FC = () => {
   const { addDocument } = useAddDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const dispatch = useDispatch();
   const teachers = useSelector((state: RootState) =>
     state.user.schoolData?.teachers !== undefined
       ? state.user.schoolData.teachers
       : {}
   );
   const schoolData = useSelector((state: RootState) => state.user.schoolData);
-  const [subjectData, setSubjectData] = useState<SubjectDataForm>({
-    includedAvg: true,
-    name: "",
-    teachers: [],
-  });
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
   const [options, setOptions] = useState<OptionsType>([]);
   useEffect(() => {
     if (Object.keys(teachers).length !== 0) {
@@ -51,6 +51,7 @@ export const Subject: React.FC = () => {
   }
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
+    if (isAdding) return;
     if (subjectData.name.length === 0)
       return toast.error("Podaj nazwe przedmiotu", { autoClose: 2000 });
     //Najpierw sprawdzam opcje gdy dyrektor wybrał brak nauczyciela
@@ -67,6 +68,7 @@ export const Subject: React.FC = () => {
         });
       }
     }
+    setIsAdding(true);
     const teachers = Object.values(subjectData.teachers).map((x) => x.value);
     const wrapperObj: SubjectData = {
       name: subjectData.name,
@@ -76,15 +78,18 @@ export const Subject: React.FC = () => {
     const objForFirebase: SchoolSubjectsDataFromFirebase = {
       [nameWithoutWhitespace]: wrapperObj,
     };
-
     addDocument(
       schoolData?.information.domain as string,
       "subjects",
       objForFirebase
     );
+    clearForm();
     updateCounter(schoolData?.information.domain as string, "subjectsCount");
-    dispatch(addNewSubject({ [nameWithoutWhitespace]: wrapperObj }));
     toast.success("Udało ci się dodać przedmiot", { autoClose: 2000 });
+    setIsAdding(false);
+  }
+  function clearForm() {
+    setSubjectData(defaultState);
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, checked } = e.target;
