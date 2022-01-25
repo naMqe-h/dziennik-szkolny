@@ -21,6 +21,7 @@ import { CombinedPrincipalData, userType } from "./utils/interfaces";
 import { Loader } from "./loader/Loader";
 import { Classes } from "./pages/Classes";
 import { Settings } from "./pages/Settings";
+import { SingleClass } from "./components/principal/viewClasses/SingleClass";
 
 function App() {
   const {} = useRealTimeCollection();
@@ -123,6 +124,14 @@ function App() {
                 element={
                   <ProtectedRoute loading={loading}>
                     <Classes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/class/:id"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <SingleClass />
                   </ProtectedRoute>
                 }
               />

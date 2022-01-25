@@ -74,7 +74,7 @@ export const Class = () => {
     }
     setIsAdding(true);
     const { name, profile, classTeacher } = classCredential;
-    const fullName = name + "-" + profile;
+    const fullName = name + " - " + profile;
 
     const objWrapper: ClassesDataFromFirebase = {
       [name]: { ...classCredential, fullName, subjects: [], students: [] },
