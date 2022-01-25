@@ -103,7 +103,7 @@ export const Teacher = () => {
         "teachers",
         objWrapper
       );
-      updateCounter(user.schoolData.information.domain, "teachersCount");
+      updateCounter(user.schoolData.information.domain, "teachersCount", 'increment');
       //Dodaje tutaj nauczyciela do przedmiotu
       const domain = user.schoolData.information.domain;
       const { subject, email } = teacher;

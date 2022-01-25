@@ -93,7 +93,7 @@ export const Student = () => {
           students: [...previousStudents, student.email],
         },
       });
-      updateCounter(domain as string, "studentsCount");
+      updateCounter(domain as string, "studentsCount", 'increment');
       clearForm();
       setIsAdding(false);
       return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });

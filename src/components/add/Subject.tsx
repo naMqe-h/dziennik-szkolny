@@ -84,7 +84,7 @@ export const Subject: React.FC = () => {
       objForFirebase
     );
     clearForm();
-    updateCounter(schoolData?.information.domain as string, "subjectsCount");
+    updateCounter(schoolData?.information.domain as string, "subjectsCount", 'increment');
     toast.success("Udało ci się dodać przedmiot", { autoClose: 2000 });
     setIsAdding(false);
   }
