@@ -5,6 +5,7 @@ import { Card } from "./dashboard/Card";
 import { RiNumbersLine } from "react-icons/ri";
 import { BsJournalBookmark } from "react-icons/bs";
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 export const DashboardView = () => {
   return (
@@ -17,14 +18,14 @@ export const DashboardView = () => {
         <Card text="Oceny">
           <RiNumbersLine size={70} />
         </Card>
-
-        <Card
-          text="Klasy"
-          background="radial-gradient(circle, rgba(109,58,156,1) 0%, rgba(33,33,33,1) 100%)"
-        >
-          <BsJournalBookmark size={70} />
-        </Card>
-
+        <Link to={"/classes"}>
+          <Card
+            text="Klasy"
+            background="radial-gradient(circle, rgba(109,58,156,1) 0%, rgba(33,33,33,1) 100%)"
+          >
+            <BsJournalBookmark size={70} />
+          </Card>
+        </Link>
         <Card
           text="Plany Lekcji"
           background="radial-gradient(circle, rgba(81,168,0,1) 0%, rgba(33,33,33,1) 100%)"

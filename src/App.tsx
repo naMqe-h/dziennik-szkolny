@@ -19,6 +19,8 @@ import { RootState } from "./redux/store";
 import { setUserData, setUserType, setUserAuth } from "./redux/userSlice";
 import { CombinedPrincipalData, userType } from "./utils/interfaces";
 import { Loader } from "./loader/Loader";
+import { ViewClases } from "./components/principal/viewClasses/ViewClasses";
+import { Settings } from "./components/settings/Settings";
 
 function App() {
   const {} = useRealTimeCollection();
@@ -112,7 +114,15 @@ function App() {
                 path="/settings"
                 element={
                   <ProtectedRoute loading={loading}>
-                    <p>Settings</p>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classes"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <ViewClases />
                   </ProtectedRoute>
                 }
               />
