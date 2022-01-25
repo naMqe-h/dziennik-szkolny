@@ -47,12 +47,16 @@ export const ViewClases: React.FC = () => {
         await updateDoc(doc(db, domain, "classes"), {
           [removedClassData.name]: deleteField(),
         });
-        addDocument(domain, "teachers", {
-          [teacherEmail]: {
-            classTeacher: "",
-          },
-        }),
-          toast.success("Udało ci się usunąc Klasę");
+        try {
+          addDocument(domain, "teachers", {
+            [teacherEmail]: {
+              classTeacher: "",
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        toast.success("Udało ci się usunąc Klasę");
       }
     }
   }
