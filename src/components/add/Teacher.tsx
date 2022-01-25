@@ -103,26 +103,24 @@ export const Teacher = () => {
         "teachers",
         objWrapper
       );
-      const teachersSubjectArray =
-        user.schoolData.subjects[teacher.subject].teachers;
-      updateCounter(user.schoolData.information.domain, "teachersCount");
+      updateCounter(user.schoolData.information.domain, "teachersCount", 'increment');
       //Dodaje tutaj nauczyciela do przedmiotu
       const domain = user.schoolData.information.domain;
       const { subject, email } = teacher;
       const previousTeachers =
-        user.schoolData.subjects[teacher.subject].teachers;
+        user.schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
+          .teachers;
       addDocument(domain as string, "subjects", {
         [subject]: {
           teachers: [...previousTeachers, email],
         },
       });
-
-      clearForm();
-      setIsAdding(false);
       toast.success("Udało ci się dodać nowego nauczyciela", {
         autoClose: 2000,
       });
     }
+    clearForm();
+    setIsAdding(false);
   };
   return (
     <form className="form-control w-96 mt-12 p-10 card bg-base-200">

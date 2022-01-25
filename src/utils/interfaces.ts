@@ -171,3 +171,8 @@ export interface updateSubjectTeachers {
     teachers: string[];
   };
 }
+export interface updateClassStudents {
+  [key: string]: {
+    students: string[];
+  };
+}

@@ -87,7 +87,7 @@ export const Class = () => {
       },
     });
 
-    updateCounter(domain as string, "classesCount");
+    updateCounter(domain as string, "classesCount", 'increment');
 
     // reset form
     clearForm();

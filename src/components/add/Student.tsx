@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  CombinedSchoolInformationFromFirebase,
   genderType,
   StudentData,
   StudentsDataFromFirebase,
@@ -56,6 +57,7 @@ export const Student = () => {
   function clearForm() {
     setStudent(defaultState);
   }
+
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (isAdding) return;
@@ -83,12 +85,19 @@ export const Student = () => {
     const objWrapper: StudentsDataFromFirebase = {
       [student.email]: { ...student, grades: {} },
     };
-
-    addDocument(domain as string, "students", objWrapper);
-    updateCounter(domain as string, "studentsCount");
-    clearForm();
-    setIsAdding(false);
-    return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
+    if (schoolData) {
+      const previousStudents = schoolData.classes[student.class].students;
+      addDocument(domain as string, "students", objWrapper);
+      addDocument(domain as string, "classes", {
+        [student.class]: {
+          students: [...previousStudents, student.email],
+        },
+      });
+      updateCounter(domain as string, "studentsCount", 'increment');
+      clearForm();
+      setIsAdding(false);
+      return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
+    }
   };
 
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {
