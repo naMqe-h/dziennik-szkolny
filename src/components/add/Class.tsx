@@ -28,13 +28,11 @@ export const Class = () => {
 
   const domain = schoolData?.information?.domain;
 
-  const [classCredential, setClassCredential] =
-    useState<classCredentials>(defaultState);
+  const [classCredential, setClassCredential] = useState<classCredentials>(defaultState);
+
   useEffect(() => {
     if (schoolData?.teachers) {
-      const teachersData = Object.values(
-        schoolData?.teachers
-      ) as SingleTeacherData[];
+      const teachersData = Object.values(schoolData?.teachers) as SingleTeacherData[];
 
       setTeachers(
         teachersData.filter((teacher) => teacher.classTeacher.length === 0)
@@ -42,9 +40,11 @@ export const Class = () => {
     }
     // eslint-disable-next-line 
   }, [schoolData?.classes]);
+
   function clearForm() {
     setClassCredential(defaultState);
   }
+
   const handleChange = (name: string, value: string) => {
     setClassCredential((prevState) => {
       return {
@@ -53,6 +53,7 @@ export const Class = () => {
       };
     });
   };
+  
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (isAdding) return;

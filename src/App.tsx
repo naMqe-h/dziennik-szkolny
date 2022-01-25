@@ -21,7 +21,7 @@ import { CombinedPrincipalData, userType } from "./utils/interfaces";
 import { Loader } from "./loader/Loader";
 import { Classes } from "./pages/Classes";
 import { Settings } from "./pages/Settings";
-import { SingleClass } from "./components/principal/viewClasses/SingleClass";
+import { SingleClass } from "./pages/SingleClass";
 
 function App() {
   // eslint-disable-next-line 
@@ -126,7 +126,7 @@ function App() {
                 }
               />
               <Route
-                path="/class/:id"
+                path="/class/:id/:subpage"
                 element={
                   <ProtectedRoute loading={loading}>
                     <SingleClass />

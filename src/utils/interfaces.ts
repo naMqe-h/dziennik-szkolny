@@ -87,6 +87,7 @@ export interface StudentData {
 //?Interfejs Pojedynczej oceny
 export interface SchoolGrade {
   grade: number;
+  weight: number;
   topic: string;
   date: string;
   addedBy: string;
