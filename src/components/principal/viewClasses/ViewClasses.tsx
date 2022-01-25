@@ -1,3 +1,3 @@
 export const ViewClases: React.FC = () => {
-  return <div className="">Klasy</div>;
+  return <div className=""></div>;
 };
