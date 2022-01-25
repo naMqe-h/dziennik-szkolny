@@ -103,8 +103,6 @@ export const Teacher = () => {
         "teachers",
         objWrapper
       );
-      const teachersSubjectArray =
-        user.schoolData.subjects[teacher.subject].teachers;
       updateCounter(user.schoolData.information.domain, "teachersCount");
       //Dodaje tutaj nauczyciela do przedmiotu
       const domain = user.schoolData.information.domain;
@@ -116,13 +114,12 @@ export const Teacher = () => {
           teachers: [...previousTeachers, email],
         },
       });
-
-      clearForm();
-      setIsAdding(false);
       toast.success("Udało ci się dodać nowego nauczyciela", {
         autoClose: 2000,
       });
     }
+    clearForm();
+    setIsAdding(false);
   };
   return (
     <form className="form-control w-96 mt-12 p-10 card bg-base-200">

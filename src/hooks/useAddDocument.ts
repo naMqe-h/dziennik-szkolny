@@ -10,6 +10,7 @@ import {
   SchoolSubjectsDataFromFirebase as SSDFF,
   updateTeacherClass as UTC,
   updateSubjectTeachers as UST,
+  updateClassStudents as UCS,
 } from "../utils/interfaces";
 import { toast } from "react-toastify";
 
@@ -18,7 +19,7 @@ export const useAddDocument = () => {
   const addDocument = async (
     c: string,
     id: string,
-    data: CPD | CSIFF | TDFF | SDFF | CDFF | SSDFF | UTC | UST
+    data: CPD | CSIFF | TDFF | SDFF | CDFF | SSDFF | UTC | UST | UCS
   ) => {
     await setDoc(doc(db, c, id), data, { merge: true }).catch(
       (err: FirestoreError) => {
