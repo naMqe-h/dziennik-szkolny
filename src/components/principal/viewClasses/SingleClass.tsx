@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { RootState } from "../../../redux/store"
-import { SingleClassData, StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { SingleClassData } from "../../../utils/interfaces"
 import { FcConferenceCall } from 'react-icons/fc'
 import { SingleClassTable } from "./SingleClassTable"
 import { toast } from "react-toastify"
@@ -27,13 +27,14 @@ export const SingleClass = () => {
             }
             setChecked(true)
         }
-    }, [])
+    }, [classes, id])
 
     useEffect(() => {
         if(checked && !singleClass) {
             toast.error(`Klasa "${id}" nie istnieje`, { autoClose: 2000 })
             navigate('/')
         }
+        // eslint-disable-next-line 
     }, [checked])
 
     useEffect(() => {
@@ -56,6 +57,7 @@ export const SingleClass = () => {
                 }
             }
         }
+        // eslint-disable-next-line 
     }, [singleClass])
 
     return (

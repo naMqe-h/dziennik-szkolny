@@ -24,6 +24,7 @@ import { Settings } from "./pages/Settings";
 import { SingleClass } from "./components/principal/viewClasses/SingleClass";
 
 function App() {
+  // eslint-disable-next-line 
   const {} = useRealTimeCollection();
   const { getDocument, document } = useDocument();
   const [loading, setLoading] = useState(true);
@@ -58,16 +59,13 @@ function App() {
     } else {
       const unsub = onAuthStateChanged(auth, async (user) => {
         if (user) {
-          //odczytuje domene i typ uzytkownika z displayName
-          const domain = user.displayName?.split("~")[0];
+          //odczytuje typ uzytkownika z displayName
           const type = user.displayName?.split("~")[1];
           //zapisuje uzytkownika z auth
           dispatch(setUserType(type as userType));
           dispatch(setUserAuth(user));
           //pobieram z bazy danych informacje o uzytkowniku i kolekcję szkoły
           await getDocument("principals", user.uid);
-          // getCollectionSub(domain as string);
-
           nProgress.done();
         } else {
           setLoading(false);

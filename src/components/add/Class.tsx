@@ -40,6 +40,7 @@ export const Class = () => {
         teachersData.filter((teacher) => teacher.classTeacher.length === 0)
       );
     }
+    // eslint-disable-next-line 
   }, [schoolData?.classes]);
   function clearForm() {
     setClassCredential(defaultState);
