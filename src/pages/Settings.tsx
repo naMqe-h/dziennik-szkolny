@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Profile } from "../components/settings/Profile";
 import { RootState } from "../redux/store";
-import { CombinedPrincipalData, StudentData, StudentsDataFromFirebase, TeacherData, TeachersDataFromFirebase, userType } from "../utils/interfaces";
+import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, SchoolInformation, StudentData, StudentsDataFromFirebase, TeacherData, TeachersDataFromFirebase, userType } from "../utils/interfaces";
 import { useAddDocument } from "../hooks/useAddDocument";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ export const Settings = () => {
   const userType = useSelector((state: RootState) => state.user.userType);
   const userData = useSelector((state: RootState) => state.user.data);
   const userAuth = useSelector((state: RootState) => state.user.user);
+  const schoolData = useSelector((state: RootState) => state.user.schoolData?.information)
   const { type } = useParams();
   const { addDocument } = useAddDocument();
   const navigate = useNavigate()
@@ -57,6 +58,26 @@ export const Settings = () => {
     
 
   }
+
+  const handleSchoolSubmit = (data: SchoolInformation) => {
+    if(!userAuth || !userType){
+      return toast.error("Brak obiektu auth lub typu użytkownika", { autoClose: 2000 });
+    } else {
+      const uid = userAuth?.uid
+      const dataForPrincipal = {
+        ...userData,
+        schoolInformation: data
+      }
+      const dataForSchool = {
+        ...schoolData,
+        ...data
+      }
+      addDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
+
+      addDocument(data.domain, "information", dataForSchool as CombinedSchoolInformationFromFirebase)
+    }
+
+  }
   
   return (
     <div className="h-full m-4">
@@ -86,7 +107,7 @@ export const Settings = () => {
 
               
               {type === "profile" && <Profile userType={userType as userType} userData={userData as CombinedPrincipalData} save={handleProfileSubmit}/>}
-              {type === "school" && <School />}
+              {type === "school" && <School schoolData={schoolData as CombinedSchoolInformationFromFirebase} save={handleSchoolSubmit}/>}
               {type === "plan" && <Plan />}
               
 

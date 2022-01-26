@@ -171,7 +171,6 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
 
           {userType === "principals" ? (
             <>
-              {/* <div className="divider col-span-2" /> */}
               <span className="card-title text-center md:col-span-2 mt-10">
                 Adres
               </span>
