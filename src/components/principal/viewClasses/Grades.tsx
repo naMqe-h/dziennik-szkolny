@@ -11,7 +11,6 @@ export const Grades = () => {
                         <thead>
                             <tr>
                                 <th>Nazwa przedmiotu</th> 
-                                <th>Nauczyciel</th> 
                                 <th>Oceny</th> 
                                 <th>Średnia ocen</th>
                             </tr>
@@ -19,13 +18,6 @@ export const Grades = () => {
                         <tbody>
                             <tr>
                                 <th>Matematyka</th> 
-                                <td>Ktos test</td> 
-                                <td>5 4 5 6 3</td>
-                                <td className="text-success">4.90</td>
-                            </tr>
-                            <tr>
-                                <th>Matematyka</th> 
-                                <td>Ktos test</td> 
                                 <td>5 4 5 6 3</td>
                                 <td className="text-success">4.90</td>
                             </tr>

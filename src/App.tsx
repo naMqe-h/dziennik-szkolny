@@ -72,7 +72,7 @@ function App() {
           nProgress.done();
         }
       });
-      unsub();
+      unsub()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
