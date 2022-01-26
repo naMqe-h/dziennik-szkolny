@@ -24,7 +24,7 @@ import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
 
 function App() {
-  // eslint-disable-next-line 
+  // eslint-disable-next-line
   const {} = useRealTimeCollection();
   const { getDocument, document } = useDocument();
   const [loading, setLoading] = useState(true);
@@ -34,10 +34,10 @@ function App() {
 
   //zapisauje pobrane dane o zalogowanym uzytkowniku
   useEffect(() => {
-      console.log(document, "1")
-      dispatch(setUserData(document as CombinedPrincipalData));
-      setLoading(false);
-      nProgress.done();
+    console.log(document, "1");
+    dispatch(setUserData(document as CombinedPrincipalData));
+    setLoading(false);
+    nProgress.done();
   }, [document]);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function App() {
           nProgress.done();
         }
       });
-      unsub()
+      unsub();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

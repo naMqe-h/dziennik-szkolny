@@ -62,7 +62,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                 >
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
-                  <td>{findClassTeacherName(item.classTeacher)}</td>
+                  <td>{item.classTeacher}</td>
                   <td>{item.profile}</td>
                   <td>{item.students.length}</td>
                   <td>
