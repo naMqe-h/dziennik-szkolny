@@ -37,7 +37,7 @@ function App() {
     if (document) {
       dispatch(setUserData(document as CombinedPrincipalData));
     }
-  }, [document, dispatch]);
+  }, [document]);
 
   useEffect(() => {
     console.log(state);
@@ -45,15 +45,16 @@ function App() {
 
   useEffect(() => {
     if (state.data && state.schoolData && state.user && state.userType) {
+      console.log(loading, state.user, state.data);
       setLoading(false);
       nProgress.done();
     }
   }, [state.data, state.userType, state.schoolData, state.user]);
-
   useEffect(() => {
     setLoading(true);
     nProgress.start();
     if (state.data && state.schoolData && state.user && state.userType) {
+      console.log(loading, state.user, state.data);
       setLoading(false);
       nProgress.done();
     } else {
@@ -68,6 +69,7 @@ function App() {
           await getDocument("principals", user.uid);
           nProgress.done();
         } else {
+          console.log(loading, state.user, state.data);
           setLoading(false);
           nProgress.done();
         }
@@ -141,8 +143,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login loading={loading} />} />
+              <Route path="/signup" element={<Signup loading={loading} />} />
             </Routes>
           </LayoutWrapper>
         </BrowserRouter>
