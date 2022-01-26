@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   SchoolSubjectsDataFromFirebase,
+  SingleTeacherData,
   SubjectData,
 } from "../../utils/interfaces";
 import { useSelector } from "react-redux";
@@ -21,41 +22,29 @@ const defaultState: SubjectDataForm = {
 export const Subject: React.FC = () => {
   const { addDocument } = useAddDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const teachers = useSelector((state: RootState) =>
-    state.user.schoolData?.teachers !== undefined
-      ? state.user.schoolData.teachers
-      : {}
-  );
+  //TODO Dodać filtrowanie
   const schoolData = useSelector((state: RootState) => state.user.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
-  const [options, setOptions] = useState<OptionsType>([]);
-  useEffect(() => {
-    if (Object.keys(teachers).length !== 0) {
-      const temp = Object.values(teachers).map((x) => {
-        return {
-          value: `${x.firstName} ${x.lastName}`,
-          label: `${x.firstName} ${x.lastName}`,
-          disabled: false,
-        };
-      });
-      setOptions((prev) => {
-        return [...prev, ...temp];
-      });
-    }
-  }, [teachers]);
-  function handleSelectChange(currentSelected: OptionsType) {
-    setSubjectData((prev) => {
-      return { ...prev, teachers: currentSelected };
-    });
-  }
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
+    const nameWithoutWhitespace = subjectData.name.replaceAll(/\s+/g, "");
     if (isAdding) return;
     if (subjectData.name.length === 0)
       return toast.error("Podaj nazwe przedmiotu", { autoClose: 2000 });
-    //Najpierw sprawdzam opcje gdy dyrektor wybrał brak nauczyciela
-    const nameWithoutWhitespace = subjectData.name.replaceAll(/\s+/g, "");
+    if (schoolData?.subjects) {
+      if (
+        Object.keys(schoolData?.subjects).some(
+          (x) =>
+            x.toLowerCase().replaceAll(/\s+/g, "") ===
+            nameWithoutWhitespace.toLowerCase()
+        )
+      ) {
+        return toast.error("Podaj nazwa przedmiotu jest już zajęta", {
+          autoClose: 2000,
+        });
+      }
+    }
 
     if (schoolData?.subjects) {
       if (
@@ -69,10 +58,9 @@ export const Subject: React.FC = () => {
       }
     }
     setIsAdding(true);
-    const teachers = Object.values(subjectData.teachers).map((x) => x.value);
     const wrapperObj: SubjectData = {
       name: subjectData.name,
-      teachers: teachers,
+      teachers: [],
       includedAvg: subjectData.includedAvg,
     };
     const objForFirebase: SchoolSubjectsDataFromFirebase = {
@@ -84,7 +72,11 @@ export const Subject: React.FC = () => {
       objForFirebase
     );
     clearForm();
-    updateCounter(schoolData?.information.domain as string, "subjectsCount", 'increment');
+    updateCounter(
+      schoolData?.information.domain as string,
+      "subjectsCount",
+      "increment"
+    );
     toast.success("Udało ci się dodać przedmiot", { autoClose: 2000 });
     setIsAdding(false);
   }
@@ -121,20 +113,6 @@ export const Subject: React.FC = () => {
             value={subjectData.name}
             placeholder="Name"
             onChange={handleChange}
-          />
-        </div>
-        <div className="form-control mb-4">
-          <label className="label">
-            <span className="label-text">Wybierz Nauczycieli</span>
-          </label>
-
-          <MultiSelect
-            options={options}
-            labelledBy="Select"
-            hasSelectAll={false}
-            onChange={handleSelectChange}
-            value={subjectData.teachers}
-            className={`text-black transition-opacity `}
           />
         </div>
         <div className="form-control mb-4">

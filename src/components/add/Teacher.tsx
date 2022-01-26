@@ -103,7 +103,11 @@ export const Teacher = () => {
         "teachers",
         objWrapper
       );
-      updateCounter(user.schoolData.information.domain, "teachersCount", 'increment');
+      updateCounter(
+        user.schoolData.information.domain,
+        "teachersCount",
+        "increment"
+      );
       //Dodaje tutaj nauczyciela do przedmiotu
       const domain = user.schoolData.information.domain;
       const { subject, email } = teacher;
@@ -111,7 +115,7 @@ export const Teacher = () => {
         user.schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
           .teachers;
       addDocument(domain as string, "subjects", {
-        [subject]: {
+        [subject.replaceAll(/\s/g, "")]: {
           teachers: [...previousTeachers, email],
         },
       });
