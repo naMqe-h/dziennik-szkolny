@@ -68,7 +68,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   <td>
                     <button
                       className="btn btn-primary"
-                      onClick={() => navigate(`class/${item.name}`)}
+                      onClick={() => navigate(`/class/${item.name}/info`)}
                     >
                       Wyświetl
                     </button>

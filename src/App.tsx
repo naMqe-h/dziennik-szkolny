@@ -34,9 +34,10 @@ function App() {
 
   //zapisauje pobrane dane o zalogowanym uzytkowniku
   useEffect(() => {
-    if (document) {
+      console.log(document, "1")
       dispatch(setUserData(document as CombinedPrincipalData));
-    }
+      setLoading(false);
+      nProgress.done();
   }, [document]);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function App() {
       nProgress.done();
     }
   }, [state.data, state.userType, state.schoolData, state.user]);
+
   useEffect(() => {
     setLoading(true);
     nProgress.start();
@@ -67,7 +69,6 @@ function App() {
           dispatch(setUserAuth(user));
           //pobieram z bazy danych informacje o uzytkowniku i kolekcję szkoły
           await getDocument("principals", user.uid);
-          nProgress.done();
         } else {
           console.log(loading, state.user, state.data);
           setLoading(false);
