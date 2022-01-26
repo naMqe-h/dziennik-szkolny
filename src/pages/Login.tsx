@@ -53,7 +53,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   };
 
   if (!loading) {
-    return state.user ? (
+    return state.user && state.data && state.schoolData && state.userType ? (
       <Navigate to="/" />
     ) : (
       <div className="mt-12 flex items-center justify-center">
