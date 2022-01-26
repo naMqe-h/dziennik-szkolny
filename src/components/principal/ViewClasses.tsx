@@ -1,10 +1,10 @@
 import { deleteField, doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FcSearch } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { db } from "../../firebase/firebase.config";
 import { useAddDocument } from "../../hooks/useAddDocument";
+import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
 import {
   SingleClassData,
@@ -18,6 +18,7 @@ interface ModalOptions {
 }
 export const ViewClases: React.FC = () => {
   const { addDocument } = useAddDocument();
+  const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.user);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -56,6 +57,7 @@ export const ViewClases: React.FC = () => {
               classTeacher: "",
             },
           });
+          updateCounter(domain, "classesCount", "decrement");
         } catch (error) {
           console.log(error);
         }

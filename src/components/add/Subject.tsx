@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   SchoolSubjectsDataFromFirebase,
-  SingleTeacherData,
   SubjectData,
 } from "../../utils/interfaces";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useAddDocument } from "../../hooks/useAddDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
@@ -22,7 +20,6 @@ const defaultState: SubjectDataForm = {
 export const Subject: React.FC = () => {
   const { addDocument } = useAddDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  //TODO Dodać filtrowanie
   const schoolData = useSelector((state: RootState) => state.user.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);

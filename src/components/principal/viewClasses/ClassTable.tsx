@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useAddDocument } from "../../../hooks/useAddDocument";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SingleClassData } from "../../../utils/interfaces";
 interface ClassTableProps {
