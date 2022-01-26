@@ -1,30 +1,19 @@
-export const Grades = () => {
+import { StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { SingleStudentGradeRow } from "./SingleStudentGradeRow";
+
+interface GradesProps {
+    studentsInfo: StudentsDataFromFirebase,
+    subjects: string[] | undefined
+}
+
+export const Grades: React.FC<GradesProps> = ({ studentsInfo, subjects }) => {
+    const students = Object.values(studentsInfo)
+
     return (
         <div className="overflow-x-auto">
-            <div className="collapse w-full border rounded-box border-base-300 collapse-arrow">
-                <input type="checkbox" /> 
-                <div className="collapse-title text-xl font-medium">
-                    1. Pawlik Mirosław
-                </div> 
-                <div className="collapse-content"> 
-                    <table className="table w-full">
-                        <thead>
-                            <tr>
-                                <th>Nazwa przedmiotu</th> 
-                                <th>Oceny</th> 
-                                <th>Średnia ocen</th>
-                            </tr>
-                        </thead> 
-                        <tbody>
-                            <tr>
-                                <th>Matematyka</th> 
-                                <td>5 4 5 6 3</td>
-                                <td className="text-success">4.90</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {students.map((student, index) => (
+                <SingleStudentGradeRow key={student.email} student={student} number={index + 1} />
+            ))}
         </div>
     )
 }

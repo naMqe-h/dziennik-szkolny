@@ -79,6 +79,10 @@ export const SingleClassView = () => {
                     <Link to={`/class/${id}/lesson-plan`} className="btn btn-secondary btn-outline mr-2">Plan Lekcji</Link>
                     <Link to={`/class/${id}/frequency`} className="btn btn-secondary btn-outline mr-2">Frekwencja</Link>
                     <Link to={`/class/${id}/grades`} className="btn btn-secondary btn-outline mr-2">Oceny</Link>
+                    <select className="select select-bordered select-secondary w-min max-w-xs">
+                        <option>Semestr 1</option> 
+                        <option>Semestr 2</option> 
+                    </select>
                 </div>
                 <div>
                     <button className="btn btn-primary btn-outline ml-2">Dodaj ucznia</button>
@@ -90,7 +94,7 @@ export const SingleClassView = () => {
             {subpage === 'subjects' && <p>przedmioty</p>}
             {subpage === 'lesson-plan' && <p>Plan lekcji</p>}
             {subpage === 'frequency' && <p>frekwencja</p>}
-            {subpage === 'grades' && <Grades />}
+            {subpage === 'grades' && <Grades studentsInfo={studentsInfo} subjects={singleClass?.subjects} />}
             
         </div>
     )
