@@ -74,7 +74,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
       if (formData.address.houseNumber.length === 0)
         return toast.error("Podaj poprawny Numer Domu", { autoClose: 2000 });
     }
-
+    
     console.log(formData);
   }
 
