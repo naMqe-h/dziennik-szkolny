@@ -87,6 +87,7 @@ export interface StudentData {
 //?Interfejs Pojedynczej oceny
 export interface SchoolGrade {
   grade: number;
+  weight: number;
   topic: string;
   date: string;
   addedBy: string;
@@ -124,6 +125,19 @@ export interface StudentsDataFromFirebase {
     class: string;
     grades: { [key: string]: SchoolGrade[] };
   };
+}
+
+//? Interfejs Danych z firebasa o pojedynczym uczniu
+export interface SingleStudentDataFromFirebase {
+  firstName: string;
+  lastName: string;
+  gender: genderType;
+  email: string;
+  password: string;
+  pesel: string;
+  birth: string;
+  class: string;
+  grades: { [key: string]: SchoolGrade[] };
 }
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
