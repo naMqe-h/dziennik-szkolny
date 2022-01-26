@@ -1,4 +1,4 @@
-import { SingleStudentDataFromFirebase } from "../../../utils/interfaces"
+import { SingleStudentDataFromFirebase } from "../../utils/interfaces"
 interface SingleClassTableRowProps {
     student: SingleStudentDataFromFirebase
     number: number

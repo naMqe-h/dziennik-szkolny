@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { RootState } from "../../../redux/store"
-import { SingleClassData } from "../../../utils/interfaces"
+import { RootState } from "../../redux/store"
+import { SingleClassData } from "../../utils/interfaces"
 import { FcConferenceCall } from 'react-icons/fc'
 import { SingleClassTable } from "./SingleClassTable"
 import { toast } from "react-toastify"
-import { Grades } from "./Grades"
+import { Grades } from "./grades/Grades"
 
 export const SingleClassView = () => {
     const { id, subpage } = useParams()
