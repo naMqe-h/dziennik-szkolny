@@ -82,13 +82,13 @@ export const Settings = () => {
   return (
     <div className="h-full m-4">
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-5 max-w-screen-2xl w-full rounded-box border bg-base-200">
-          <ul className="menu w-full p-3 rounded-tl-2xl rounded-bl-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-5 max-w-screen-2xl w-full rounded-box md:border bg-base-200">
+          <ul className="menu w-full p-3 rounded-tl-2xl rounded-bl-2xl hidden md:flex">
             <li className="menu-title">
               <span>Ustawienia</span>
             </li>
             <li className={`rounded-2xl ${activeRoute ==="profile" ? "bg-primary" : ""}`}>
-              <Link to="/settings/profile">Edytuj Profil</Link>
+              <Link to="/settings/profile">Edytuj profil</Link>
             </li>
             {userType ==="principals" ?<>
               <li className={`rounded-2xl ${activeRoute ==="school" ? "bg-primary" : ""}`}>
@@ -103,7 +103,36 @@ export const Settings = () => {
             </li>
             
           </ul>
-          <div className="col-span-4 bg-base-300 rounded-tr-2xl rounded-br-2xl min-h-[600px]">
+          
+          {/* // mobile view */}
+          <div className="collapse rounded-tl-2xl rounded-tr-2xl collapse-arrow md:hidden">
+            <input type="checkbox" /> 
+            <div className="collapse-title text-xl font-medium">
+              Ustawienia
+            </div> 
+            <div className="collapse-content"> 
+              <ul className="menu w-full p-3 rounded-tl-2xl rounded-bl-2xl flex">
+              <li className={`rounded-2xl ${activeRoute ==="profile" ? "bg-primary" : ""}`}>
+                <Link to="/settings/profile">Edytuj profil</Link>
+              </li>
+              {userType ==="principals" ?<>
+                <li className={`rounded-2xl ${activeRoute ==="school" ? "bg-primary" : ""}`}>
+                  <Link to="/settings/school">Ustawienia szkoły</Link>
+                </li><li className={`rounded-2xl ${activeRoute ==="plan" ? "bg-primary" : ""}`}>
+                <Link to="/settings/plan">Plan</Link>
+                </li>
+              </> : ""
+              }
+              <li className={activeRoute ==="" ? "" : ""}>
+                <a>Prywatność</a>
+              </li>
+              
+            </ul>
+            </div>
+          </div> 
+
+
+          <div className="col-span-4 bg-base-300 md:rounded-tr-2xl rounded-br-2xl rounded-bl-2xl md:rounded-bl-none min-h-[600px]">
 
               
               {type === "profile" && <Profile userType={userType as userType} userData={userData as CombinedPrincipalData} save={handleProfileSubmit}/>}
