@@ -1,12 +1,15 @@
 import { SignupPrincipalView } from "../components/principal/SignupPrincipalView";
-import { useAuthStatus } from "../hooks/useAuthStatus";
 import { Navigate } from "react-router-dom";
-
-export const Signup = () => {
-  const { isLogged, loading } = useAuthStatus();
-
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+interface SingUpProps {
+  loading: boolean;
+}
+export const Signup: React.FC<SingUpProps> = ({ loading }) => {
+  const state = useSelector((state: RootState) => state.user);
+  console.log(loading, state.user);
   if (!loading) {
-    return isLogged ? (
+    return state.user ? (
       <Navigate to="/" />
     ) : (
       <div>{<SignupPrincipalView />}</div>

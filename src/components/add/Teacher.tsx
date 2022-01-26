@@ -108,7 +108,8 @@ export const Teacher = () => {
       const domain = user.schoolData.information.domain;
       const { subject, email } = teacher;
       const previousTeachers =
-        user.schoolData.subjects[teacher.subject].teachers;
+        user.schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
+          .teachers;
       addDocument(domain as string, "subjects", {
         [subject]: {
           teachers: [...previousTeachers, email],
