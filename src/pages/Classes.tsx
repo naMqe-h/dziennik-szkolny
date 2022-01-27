@@ -1,4 +1,4 @@
-import { ViewClases } from "../components/principal/ViewClasses";
+import { ViewClases } from "../components/principal/ClassesView";
 
 export const Classes = () => {
   return (
