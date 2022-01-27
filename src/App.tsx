@@ -46,7 +46,6 @@ function App() {
 
   useEffect(() => {
     if (state.data && state.schoolData && state.user && state.userType) {
-      console.log(loading, state.user, state.data);
       setLoading(false);
       nProgress.done();
     }
