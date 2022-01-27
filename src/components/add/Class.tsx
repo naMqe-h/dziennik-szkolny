@@ -14,10 +14,20 @@ type classCredentials = {
   profile: string;
   classTeacher: string;
 };
+type classCredentialsErrors = {
+  name: {error:boolean, text: string};
+  profile: {error:boolean, text: string};
+  classTeacher: {error:boolean, text: string};
+};
 const defaultState: classCredentials = {
   name: "",
   profile: "",
   classTeacher: "",
+};
+const defaultErrorState: classCredentialsErrors  = {
+  name: {error:false, text:""},
+  profile: {error:false, text:""},
+  classTeacher: {error:false, text:""},
 };
 export const Class = () => {
   const { setDocument } = useSetDocument();
@@ -25,6 +35,8 @@ export const Class = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.user?.schoolData);
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
+
+  const [fieldErrors, setFieldErrors] = useState<classCredentialsErrors>(defaultErrorState);
 
   const domain = schoolData?.information?.domain;
 
@@ -41,6 +53,12 @@ export const Class = () => {
     // eslint-disable-next-line 
   }, [schoolData?.classes]);
 
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors]);
+
   function clearForm() {
     setClassCredential(defaultState);
   }
@@ -53,27 +71,46 @@ export const Class = () => {
       };
     });
   };
+
   
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (isAdding) return;
+  
+
+  const validateInputs = () => {
+    setFieldErrors(defaultErrorState);
+    let errors = false;
     if (classCredential.name.length === 0) {
-      return toast.error("Podaj nazwę klasy", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę klasy"}}
+      ))
+      errors = true;
     }
     if (schoolData?.classes) {
       const classes = Object.keys(schoolData?.classes);
       if (classes) {
         if (classes.some((x) => x === classCredential.name)) {
-          return toast.error("Podana klasa już istenije", { autoClose: 2000 });
+          setFieldErrors((prev) => (
+            {...prev, ['name']: {'error':true, 'text':"Podana klasa już istenije"}}))
+            errors = true;
         }
       }
     }
     if (classCredential.profile.length === 0) {
-      return toast.error("Podaj Profil", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['profile']: {'error':true, 'text':"Podaj Profil"}}))
+        errors = true;
     }
     if (classCredential.classTeacher.length === 0) {
-      return toast.error("Wybierz wychowawcę", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['classTeacher']: {'error':true, 'text':"Wybierz wychowawcę"}}))
+        errors = true;
     }
+    
+    return errors
+  }
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (isAdding || validateInputs() ) return;
     setIsAdding(true);
     const { name, profile, classTeacher } = classCredential;
     const fullName = name + " - " + profile;
@@ -98,23 +135,24 @@ export const Class = () => {
   };
 
   return (
-    <form className="form-control w-96 mt-12 p-10 card bg-base-200">
+    <form className="form-control w-96 mt-12 p-10 card bg-base-200" >
       <label className="label">
         <span className="label-text">Nazwa klasy</span>
       </label>
       <input
-        className="input"
+        className={`input ${fieldErrors.name.error ? "border-red-500" : ''}`}
         type="text"
         placeholder="Nazwa klasy"
         name="name"
         value={classCredential.name}
         onChange={(e) => handleChange(e.target.name, e.target.value)}
+
       />
       <label className="label">
         <span className="label-text">Profil</span>
       </label>
       <input
-        className="input"
+        className={`input ${fieldErrors.profile.error ? "border-red-500" : ''}`}
         type="text"
         placeholder="Profil (Mat-fiz)"
         name="profile"
@@ -126,7 +164,7 @@ export const Class = () => {
         <span className="label-text">Wychowawca</span>
       </label>
       <select
-        className="select select-bordered w-full max-w-xs"
+        className={`select select-bordered w-full max-w-xs ${fieldErrors.classTeacher.error ? "border-red-500" : ''}`}
         name="classTeacher"
         onChange={(e) => handleChange(e.target.name, e.target.value)}
         value={classCredential.classTeacher}

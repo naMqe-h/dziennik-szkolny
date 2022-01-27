@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+
+
 const defaultState: StudentData = {
   firstName: "",
   lastName: "",
@@ -24,6 +26,24 @@ const defaultState: StudentData = {
   class: "",
   email: "",
 };
+
+type StudentsCredentialsErrors = {
+  firstName: {error:boolean, text: string};
+  lastName: {error:boolean, text: string};
+  pesel: {error:boolean, text: string};
+  birth: {error:boolean, text: string};
+  class: {error:boolean, text: string};
+  emailAndPassword: {error:boolean, text: string};
+};
+const defaultErrorState:StudentsCredentialsErrors = {
+  firstName: {error:false, text: ''},
+  lastName: {error:false, text: ''},
+  pesel: {error:false, text: ''},
+  birth: {error:false, text: ''},
+  class: {error:false, text: ''},
+  emailAndPassword: {error:false, text: ''},
+};
+
 export const Student = () => {
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
@@ -36,11 +56,21 @@ export const Student = () => {
   const [student, setStudent] = useState<StudentData>(defaultState);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
+  const [fieldErrors, setFieldErrors] = useState<StudentsCredentialsErrors>(defaultErrorState);
+
   useEffect(() => {
     if (student.firstName.length >= 3 && student.lastName.length >= 3) {
       setCanBeGenerated(true);
+    } else{
+      setCanBeGenerated(false);
     }
   }, [student.firstName, student.lastName]);
+
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -53,33 +83,59 @@ export const Student = () => {
       };
     });
   };
+
+
   function clearForm() {
     setStudent(defaultState);
   }
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (isAdding) return;
+  const validateInputs = () => {
+    setFieldErrors(defaultErrorState);
+    let errors = false;
     if (student.firstName.length === 0) {
-      return toast.error("Podaj Imię", { autoClose: 2000 });
+     setFieldErrors((prev) => (
+        {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}
+      ))
+      errors = true;
     }
     if (student.lastName.length === 0) {
-      return toast.error("Podaj Nazwisko", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}
+      ))
+      errors = true;
     }
     if (student.birth.length === 0) {
-      return toast.error("Podaj Datę urodzenia", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['birth']: {'error':true, 'text':"Podaj Datę urodzenia"}}
+      ))
+      errors = true;
     }
     if (student.pesel.length === 0 || !validatePesel(student.pesel)) {
-      return toast.error("Niepoprawny pesel", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['pesel']: {'error':true, 'text':"Niepoprawny pesel"}}
+      ))
+      errors = true;
     }
     if (student.class.length === 0) {
-      return toast.error("Wybierz klasę", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['class']: {'error':true, 'text':"Wybierz klasę"}}
+      ))
+      errors = true;
     }
     if (student.email.length === 0 || student.password.length === 0) {
-      return toast.error("Brak wygenerowanego emaila lub hasła", {
-        autoClose: 2000,
-      });
+      setFieldErrors((prev) => (
+        {...prev, ['emailAndPassword']: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
+      ))
+      errors = true;
     }
+    
+    return errors
+  }
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (isAdding || validateInputs() ) return;
+    
     setIsAdding(true);
     const objWrapper: StudentsDataFromFirebase = {
       [student.email]: { ...student, grades: {} },
@@ -120,7 +176,7 @@ export const Student = () => {
             <span className="label-text">Imię</span>
           </label>
           <input
-            className="input"
+            className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Imię"
             name="firstName"
@@ -132,7 +188,7 @@ export const Student = () => {
             <span className="label-text">Naziwsko</span>
           </label>
           <input
-            className="input"
+            className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Naziwsko"
             name="lastName"
@@ -149,7 +205,7 @@ export const Student = () => {
           name="birth"
           value={student.birth}
           max={new Date().toISOString().split("T")[0]}
-          className="input"
+          className={`input ${fieldErrors.birth.error ? "border-red-500" : ''}`}
           onChange={(e) => handleChange(e)}
           placeholder={new Date().toLocaleDateString()}
         />
@@ -159,7 +215,7 @@ export const Student = () => {
           <span className="label-text">Pesel</span>
         </label>
         <input
-          className="input w-full"
+          className={`input w-full ${fieldErrors.pesel.error ? "border-red-500" : ''}`}
           type="text"
           name="pesel"
           onChange={(e) => handleChange(e)}
@@ -188,7 +244,7 @@ export const Student = () => {
           <span className="label-text">Klasa</span>
         </label>
         <select
-          className="select select-bordered w-full max-w-xs"
+          className={`select select-bordered w-full max-w-xs ${fieldErrors.class.error ? "border-red-500" : ''}`}
           name="class"
           onChange={(e) => handleChange(e)}
           value={student.class}
@@ -202,7 +258,7 @@ export const Student = () => {
             ))}
         </select>
       </div>
-      <fieldset className="border border-solid border-secondary rounded-md p-4 mt-4">
+      <fieldset className={`border border-solid border-secondary rounded-md p-4 mt-4 ${fieldErrors.emailAndPassword.error ? "border-red-500" : ''}`}>
         <legend className="text-center font-bold">Generuj Email i Hasło</legend>
         <label className="form-control items-center ">
           <label className="label input-group">
