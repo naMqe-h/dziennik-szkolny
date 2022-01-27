@@ -13,7 +13,7 @@ import {
 import type { RootState } from "./store";
 interface UserState {
   user: User | null;
-  data: null | CombinedPrincipalData | StudentData;
+  data: null | CombinedPrincipalData ;
   userType: userType | undefined;
   schoolData: CombinedSchoolDataFromFirebase | null;
 }
@@ -38,7 +38,7 @@ export const userSlice = createSlice({
     },
     setUserData: (
       state,
-      action: PayloadAction<CombinedPrincipalData | StudentData>
+      action: PayloadAction<CombinedPrincipalData>
     ) => {
       const data = action.payload;
       state.data = data;

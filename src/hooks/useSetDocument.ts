@@ -11,6 +11,7 @@ import {
   updateTeacherClass as UTC,
   updateSubjectTeachers as UST,
   updateClassStudents as UCS,
+  updatePrincipalPlanType as UPPT,
 } from "../utils/interfaces";
 import { toast } from "react-toastify";
 
@@ -19,7 +20,7 @@ export const useSetDocument = () => {
   const setDocument = async (
     c: string,
     id: string,
-    data: CPD | CSIFF | TDFF | SDFF | CDFF | SSDFF | UTC | UST | UCS
+    data: CPD | CSIFF | TDFF | SDFF | CDFF | SSDFF | UTC | UST | UCS | UPPT
   ) => {
     await setDoc(doc(db, c, id), data, { merge: true }).catch(
       (err: FirestoreError) => {
