@@ -24,7 +24,7 @@ import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
 
 function App() {
-  // eslint-disable-next-line 
+  // eslint-disable-next-line
   const {} = useRealTimeCollection();
   const { getDocument, document } = useDocument();
   const [loading, setLoading] = useState(true);
@@ -34,9 +34,10 @@ function App() {
 
   //zapisauje pobrane dane o zalogowanym uzytkowniku
   useEffect(() => {
-    if (document) {
-      dispatch(setUserData(document as CombinedPrincipalData));
-    }
+    console.log(document, "1");
+    dispatch(setUserData(document as CombinedPrincipalData));
+    setLoading(false);
+    nProgress.done();
   }, [document]);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ function App() {
       nProgress.done();
     }
   }, [state.data, state.userType, state.schoolData, state.user]);
-  
+
   useEffect(() => {
     setLoading(true);
     nProgress.start();
@@ -67,14 +68,13 @@ function App() {
           dispatch(setUserAuth(user));
           //pobieram z bazy danych informacje o uzytkowniku i kolekcję szkoły
           await getDocument("principals", user.uid);
-          nProgress.done();
         } else {
           console.log(loading, state.user, state.data);
           setLoading(false);
           nProgress.done();
         }
       });
-      unsub()
+      unsub();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -83,7 +83,7 @@ function App() {
     return <Loader />;
   } else {
     return (
-      <div className="">
+      <div>
         <BrowserRouter>
           <LayoutWrapper>
             <Routes>

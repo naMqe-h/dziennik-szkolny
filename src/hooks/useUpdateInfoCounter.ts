@@ -2,12 +2,12 @@ import { setDoc, doc, FirestoreError, increment } from "firebase/firestore";
 import { db } from "../firebase/firebase.config";
 import { toast } from "react-toastify";
 
-type updateInfo = 'increment' | 'decrement'
+type updateInfo = "increment" | "decrement";
 
 export const useUpdateInfoCounter = () => {
   const updateCounter = async (c: string, field: string, type: updateInfo) => {
-    let data
-    if(type === 'increment') {
+    let data;
+    if (type === "increment") {
       data = { [field]: increment(1) };
     } else {
       data = { [field]: increment(-1) };

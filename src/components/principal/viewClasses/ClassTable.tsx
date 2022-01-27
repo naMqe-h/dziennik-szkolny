@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useAddDocument } from "../../../hooks/useAddDocument";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SingleClassData } from "../../../utils/interfaces";
 interface ClassTableProps {
@@ -62,7 +61,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                 >
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
-                  <td>{findClassTeacherName(item.classTeacher)}</td>
+                  <td>{item.classTeacher}</td>
                   <td>{item.profile}</td>
                   <td>{item.students.length}</td>
                   <td>

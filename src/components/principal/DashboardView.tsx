@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Stats } from "./dashboard/Stats";
 import { Events } from "./dashboard/Events";
 import { Card } from "./dashboard/Card";

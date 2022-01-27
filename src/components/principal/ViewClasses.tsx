@@ -2,22 +2,26 @@ import { deleteField, doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { db } from "../../../firebase/firebase.config";
-import { useAddDocument } from "../../../hooks/useAddDocument";
-import { RootState } from "../../../redux/store";
+import { db } from "../../firebase/firebase.config";
+import { useAddDocument } from "../../hooks/useAddDocument";
+import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { RootState } from "../../redux/store";
 import {
   SingleClassData,
   TeachersDataFromFirebase,
-} from "../../../utils/interfaces";
-import { ClassTable } from "./ClassTable";
+} from "../../utils/interfaces";
+import { SearchButton } from "../SearchButton/SearchButton";
+import { ClassTable } from "./viewClasses/ClassTable";
 interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
 export const ViewClases: React.FC = () => {
   const { addDocument } = useAddDocument();
+  const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.user);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [ModalOptions, setModalOptions] = useState<ModalOptions>({
     isOpen: false,
     removedClass: null,
@@ -53,6 +57,7 @@ export const ViewClases: React.FC = () => {
               classTeacher: "",
             },
           });
+          updateCounter(domain, "classesCount", "decrement");
         } catch (error) {
           console.log(error);
         }
@@ -62,10 +67,21 @@ export const ViewClases: React.FC = () => {
   }
   useEffect(() => {
     if (state.schoolData?.classes) {
-      const ClassesArray = Object.values(state.schoolData.classes);
-      setClassesData(ClassesArray);
+      //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
+      const allClasses = Object.values(state.schoolData.classes).map((x) => {
+        const newName = findClassTeacherName(x.classTeacher);
+        return { ...x, classTeacher: newName };
+      });
+      //Then we implement Search by matching every string field on classes to our searchQuery
+      const searchedClasses = allClasses.filter((x) => {
+        const keyed = Object.values(x).filter((x) => typeof x === "string");
+        return keyed.some((v) =>
+          v.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      setClassesData(searchedClasses);
     }
-  }, [state.schoolData?.classes]);
+  }, [state.schoolData?.classes, searchQuery]);
   return (
     <>
       <div className={`modal ${ModalOptions.isOpen ? "modal-open" : ""}`}>
@@ -105,7 +121,11 @@ export const ViewClases: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-base-200 rounded-xl shadow-lg p-8 overflow-x-auto  border-base-300">
+      <div className="bg-base-200 rounded-xl shadow-lg p-8 overflow-x-auto  border-base-300 flex flex-col items-center">
+        <SearchButton
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
         <ClassTable
           classesData={classesData}
           findClassTeacherName={findClassTeacherName}
