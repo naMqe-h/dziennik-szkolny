@@ -1,4 +1,4 @@
-import { StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { SingleStudentDataFromFirebase, StudentsDataFromFirebase } from "../../utils/interfaces"
 import { SingleClassTableRow } from "./SingleClassTableRow"
 
 interface SingleClassTableProps {
@@ -6,7 +6,8 @@ interface SingleClassTableProps {
 }
 
 export const SingleClassTable: React.FC<SingleClassTableProps> = ({ studentsInfo }) => {
-    const students = Object.values(studentsInfo)
+    const tempStudents: SingleStudentDataFromFirebase[] = Object.values(studentsInfo)
+    const students = tempStudents.sort( (a: SingleStudentDataFromFirebase, b: SingleStudentDataFromFirebase) => a.lastName.localeCompare(b.lastName, 'pl'))
 
     return (
         <div className="overflow-x-auto">
@@ -20,6 +21,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({ studentsInfo
                         <th>Urodziny</th>
                         <th>Pesel</th>
                         <th>Ostatnie logowanie</th>
+                        <th></th>
                     </tr>
                 </thead> 
                 <tbody>

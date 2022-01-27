@@ -14,7 +14,7 @@ import {
 } from "../utils/interfaces";
 import { toast } from "react-toastify";
 
-export const useAddDocument = () => {
+export const useSetDocument = () => {
   const [document] = useState<DocumentData | undefined>(undefined);
   const addDocument = async (
     c: string,

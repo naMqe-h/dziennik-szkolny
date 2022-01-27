@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import { showToastError } from "../utils/utils";
-import { useAddDocument } from "./useAddDocument";
+import { useSetDocument } from "./useSetDocument";
 import {
   CombinedPrincipalData,
   CombinedSchoolInformationFromFirebase,
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const useSignup = () => {
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const navigate = useNavigate();
   const signupPrincipal = async (
     email: string,

@@ -6,7 +6,7 @@ import {
   ClassesDataFromFirebase,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
-import { useAddDocument } from "../../hooks/useAddDocument";
+import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 
 type classCredentials = {
@@ -20,7 +20,7 @@ const defaultState: classCredentials = {
   classTeacher: "",
 };
 export const Class = () => {
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.user?.schoolData);
