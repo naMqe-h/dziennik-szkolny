@@ -16,7 +16,7 @@ interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
-export const ViewClases: React.FC = () => {
+export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.user);
