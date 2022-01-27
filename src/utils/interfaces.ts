@@ -92,13 +92,19 @@ export interface SchoolGrade {
   date: string;
   addedBy: string;
 }
+
+export interface SingleSubjectInClasses {
+  name: string,
+  teacher: string
+}
+
 //? Interfejs Klasy do formularza dodawania
 export interface ClassData {
   name: string;
   fullName: string;
   classTeacher: string; //?Mail
   profile: string;
-  subjects: string[];
+  subjects: SingleSubjectInClasses[];
 }
 //?Interfejs dla pojedynczego przedmiotu szkolnego
 

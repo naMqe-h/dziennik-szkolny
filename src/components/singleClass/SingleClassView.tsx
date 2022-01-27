@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { RootState } from "../../redux/store";
-import { SingleClassData } from "../../utils/interfaces";
-import { FcConferenceCall } from "react-icons/fc";
-import { SingleClassTable } from "./SingleClassTable";
-import { toast } from "react-toastify";
-import { Grades } from "./grades/Grades";
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { RootState } from "../../redux/store"
+import { SingleClassData } from "../../utils/interfaces"
+import { FcConferenceCall } from 'react-icons/fc'
+import { SingleClassTable } from "./SingleClassTable"
+import { toast } from "react-toastify"
+import { Grades } from "./grades/Grades"
+import { Subjects } from "./subjects/Subjects"
+import { BsFillArrowLeftCircleFill } from "react-icons/bs"
 import useMediaQuery from "../../hooks/useMediaQuery";
 
 export const SingleClassView = () => {
@@ -71,6 +73,10 @@ export const SingleClassView = () => {
 
   return (
     <div className="p-8 overflow-x-auto">
+      <Link to='/classes' className="flex items-center mb-2 gap-2">
+          <BsFillArrowLeftCircleFill />
+          Powrót do listy klas
+      </Link>
       <div className="flex flex-row h-20 card bg-base-300 rounded-box items-center px-10">
         <div className="flex items-center flex-1 font-bold text-lg">
           <FcConferenceCall className="mr-2" size={32} />
@@ -122,15 +128,27 @@ export const SingleClassView = () => {
           </select>
         </div>
         <div className="grid grid-cols-2 gap-2 xl:flex">
-          <button className="btn btn-primary btn-outline ">Dodaj ucznia</button>
-          <button className="btn btn-primary btn-outline">
-            Wygeneruj uczniów
-          </button>
+           {subpage === 'info' && (
+                <>
+                    <button className="btn btn-primary btn-outline ml-2">Dodaj ucznia</button>
+                    <button className="btn btn-primary btn-outline ml-2">Wygeneruj uczniów</button>
+                </>
+            )}
+            {subpage === 'subjects' && (
+                <>
+                    <button className="btn btn-primary btn-outline ml-2">Dodaj przedmiot</button>
+                </>
+            )}
+            {subpage === 'grades' && (
+                <>
+                    <button className="btn btn-primary btn-outline ml-2">Dodaj ocenę</button>
+                </>
+            )}
         </div>
       </div>
 
       {subpage === "info" && <SingleClassTable studentsInfo={studentsInfo} />}
-      {subpage === "subjects" && <p>przedmioty</p>}
+      {subpage === 'subjects' && <Subjects subjects={singleClass?.subjects} /> }
       {subpage === "lesson-plan" && <p>Plan lekcji</p>}
       {subpage === "frequency" && <p>frekwencja</p>}
       {subpage === "grades" && (
