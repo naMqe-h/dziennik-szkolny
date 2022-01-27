@@ -24,6 +24,7 @@ export const useRealTimeCollection = () => {
 
       return () => unsub();
     }
+    // eslint-disable-next-line
   }, [state.user]);
 
   return {};

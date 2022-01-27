@@ -20,7 +20,7 @@ const defaultState: classCredentials = {
   classTeacher: "",
 };
 export const Class = () => {
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.user?.schoolData);
@@ -82,8 +82,8 @@ export const Class = () => {
       [name]: { ...classCredential, fullName, subjects: [], students: [] },
     };
     // update firebase
-    addDocument(domain as string, "classes", objWrapper);
-    addDocument(domain as string, "teachers", {
+    setDocument(domain as string, "classes", objWrapper);
+    setDocument(domain as string, "teachers", {
       [classTeacher]: {
         classTeacher: name,
       },

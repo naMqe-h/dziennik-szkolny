@@ -14,7 +14,7 @@ import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const user = useSelector((state: RootState) => state.user);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
@@ -98,7 +98,7 @@ export const Teacher = () => {
       const objWrapper: TeachersDataFromFirebase = {
         [teacher.email]: { ...teacher, classTeacher: "" },
       };
-      addDocument(
+      setDocument(
         user.schoolData?.information.domain as string,
         "teachers",
         objWrapper
@@ -114,7 +114,7 @@ export const Teacher = () => {
       const previousTeachers =
         user.schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
           .teachers;
-      addDocument(domain as string, "subjects", {
+          setDocument(domain as string, "subjects", {
         [subject.replaceAll(/\s/g, "")]: {
           teachers: [...previousTeachers, email],
         },

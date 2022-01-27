@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const useSignup = () => {
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const navigate = useNavigate();
   const signupPrincipal = async (
     email: string,
@@ -30,8 +30,8 @@ export const useSignup = () => {
           displayName: `${data.schoolInformation.domain}~principals`
         }).then(() => {
           schoolData.principalUID = res.user.uid
-          addDocument("principals", res.user.uid, data);
-          addDocument(data.schoolInformation.domain, "information", schoolData);
+          setDocument("principals", res.user.uid, data);
+          setDocument(data.schoolInformation.domain, "information", schoolData);
           toast.success('Udało ci się utworzyć konto 😎')
           navigate("/");
           nProgress.done();

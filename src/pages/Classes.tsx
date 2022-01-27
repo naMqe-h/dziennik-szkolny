@@ -1,9 +1,9 @@
-import { ViewClases } from "../components/principal/ViewClasses";
+import { ClassesView } from "../components/principal/ClassesView";
 
 export const Classes = () => {
   return (
     <div>
-      <ViewClases />
+      <ClassesView />
     </div>
   );
 };

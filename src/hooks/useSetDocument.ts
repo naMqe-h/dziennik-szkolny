@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 
 export const useSetDocument = () => {
   const [document] = useState<DocumentData | undefined>(undefined);
-  const addDocument = async (
+  const setDocument = async (
     c: string,
     id: string,
     data: CPD | CSIFF | TDFF | SDFF | CDFF | SSDFF | UTC | UST | UCS | UPPT
@@ -29,5 +29,5 @@ export const useSetDocument = () => {
     );
   };
 
-  return { addDocument, document };
+  return { setDocument, document };
 };

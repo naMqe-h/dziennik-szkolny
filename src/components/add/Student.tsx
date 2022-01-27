@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  CombinedSchoolInformationFromFirebase,
   genderType,
   StudentData,
   StudentsDataFromFirebase,
@@ -33,7 +32,7 @@ export const Student = () => {
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const [student, setStudent] = useState<StudentData>(defaultState);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
@@ -87,8 +86,8 @@ export const Student = () => {
     };
     if (schoolData) {
       const previousStudents = schoolData.classes[student.class].students;
-      addDocument(domain as string, "students", objWrapper);
-      addDocument(domain as string, "classes", {
+      setDocument(domain as string, "students", objWrapper);
+      setDocument(domain as string, "classes", {
         [student.class]: {
           students: [...previousStudents, student.email],
         },
