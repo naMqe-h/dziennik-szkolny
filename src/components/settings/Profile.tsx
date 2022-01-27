@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { BsSave } from "react-icons/bs";
 import { toast } from "react-toastify";
 import {
+  CombinedPrincipalData,
   genderType,
   PrincipalPersonalInformation,
   StudentData,
@@ -11,10 +13,11 @@ import { validatePesel } from "../../utils/utils";
 
 interface profileProps {
   userType: userType;
-  userData: PrincipalPersonalInformation | StudentData | TeacherData;
+  userData: CombinedPrincipalData | StudentData | TeacherData;
+  save: (data: CombinedPrincipalData | StudentData | TeacherData) => void | React.ReactText ;
 }
 
-export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
+export const Profile: React.FC<profileProps> = ({ userType, userData, save }) => {
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   const [formData, setFormData] = useState<any>(userData);
 
@@ -32,13 +35,15 @@ export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
       setFormData((prev: Object) => {
         return { ...prev, address: newObj };
       });
+    } else {
+      setFormData((prevState: Object) => {
+        return {
+          ...prevState,
+          [name]: value,
+        };
+      });
     }
-    setFormData((prevState: Object) => {
-      return {
-        ...prevState,
-        [name]: value,
-      };
-    });
+    
   };
 
   function handleSubmit(e: React.SyntheticEvent) {
@@ -74,8 +79,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
       if (formData.address.houseNumber.length === 0)
         return toast.error("Podaj poprawny Numer Domu", { autoClose: 2000 });
     }
-    
-    console.log(formData);
+    save(formData);
   }
 
   return (
@@ -167,7 +171,6 @@ export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
 
           {userType === "principals" ? (
             <>
-              {/* <div className="divider col-span-2" /> */}
               <span className="card-title text-center md:col-span-2 mt-10">
                 Adres
               </span>
@@ -232,7 +235,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData }) => {
           )}
           <div className="md:col-span-2 flex items-center justify-center mt-10">
             <button
-              className="btn-primary btn mt-4 self-end"
+              className="btn-primary btn mt-4 self-end text-white"
               onClick={(e) => handleSubmit(e)}
             >
               Zapisz

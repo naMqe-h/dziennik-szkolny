@@ -85,7 +85,7 @@ export const Navbar = () => {
                       <Link to="/profile">Profil</Link>
                     </li>
                     <li>
-                      <Link to="/settings">Ustawienia</Link>
+                      <Link to="/settings/profile">Ustawienia</Link>
                     </li>
                     <li>
                       {/* eslint-disable-next-line*/}

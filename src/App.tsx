@@ -112,7 +112,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/settings/:type"
                 element={
                   <ProtectedRoute loading={loading}>
                     <Settings />
