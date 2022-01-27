@@ -21,6 +21,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({ studentsInfo
                         <th>Urodziny</th>
                         <th>Pesel</th>
                         <th>Ostatnie logowanie</th>
+                        <th></th>
                     </tr>
                 </thead> 
                 <tbody>

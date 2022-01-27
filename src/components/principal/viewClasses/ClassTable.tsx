@@ -46,7 +46,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                 <tr
                   className="hover:brightness-125 cursor-pointer"
                   key={item.classTeacher}
-                  onClick={() => navigate(`classes/${item.name}`)}
+                  onClick={() => navigate(`/class/${item.name}/info`)}
                 >
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
@@ -68,7 +68,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   <td>
                     <button
                       className="btn btn-primary"
-                      onClick={() => navigate(`class/${item.name}`)}
+                      onClick={() => navigate(`/class/${item.name}/info`)}
                     >
                       Wyświetl
                     </button>
