@@ -6,7 +6,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { toast } from "react-toastify";
-import { useAddDocument } from "../../hooks/useAddDocument";
+import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 type OptionsType = { value: string; label: string }[];
 interface SubjectDataForm extends Omit<SubjectData, "teachers"> {
@@ -18,7 +18,7 @@ const defaultState: SubjectDataForm = {
   teachers: [],
 };
 export const Subject: React.FC = () => {
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const schoolData = useSelector((state: RootState) => state.user.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);

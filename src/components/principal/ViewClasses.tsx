@@ -3,21 +3,21 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { db } from "../../firebase/firebase.config";
-import { useAddDocument } from "../../hooks/useAddDocument";
+import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
 import {
   SingleClassData,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
-import { SearchButton } from "../SearchButton/SearchButton";
-import { ClassTable } from "./viewClasses/ClassTable";
+import { SearchButton } from "../searchButton/SearchButton";
+import { ClassTable } from "./classes/ClassTable";
 interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
 export const ViewClases: React.FC = () => {
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.user);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);

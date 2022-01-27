@@ -8,13 +8,13 @@ import { toast } from "react-toastify";
 import { generateEmail, generatePassword } from "../../utils/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useAddDocument } from "../../hooks/useAddDocument";
+import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 
 export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const user = useSelector((state: RootState) => state.user);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({

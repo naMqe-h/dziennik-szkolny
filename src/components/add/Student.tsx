@@ -13,7 +13,7 @@ import {
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useAddDocument } from "../../hooks/useAddDocument";
+import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 const defaultState: StudentData = {
   firstName: "",
@@ -33,7 +33,7 @@ export const Student = () => {
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const [student, setStudent] = useState<StudentData>(defaultState);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
