@@ -127,11 +127,7 @@ export const ClassesView: React.FC = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-        <ClassTable
-          classesData={classesData}
-          findClassTeacherName={findClassTeacherName}
-          removeClass={removeClass}
-        />
+        <ClassTable classesData={classesData} removeClass={removeClass} />
       </div>
     </>
   );

@@ -19,6 +19,16 @@ const defaultState: classCredentials = {
   profile: "",
   classTeacher: "",
 };
+export interface invalidInputs {
+  name: boolean;
+  profile: boolean;
+  classTeacher: boolean;
+}
+const defaultStateForInvalidInputs: invalidInputs = {
+  name: false,
+  profile: false,
+  classTeacher: false,
+};
 export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
@@ -28,17 +38,20 @@ export const Class = () => {
 
   const domain = schoolData?.information?.domain;
 
-  const [classCredential, setClassCredential] = useState<classCredentials>(defaultState);
+  const [classCredential, setClassCredential] =
+    useState<classCredentials>(defaultState);
 
   useEffect(() => {
     if (schoolData?.teachers) {
-      const teachersData = Object.values(schoolData?.teachers) as SingleTeacherData[];
+      const teachersData = Object.values(
+        schoolData?.teachers
+      ) as SingleTeacherData[];
 
       setTeachers(
         teachersData.filter((teacher) => teacher.classTeacher.length === 0)
       );
     }
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [schoolData?.classes]);
 
   function clearForm() {
@@ -53,7 +66,7 @@ export const Class = () => {
       };
     });
   };
-  
+
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (isAdding) return;
@@ -89,7 +102,7 @@ export const Class = () => {
       },
     });
 
-    updateCounter(domain as string, "classesCount", 'increment');
+    updateCounter(domain as string, "classesCount", "increment");
 
     // reset form
     clearForm();
@@ -103,7 +116,7 @@ export const Class = () => {
         <span className="label-text">Nazwa klasy</span>
       </label>
       <input
-        className="input"
+        className="input input"
         type="text"
         placeholder="Nazwa klasy"
         name="name"

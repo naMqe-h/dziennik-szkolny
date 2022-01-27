@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Profile } from "../components/settings/Profile";
 import { RootState } from "../redux/store";
-import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, SchoolInformation, StudentData, TeacherData, userType } from "../utils/interfaces";
+import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, PlanTypes, SchoolInformation, StudentData, TeacherData, userType } from "../utils/interfaces";
 import { useSetDocument } from "../hooks/useSetDocument";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -56,8 +56,23 @@ export const Settings = () => {
     //   console.log(tempData);
     //   addDocument(domain as string, userType, data )
     // }
-    
+  
+  }
+  const handlePlanChange = (plan: PlanTypes) => {
+    if(!userAuth || !userType){
+      return toast.error("Brak obiektu auth lub typu użytkownika", { autoClose: 2000 });
+    }else{
+      if(userType === "principals"){
+        const uid = userAuth?.uid
+        const domain = userAuth.displayName?.split("~")[0];
 
+  
+        setDocument(userType, uid, {["planType"]: plan});
+        setDocument(domain as string, "information", {["planType"]: plan});
+  
+      }
+    }
+    
   }
 
   const handleSchoolSubmit = (data: SchoolInformation) => {
@@ -137,7 +152,7 @@ export const Settings = () => {
               
               {type === "profile" && <Profile userType={userType as userType} userData={userData as CombinedPrincipalData} save={handleProfileSubmit}/>}
               {type === "school" && <School schoolData={schoolData as CombinedSchoolInformationFromFirebase} save={handleSchoolSubmit}/>}
-              {type === "plan" && <Plan />}
+              {type === "plan" && <Plan currentPlanType={schoolData?.planType as PlanTypes} planChange={handlePlanChange}/>}
               
 
           </div>

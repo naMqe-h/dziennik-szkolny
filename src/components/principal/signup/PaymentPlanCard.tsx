@@ -1,13 +1,16 @@
 import { FaArrowRight } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { PlanTypes } from "../../../utils/interfaces";
+import { currentStepType, PlanTypes } from "../../../utils/interfaces";
 import { ChoosePlanFormProps } from "./ChoosePlanForm";
 import "../../../../node_modules/react-lazy-load-image-component/src/effects/blur.css";
-interface cardProps extends ChoosePlanFormProps {
+interface cardProps{
   name: PlanTypes;
   badge: string;
   image: string;
   price: number;
+  setStep?: React.Dispatch<React.SetStateAction<currentStepType>>;
+  set: React.Dispatch<React.SetStateAction<PlanTypes>>;
+  currentPlanType? : PlanTypes;
 }
 
 const basicPros = [
@@ -31,9 +34,10 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
   price,
   set,
   setStep,
+  currentPlanType
 }) => {
   return (
-    <div className="card card-bordered bg-base-200 w-96">
+    <div className="card card-bordered bg-base-200 md:w-96 max-w-lg">
       <figure>
         <LazyLoadImage
           className="h-52 w-full"
@@ -73,7 +77,8 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
           </h2>
         </div>
         <div className="justify-end card-actions">
-          <button
+          {setStep ?(
+            <button
             className="btn btn-primary"
             onClick={() => {
               setStep(5);
@@ -83,8 +88,31 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
             Wybieram
             <FaArrowRight className="ml-3" size={16} />
           </button>
+          ) : (<>
+            {currentPlanType === name ? (
+            <label className="btn btn-success">Aktualny</label> ):( <label htmlFor={`my-modal-${name}`} className="btn btn-primary modal-button">Wybierz</label>)}
+
+            <input type="checkbox" id={`my-modal-${name}`} className="modal-toggle" /> 
+            <div className="modal">
+              <div className="modal-box flex flex-col items-center justify-center">
+                <p>Czy napewno chcesz zmienić plan?</p> 
+                <div className="modal-action">
+                <label htmlFor={`my-modal-${name}`} className="btn btn-primary" onClick={() => set(name)}>
+                  Akceptuj
+                </label>
+                  <label htmlFor={`my-modal-${name}`} className="btn btn-neutral">Zamknij</label>
+                </div>
+              </div>
+            </div>
+          </>
+          ) } 
+            
+           
+          
         </div>
       </div>
     </div>
   );
 };
+
+          

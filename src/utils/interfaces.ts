@@ -196,3 +196,6 @@ export interface updateClassStudents {
     students: string[];
   };
 }
+export interface updatePrincipalPlanType{
+  [key: string]: PlanTypes;
+}
