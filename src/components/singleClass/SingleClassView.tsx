@@ -152,7 +152,7 @@ export const SingleClassView = () => {
       {subpage === "lesson-plan" && <p>Plan lekcji</p>}
       {subpage === "frequency" && <p>frekwencja</p>}
       {subpage === "grades" && (
-        <Grades studentsInfo={studentsInfo} subjects={singleClass?.subjects} />
+        <Grades studentsInfo={studentsInfo} />
       )}
     </div>
   );
