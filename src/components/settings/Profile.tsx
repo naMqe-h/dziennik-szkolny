@@ -21,6 +21,8 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   const [formData, setFormData] = useState<any>(userData);
 
+  // TODO zmiana zdjęcia profilowego 
+
   const handleChange = (name: string, value: string) => {
 
     if (name === "pesel") {

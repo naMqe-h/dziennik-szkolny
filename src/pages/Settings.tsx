@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Profile } from "../components/settings/Profile";
 import { RootState } from "../redux/store";
-import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, SchoolInformation, StudentData, StudentsDataFromFirebase, TeacherData, TeachersDataFromFirebase, userType } from "../utils/interfaces";
-import { useAddDocument } from "../hooks/useAddDocument";
+import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, PlanTypes, SchoolInformation, StudentData, StudentsDataFromFirebase, TeacherData, TeachersDataFromFirebase, userType } from "../utils/interfaces";
+import { useSetDocument } from "../hooks/useSetDocument";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { School } from "../components/settings/School";
@@ -18,7 +18,7 @@ export const Settings = () => {
   const userAuth = useSelector((state: RootState) => state.user.user);
   const schoolData = useSelector((state: RootState) => state.user.schoolData?.information)
   const { type } = useParams();
-  const { addDocument } = useAddDocument();
+  const { addDocument } = useSetDocument();
   const navigate = useNavigate()
 
   const [activeRoute, setActiveRoute] = useState(type);
@@ -55,8 +55,23 @@ export const Settings = () => {
     //   console.log(tempData);
     //   addDocument(domain as string, userType, data )
     // }
-    
+  
+  }
+  const handlePlanChange = (plan: PlanTypes) => {
+    if(!userAuth || !userType){
+      return toast.error("Brak obiektu auth lub typu użytkownika", { autoClose: 2000 });
+    }else{
+      if(userType === "principals"){
+        const uid = userAuth?.uid
+        const domain = userAuth.displayName?.split("~")[0];
 
+  
+        addDocument(userType, uid, {["planType"]: plan});
+        addDocument(domain as string, "information", {["planType"]: plan});
+  
+      }
+    }
+    
   }
 
   const handleSchoolSubmit = (data: SchoolInformation) => {
@@ -137,7 +152,7 @@ export const Settings = () => {
               
               {type === "profile" && <Profile userType={userType as userType} userData={userData as CombinedPrincipalData} save={handleProfileSubmit}/>}
               {type === "school" && <School schoolData={schoolData as CombinedSchoolInformationFromFirebase} save={handleSchoolSubmit}/>}
-              {type === "plan" && <Plan />}
+              {type === "plan" && <Plan currentPlanType={schoolData?.planType as PlanTypes} planChange={handlePlanChange}/>}
               
 
           </div>
