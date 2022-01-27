@@ -31,13 +31,14 @@ export const DashboardView = () => {
         >
           <AiOutlineCalendar size={70} />
         </Card>
-
-        <Card
-          text="Inne"
-          background="radial-gradient(circle, rgba(226,98,124,1) 9%, rgba(204,91,114,1) 37%, rgba(33,33,33,1) 100%)"
-        >
-          <AiOutlinePartition size={70} />
-        </Card>
+        <Link to={"/Teachers"}>
+          <Card
+            text="Inne"
+            background="radial-gradient(circle, rgba(226,98,124,1) 9%, rgba(204,91,114,1) 37%, rgba(33,33,33,1) 100%)"
+          >
+            <AiOutlinePartition size={70} />
+          </Card>
+        </Link>
 
         <div className="p-10 mt-2 row-span-2 md:col-span-2 bg-base-200 rounded-xl flex flex-col items-center min-h-[480px]">
           <Events />

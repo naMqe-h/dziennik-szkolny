@@ -27,12 +27,12 @@ export const useSignup = () => {
     await createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
         updateProfile(res.user, {
-          displayName: `${data.schoolInformation.domain}~principals`
+          displayName: `${data.schoolInformation.domain}~principals`,
         }).then(() => {
-          schoolData.principalUID = res.user.uid
+          schoolData.principalUID = res.user.uid;
           setDocument("principals", res.user.uid, data);
           setDocument(data.schoolInformation.domain, "information", schoolData);
-          toast.success('Udało ci się utworzyć konto 😎')
+          toast.success("Udało ci się utworzyć konto 😎");
           navigate("/");
           nProgress.done();
         });
