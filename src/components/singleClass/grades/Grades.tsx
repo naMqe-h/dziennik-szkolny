@@ -3,10 +3,9 @@ import { SingleStudentGradeRow } from "./SingleStudentGradeRow";
 
 interface GradesProps {
     studentsInfo: StudentsDataFromFirebase,
-    subjects: string[] | undefined
 }
 
-export const Grades: React.FC<GradesProps> = ({ studentsInfo, subjects }) => {
+export const Grades: React.FC<GradesProps> = ({ studentsInfo }) => {
     const students = Object.values(studentsInfo)
 
     return (
