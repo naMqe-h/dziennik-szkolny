@@ -34,10 +34,10 @@ function App() {
 
   //zapisauje pobrane dane o zalogowanym uzytkowniku
   useEffect(() => {
-    console.log(document, "1");
     dispatch(setUserData(document as CombinedPrincipalData));
     setLoading(false);
     nProgress.done();
+    // eslint-disable-next-line
   }, [document]);
 
   useEffect(() => {

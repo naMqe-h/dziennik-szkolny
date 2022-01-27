@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Profile } from "../components/settings/Profile";
 import { RootState } from "../redux/store";
-import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, SchoolInformation, StudentData, StudentsDataFromFirebase, TeacherData, TeachersDataFromFirebase, userType } from "../utils/interfaces";
-import { useAddDocument } from "../hooks/useAddDocument";
+import { CombinedPrincipalData, CombinedSchoolInformationFromFirebase, SchoolInformation, StudentData, TeacherData, userType } from "../utils/interfaces";
+import { useSetDocument } from "../hooks/useSetDocument";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { School } from "../components/settings/School";
@@ -18,7 +18,7 @@ export const Settings = () => {
   const userAuth = useSelector((state: RootState) => state.user.user);
   const schoolData = useSelector((state: RootState) => state.user.schoolData?.information)
   const { type } = useParams();
-  const { addDocument } = useAddDocument();
+  const { setDocument } = useSetDocument();
   const navigate = useNavigate()
 
   const [activeRoute, setActiveRoute] = useState(type);
@@ -35,6 +35,7 @@ export const Settings = () => {
     if(!possibleRoutes.some(x => x === activeRoute)){
       navigate('/settings/profile');
     }
+    // eslint-disable-next-line
   }, [type]);
   
 
@@ -44,7 +45,7 @@ export const Settings = () => {
     }
     if(userType === "principals"){
         const uid = userAuth?.uid
-        addDocument(userType, uid, data as CombinedPrincipalData);
+        setDocument(userType, uid, data as CombinedPrincipalData);
     } 
     // TODO kiedy bedzie gotowe logowanie ucznia i nauczyicela
     // else {
@@ -72,9 +73,9 @@ export const Settings = () => {
         ...schoolData,
         ...data
       }
-      addDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
+      setDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
 
-      addDocument(data.domain, "information", dataForSchool as CombinedSchoolInformationFromFirebase)
+      setDocument(data.domain, "information", dataForSchool as CombinedSchoolInformationFromFirebase)
     }
 
   }
@@ -99,7 +100,7 @@ export const Settings = () => {
             </> : ""
             }
             <li className={activeRoute ==="" ? "" : ""}>
-              <a>Prywatność</a>
+              <Link to='/'>Prywatność</Link>
             </li>
             
           </ul>
@@ -124,9 +125,8 @@ export const Settings = () => {
               </> : ""
               }
               <li className={activeRoute ==="" ? "" : ""}>
-                <a>Prywatność</a>
+              <Link to='/'>Prywatność</Link>
               </li>
-              
             </ul>
             </div>
           </div> 

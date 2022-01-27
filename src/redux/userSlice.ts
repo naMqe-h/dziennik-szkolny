@@ -8,7 +8,6 @@ import {
   TeachersDataFromFirebase,
   StudentsDataFromFirebase,
   ClassesDataFromFirebase,
-  SubjectData,
   SchoolSubjectsDataFromFirebase,
 } from "../utils/interfaces";
 import type { RootState } from "./store";

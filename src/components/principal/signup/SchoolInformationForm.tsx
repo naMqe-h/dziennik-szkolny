@@ -33,6 +33,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
 
   useEffect(() => {
     getDocument("utils", "domains");
+    // eslint-disable-next-line
   }, []);
 
   const validateData = (e: React.SyntheticEvent) => {

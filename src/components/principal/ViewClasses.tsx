@@ -17,7 +17,7 @@ interface ModalOptions {
   removedClass: SingleClassData | null;
 }
 export const ViewClases: React.FC = () => {
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.user);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
@@ -52,7 +52,7 @@ export const ViewClases: React.FC = () => {
           [removedClassData.name]: deleteField(),
         });
         try {
-          addDocument(domain, "teachers", {
+          setDocument(domain, "teachers", {
             [teacherEmail]: {
               classTeacher: "",
             },
@@ -81,6 +81,7 @@ export const ViewClases: React.FC = () => {
       });
       setClassesData(searchedClasses);
     }
+    // eslint-disable-next-line
   }, [state.schoolData?.classes, searchQuery]);
   return (
     <>

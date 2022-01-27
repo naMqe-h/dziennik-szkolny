@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   SchoolSubjectsDataFromFirebase,
   SubjectData,
@@ -18,7 +18,7 @@ const defaultState: SubjectDataForm = {
   teachers: [],
 };
 export const Subject: React.FC = () => {
-  const { addDocument } = useSetDocument();
+  const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const schoolData = useSelector((state: RootState) => state.user.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);
@@ -63,7 +63,7 @@ export const Subject: React.FC = () => {
     const objForFirebase: SchoolSubjectsDataFromFirebase = {
       [nameWithoutWhitespace]: wrapperObj,
     };
-    addDocument(
+    setDocument(
       schoolData?.information.domain as string,
       "subjects",
       objForFirebase

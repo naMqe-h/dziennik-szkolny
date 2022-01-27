@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import { BsSave } from "react-icons/bs";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import {
   CombinedPrincipalData,
   genderType,
-  PrincipalPersonalInformation,
   StudentData,
   TeacherData,
   userType,

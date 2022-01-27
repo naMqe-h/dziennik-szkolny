@@ -5,7 +5,6 @@ import { FormData } from "../utils/interfaces";
 import { useLogin } from "../hooks/useLogin";
 import nProgress from "nprogress";
 import { validateEmail } from "../utils/utils";
-import { useAuthStatus } from "../hooks/useAuthStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserType } from "../redux/userSlice";
 import { RootState } from "../redux/store";
