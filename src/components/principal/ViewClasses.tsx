@@ -10,7 +10,7 @@ import {
   SingleClassData,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
-import { SearchButton } from "../searchButton/SearchButton";
+import { SearchButton } from "../SearchButton/SearchButton";
 import { ClassTable } from "./classes/ClassTable";
 interface ModalOptions {
   isOpen: boolean;
