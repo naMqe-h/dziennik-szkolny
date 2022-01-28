@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
+  AddressErrors,
   currentStepType,
+  ErrorObj,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
 import { validatePesel } from "../../../utils/utils";
@@ -12,29 +14,23 @@ interface PersonalInformationFormProps {
 }
 
 type PersonalInfoCredentialsErrors = {
-  firstName: {error:boolean, text: string};
-  lastName: {error:boolean, text: string};
-  birth: {error:boolean, text: string};
-  pesel: {error:boolean, text: string};
-  address: {
-    city: {error:boolean, text: string},
-    houseNumber: {error:boolean, text: string},
-    postCode: {error:boolean, text: string},
-    street: {error:boolean, text: string},
-  }
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  birth: ErrorObj;
+  pesel: ErrorObj;
 };
 const defaultErrorState:PersonalInfoCredentialsErrors = {
   firstName: {error:false, text: ''},
   lastName: {error:false, text: ''},
   birth: {error:false, text: ''},
   pesel: {error:false, text: ''},
-  address: {
-    city: {error:false, text: ''},
-    houseNumber: {error:false, text: ''},
-    postCode: {error:false, text: ''},
-    street: {error:false, text: ''},
-  },
 };
+const defaultAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
+}
 
 export const PersonalInformationForm: React.FC<
   PersonalInformationFormProps
@@ -54,15 +50,20 @@ export const PersonalInformationForm: React.FC<
   });
 
   const [fieldErrors, setFieldErrors] = useState<PersonalInfoCredentialsErrors>(defaultErrorState);
-
-
-  // TODO zrobic to 
-  // useEffect(() => {
-    
-  // }, [fieldErrors]);
+  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
+ 
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+    Object.values(addressErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors, addressErrors]);
 
   const validateInputs = () => {
     setFieldErrors(defaultErrorState);
+    setAddressErrors(defaultAddressErrors);
     let errors = false;
     
 
@@ -93,26 +94,27 @@ export const PersonalInformationForm: React.FC<
         errors = true
     }
     if (userData.address.city.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['address']: {...prev.address, 'city': {'error':true,'text':'Podaj Miasto'} } }))
+      setAddressErrors((prev) => (
+        {...prev, ['city']: {'error':true, 'text':"Podaj Miasto"}}))
         errors = true
     }
     if (userData.address.street.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['address']: {...prev.address, 'street': {'error':true,'text':'Podaj ulicę na której mieszkasz'} } }))
+      
+      setAddressErrors((prev) => (
+        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę na której mieszkasz"}}))
         errors = true
     }
     if (
       userData.address.postCode.length !== 6 ||
       userData.address.postCode[2] !== "-"
     ){
-      setFieldErrors((prev) => (
-        {...prev, ['address']: {...prev.address, 'postCode': {'error':true,'text':'Podaj poprawny Kod Pocztowy'} } }))
+      setAddressErrors((prev) => (
+        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny Kod Pocztowy"}}))
         errors = true
     }
-    if (userData.address.houseNumber === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['address']: {...prev.address, 'houseNumber': {'error':true,'text':'Podaj poprawny Numer Domu'} } }))
+    if (userData.address.houseNumber < 1 || userData.address.houseNumber.toString().length === 0){
+      setAddressErrors((prev) => (
+        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny Numer Domu"}}))
         errors = true
     }
 
@@ -176,7 +178,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="firstName"
                 value={userData.firstName}
-                className="input"
+                className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Imię"
               />
@@ -189,7 +191,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="lastName"
                 value={userData.lastName}
-                className="input"
+                className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Nazwisko"
               />
@@ -203,7 +205,7 @@ export const PersonalInformationForm: React.FC<
                 name="birth"
                 value={userData.birth}
                 max={new Date().toISOString().split("T")[0]}
-                className="input"
+                className={`input ${fieldErrors.birth.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder={new Date().toLocaleDateString()}
               />
@@ -233,7 +235,7 @@ export const PersonalInformationForm: React.FC<
                 type="number"
                 name="pesel"
                 value={userData.pesel}
-                className="input "
+                className={`input ${fieldErrors.pesel.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Pesel"
               />
@@ -253,7 +255,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="city"
                 value={userData.address.city}
-                className="input"
+                className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Miasto"
               />
@@ -266,7 +268,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="postCode"
                 value={userData.address.postCode}
-                className="input"
+                className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="xx-xxx"
               />
@@ -279,7 +281,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="street"
                 value={userData.address.street}
-                className="input"
+                className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Ulica"
               />
@@ -292,7 +294,7 @@ export const PersonalInformationForm: React.FC<
                 type="number"
                 name="houseNumber"
                 value={userData.address.houseNumber}
-                className="input"
+                className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Numer Domu"
               />

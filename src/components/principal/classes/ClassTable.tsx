@@ -3,7 +3,6 @@ import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SingleClassData } from "../../../utils/interfaces";
 interface ClassTableProps {
   classesData: SingleClassData[];
-  findClassTeacherName: (email: string) => string;
   removeClass: (
     removedClassData: SingleClassData,
     wasAccepted?: boolean
@@ -11,7 +10,6 @@ interface ClassTableProps {
 }
 export const ClassTable: React.FC<ClassTableProps> = ({
   classesData,
-  findClassTeacherName,
   removeClass,
 }) => {
   const navigate = useNavigate();
@@ -49,7 +47,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                 >
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
-                  <td>{findClassTeacherName(item.classTeacher)}</td>
+                  <td>{item.classTeacher}</td>
                 </tr>
               );
             })

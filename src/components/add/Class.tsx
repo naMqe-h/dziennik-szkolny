@@ -4,6 +4,7 @@ import { RootState } from "../../redux/store";
 import {
   SingleTeacherData,
   ClassesDataFromFirebase,
+  ErrorObj,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../hooks/useSetDocument";
@@ -15,9 +16,9 @@ type classCredentials = {
   classTeacher: string;
 };
 type classCredentialsErrors = {
-  name: {error:boolean, text: string};
-  profile: {error:boolean, text: string};
-  classTeacher: {error:boolean, text: string};
+  name: ErrorObj;
+  profile: ErrorObj;
+  classTeacher: ErrorObj;
 };
 const defaultState: classCredentials = {
   name: "",
@@ -33,24 +34,27 @@ export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
+  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const [fieldErrors, setFieldErrors] = useState<classCredentialsErrors>(defaultErrorState);
 
   const domain = schoolData?.information?.domain;
 
-  const [classCredential, setClassCredential] = useState<classCredentials>(defaultState);
+  const [classCredential, setClassCredential] =
+    useState<classCredentials>(defaultState);
 
   useEffect(() => {
     if (schoolData?.teachers) {
-      const teachersData = Object.values(schoolData?.teachers) as SingleTeacherData[];
+      const teachersData = Object.values(
+        schoolData?.teachers
+      ) as SingleTeacherData[];
 
       setTeachers(
         teachersData.filter((teacher) => teacher.classTeacher.length === 0)
       );
     }
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [schoolData?.classes]);
 
   useEffect(() => {
@@ -126,7 +130,7 @@ export const Class = () => {
       },
     });
 
-    updateCounter(domain as string, "classesCount", 'increment');
+    updateCounter(domain as string, "classesCount", "increment");
 
     // reset form
     clearForm();

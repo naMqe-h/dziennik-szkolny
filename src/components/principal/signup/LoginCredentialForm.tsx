@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
+  ErrorObj,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
 import { validateEmail } from "../../../utils/utils";
@@ -48,9 +49,9 @@ interface setLoginCredentials {
 
 
 type LoginCredentialsErrors = {
-  email: {error:boolean, text: string};
-  password: {error:boolean, text: string};
-  repeatedPassword: {error:boolean, text: string};
+  email: ErrorObj;
+  password: ErrorObj;
+  repeatedPassword: ErrorObj;
 };
 const defaultErrorState:LoginCredentialsErrors = {
   email: {error:false, text: ''},

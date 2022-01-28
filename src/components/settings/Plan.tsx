@@ -15,7 +15,8 @@ export const Plan: React.FC<planProps> = ({currentPlanType, planChange}) => {
         if(planType !== currentPlanType) {
             planChange(planType);
         }
-    }, [planType])
+        // eslint-disable-next-line
+    }, [planType, currentPlanType])
 
     return (
         <div className="flex flex-col md:flex-row p-10 md:justify-center">

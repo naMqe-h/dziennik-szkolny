@@ -66,13 +66,7 @@ export interface TeacherData {
   email: string;
   password: string;
 }
-//! Domyslne zmienic
-type schoolSubject =
-  | "Matematyka"
-  | "Angielski"
-  | "Język Polski"
-  | "WF"
-  | "Historia";
+
 //?? Interfejs przy dodawaniu formularza dla nowego studenta
 export interface StudentData {
   firstName: string;
@@ -92,13 +86,19 @@ export interface SchoolGrade {
   date: string;
   addedBy: string;
 }
+
+export interface SingleSubjectInClasses {
+  name: string,
+  teacher: string
+}
+
 //? Interfejs Klasy do formularza dodawania
 export interface ClassData {
   name: string;
   fullName: string;
   classTeacher: string; //?Mail
   profile: string;
-  subjects: string[];
+  subjects: SingleSubjectInClasses[];
 }
 //?Interfejs dla pojedynczego przedmiotu szkolnego
 
@@ -139,9 +139,20 @@ export interface SingleStudentDataFromFirebase {
   class: string;
   grades: { [key: string]: SchoolGrade[] };
 }
+//? Interface dla lepszej walidacji dostępnych godzin nauczyciela
+interface teacherWorkingHours {
+  dayOfWeek: daysOfWeek,
+  hour: number,
+  className: string
+}
+//? Interface dni tygodnia
+type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
+
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
+  teachedClasses: string[]
+  workingHours: teacherWorkingHours[]
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {
@@ -193,3 +204,11 @@ export interface updateClassStudents {
 export interface updatePrincipalPlanType{
   [key: string]: PlanTypes;
 }
+export type AddressErrors = {
+  city: ErrorObj;
+  houseNumber: ErrorObj;
+  postCode: ErrorObj;
+  street: ErrorObj;
+};
+
+export type ErrorObj = {error:boolean, text: string};

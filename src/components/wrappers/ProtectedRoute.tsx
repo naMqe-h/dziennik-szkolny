@@ -12,7 +12,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   loading,
 }) => {
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
   if (loading) {
     return <Loader />;
   } else {

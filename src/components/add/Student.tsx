@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  ErrorObj,
   genderType,
   StudentData,
   StudentsDataFromFirebase,
@@ -28,12 +29,12 @@ const defaultState: StudentData = {
 };
 
 type StudentsCredentialsErrors = {
-  firstName: {error:boolean, text: string};
-  lastName: {error:boolean, text: string};
-  pesel: {error:boolean, text: string};
-  birth: {error:boolean, text: string};
-  class: {error:boolean, text: string};
-  emailAndPassword: {error:boolean, text: string};
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  pesel: ErrorObj;
+  birth: ErrorObj;
+  class: ErrorObj;
+  emailAndPassword: ErrorObj;
 };
 const defaultErrorState:StudentsCredentialsErrors = {
   firstName: {error:false, text: ''},
@@ -48,7 +49,7 @@ export const Student = () => {
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
+  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);

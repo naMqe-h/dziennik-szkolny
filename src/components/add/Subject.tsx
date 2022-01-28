@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  ErrorObj,
   SchoolSubjectsDataFromFirebase,
   SubjectData,
 } from "../../utils/interfaces";
@@ -19,7 +20,7 @@ const defaultState: SubjectDataForm = {
 };
 
 type SubjectCredentialsErrors = {
-  name: {error:boolean, text: string};
+  name: ErrorObj;
   
 };
 const defaultErrorState:SubjectCredentialsErrors = {
@@ -29,7 +30,7 @@ const defaultErrorState:SubjectCredentialsErrors = {
 export const Subject: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const schoolData = useSelector((state: RootState) => state.user.schoolData);
+  const schoolData = useSelector((state: RootState) => state.principal.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
   const [fieldErrors, setFieldErrors] = useState<SubjectCredentialsErrors>(defaultErrorState);

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDocument } from "./useDocument";
 import { CombinedPrincipalData, userType, StudentsDataFromFirebase } from "../utils/interfaces";
 import { useDispatch } from "react-redux";
-import { setUserAuth, setUserData } from "../redux/userSlice";
+import { setPrincipalData, setUserAuth } from "../redux/principalSlice";
 import { showToastError } from "../utils/utils";
 
 export const useLogin = () => {
@@ -24,11 +24,8 @@ export const useLogin = () => {
   useEffect(() => {
     if (document) {
       if(role === 'principals') {
-        dispatch(setUserData(document as CombinedPrincipalData));
+        dispatch(setPrincipalData(document as CombinedPrincipalData));
       } else {
-        // const student = document.filter(checkEmail)
-        // console.log(student)
-        // dispatch(setUserData(student as StudentData));
         checkEmail(5)
       }
       toast.success("Udało ci się zalogować 😎");

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { auth } from "../firebase/firebase.config";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/userSlice";
+import { logout } from "../redux/principalSlice";
 
 export const useLogout = () => {
   const navigate = useNavigate();

@@ -3,6 +3,7 @@ import {
   genderType,
   TeachersDataFromFirebase,
   TeacherData as teacherInterface,
+  ErrorObj,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { generateEmail, generatePassword } from "../../utils/utils";
@@ -12,9 +13,9 @@ import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 
 type TeachersCredentialsErrors = {
-  firstName: {error:boolean, text: string};
-  lastName: {error:boolean, text: string};
-  emailAndPassword: {error:boolean, text: string};
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  emailAndPassword: ErrorObj;
 };
 const defaultErrorState:TeachersCredentialsErrors = {
   firstName: {error:false, text: ''},
@@ -27,7 +28,7 @@ export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
   const { setDocument } = useSetDocument();
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.principal);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
     firstName: "",
@@ -142,7 +143,7 @@ export const Teacher = () => {
     if (user.schoolData) {
       setIsAdding(true);
       const objWrapper: TeachersDataFromFirebase = {
-        [teacher.email]: { ...teacher, classTeacher: "" },
+        [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [], workingHours: [] },
       };
       setDocument(
         user.schoolData?.information.domain as string,

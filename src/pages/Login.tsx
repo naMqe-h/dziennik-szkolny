@@ -6,7 +6,7 @@ import { useLogin } from "../hooks/useLogin";
 import nProgress from "nprogress";
 import { validateEmail } from "../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserType } from "../redux/userSlice";
+import { setUserType } from "../redux/principalSlice";
 import { RootState } from "../redux/store";
 
 interface LoginProps {
@@ -25,7 +25,7 @@ const defaultErrorState:LoginCredentialsErrors = {
 
 export const Login: React.FC<LoginProps> = ({ loading }) => {
   const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
   const { login } = useLogin();
 
   const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);

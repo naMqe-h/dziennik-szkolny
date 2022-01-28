@@ -1,8 +1,11 @@
 import { deleteField, doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../../firebase/firebase.config";
+import useMediaQuery from "../../hooks/useMediaQuery";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
@@ -19,13 +22,14 @@ interface ModalOptions {
 export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [ModalOptions, setModalOptions] = useState<ModalOptions>({
     isOpen: false,
     removedClass: null,
   });
+  const isMobile = useMediaQuery("(max-width:768px)");
   function findClassTeacherName(email: string): string {
     const allTeachers = state.schoolData?.teachers as TeachersDataFromFirebase;
     const match = Object.keys(allTeachers).find((x) => x === email);
@@ -122,16 +126,19 @@ export const ClassesView: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-base-200 rounded-xl shadow-lg p-8 overflow-x-auto  border-base-300 flex flex-col items-center">
+      <div className="bg-base-200 rounded-xl shadow-lg p-8 overflow-x-auto  border-base-300 flex flex-col items-center relative">
+        <Link
+          to="/"
+          className="flex w-max items-center mb-2 gap-2 absolute left-6"
+        >
+          <BsFillArrowLeftCircleFill className="transition-all hover:-translate-x-1.5 duration-300" />
+          {!isMobile && "Powrót do Panelu Dyrektora"}
+        </Link>
         <SearchButton
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-        <ClassTable
-          classesData={classesData}
-          findClassTeacherName={findClassTeacherName}
-          removeClass={removeClass}
-        />
+        <ClassTable classesData={classesData} removeClass={removeClass} />
       </div>
     </>
   );

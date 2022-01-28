@@ -1,7 +1,6 @@
 import { FaArrowRight } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { currentStepType, PlanTypes } from "../../../utils/interfaces";
-import { ChoosePlanFormProps } from "./ChoosePlanForm";
 import "../../../../node_modules/react-lazy-load-image-component/src/effects/blur.css";
 interface cardProps{
   name: PlanTypes;

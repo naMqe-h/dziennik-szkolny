@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { currentStepType, SchoolInformation } from "../../../utils/interfaces";
+import { AddressErrors, currentStepType, ErrorObj, SchoolInformation } from "../../../utils/interfaces";
 import { useDocument } from "../../../hooks/useDocument";
 
 const schoolTypes = [
@@ -10,10 +10,28 @@ const schoolTypes = [
   "Liceum",
   "Uniwersytet",
 ];
+
 interface SchoolInformationFormProps {
   set: React.Dispatch<React.SetStateAction<SchoolInformation>>;
   setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
 }
+
+type LoginCredentialsErrors = {
+  name: ErrorObj;
+  domain: ErrorObj;
+};
+const defaultErrorState:LoginCredentialsErrors = {
+  name: {error:false, text: ''},
+  domain: {error:false, text: ''},
+};
+const defaultAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
+}
+
+
 export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   set,
   setStep,
@@ -30,54 +48,85 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
     type: "Technikum",
     domain: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
 
   useEffect(() => {
     getDocument("utils", "domains");
     // eslint-disable-next-line
   }, []);
 
-  const validateData = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+    Object.values(addressErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors, addressErrors]);
+
+
+  const validateInputs = () => {
+    setFieldErrors(defaultErrorState);
+    setAddressErrors(defaultAddressErrors);
+    let errors = false;
+
     if (takenDomains) {
       for (const item of takenDomains.names) {
         if (userData.domain === item) {
-          return toast.error("Szkoła z podaną domena jest już zarejestrowana", {
-            autoClose: 3000,
-          });
+          setFieldErrors((prev) => (
+            {...prev, ['domain']: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
+          errors = true
         }
       }
     }
-    if (
-      userData.name.length === 0 &&
-      userData.address.city.length === 0 &&
-      userData.address.houseNumber === 0 &&
-      userData.address.postCode.length === 0 &&
-      userData.address.city.length === 0 &&
-      userData.domain.length === 0
-    )
-      return toast.error("Podaj poprawnie wszystkie dane", { autoClose: 2000 });
     if (userData.name.length === 0) {
-      return toast.error("Podaj nazwę szkoły", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę szkoły"}}))
+      errors = true
     }
-    if (userData.domain.length === 0)
-      return toast.error("Podaj poprawną domene", { autoClose: 2000 });
-    if (userData.domain.split("").find((x) => x === "@"))
-      return toast.error("Podaj domenę bez @", { autoClose: 2000 });
-    if (userData.address.city.length === 0)
-      return toast.error("Podaj miasto", { autoClose: 2000 });
-    if (userData.address.street.length === 0)
-      return toast.error("Podaj ulicę, na której znajduje się szkoła", {
-        autoClose: 2000,
-      });
+    if (userData.domain.split("").find((x) => x === "@")){
+      setFieldErrors((prev) => (
+        {...prev, ['domain']: {'error':true, 'text':"Podaj domenę bez @"}}))
+        errors = true
+      }
+    if (userData.domain.length === 0){
+      setFieldErrors((prev) => (
+        {...prev, ['domain']: {'error':true, 'text':"Podaj poprawną domene"}}))
+        errors = true
+    }
+    if (userData.address.city.length === 0){
+      setAddressErrors((prev) => (
+        {...prev, ['city']: {'error':true, 'text':"Podaj miasto"}}))
+        errors = true
+    }
+    if (userData.address.street.length === 0){
+      setAddressErrors((prev) => (
+        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
+        errors = true
+    }
     if (
       userData.address.postCode.length !== 6 ||
       userData.address.postCode[2] !== "-"
-    )
-      return toast.error("Podaj poprawny kod pocztowy", { autoClose: 2000 });
-    if (userData.address.houseNumber === 0)
-      return toast.error("Podaj poprawny numer budynku szkoły", {
-        autoClose: 2000,
-      });
+    ){
+      setAddressErrors((prev) => (
+        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
+        errors = true
+    }
+    if (userData.address.houseNumber === 0){
+      setAddressErrors((prev) => (
+        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
+        errors = true
+    }
+
+    return errors
+  }
+
+
+  const validateData = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if(validateInputs()) return
+    
 
     set({
       address: userData.address,
@@ -117,7 +166,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           <span className="label-text">Nazwa szkoły</span>
         </label>
         <input
-          className="input w-full"
+          className={`input w-full ${fieldErrors.name.error ? "border-red-500" : ''}`}
           type="text"
           placeholder="Nazwa szkoły"
           name="name"
@@ -127,7 +176,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           <span className="label-text">Domena Szkoły</span>
         </label>
         <input
-          className="input w-full"
+          className={`input w-full ${fieldErrors.domain.error ? "border-red-500" : ''}`}
           type="text"
           placeholder="DomenaSzkolna.pl"
           name="domain"
@@ -161,7 +210,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="city"
               value={userData.address.city}
-              className="input"
+              className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Miasto"
             />
@@ -174,7 +223,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="postCode"
               value={userData.address.postCode}
-              className="input"
+              className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="xx/xxx"
             />
@@ -187,7 +236,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="street"
               value={userData.address.street}
-              className="input"
+              className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Ulica"
             />
@@ -200,7 +249,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="number"
               name="houseNumber"
               value={userData.address.houseNumber}
-              className="input"
+              className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Numer Domu"
             />

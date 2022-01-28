@@ -16,25 +16,26 @@ import { auth } from "./firebase/firebase.config";
 import { useDocument } from "./hooks/useDocument";
 import { useRealTimeCollection } from "./hooks/useRealTimeCollection";
 import { RootState } from "./redux/store";
-import { setUserData, setUserType, setUserAuth } from "./redux/userSlice";
+import { setPrincipalData, setUserType, setUserAuth } from "./redux/principalSlice";
 import { CombinedPrincipalData, userType } from "./utils/interfaces";
 import { Loader } from "./loader/Loader";
 import { Classes } from "./pages/Classes";
 import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
+import { Teachers } from "./pages/Teachers";
 
 function App() {
   // eslint-disable-next-line
   const {} = useRealTimeCollection();
   const { getDocument, document } = useDocument();
   const [loading, setLoading] = useState(true);
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
 
   const dispatch = useDispatch();
 
   //zapisauje pobrane dane o zalogowanym uzytkowniku
   useEffect(() => {
-    dispatch(setUserData(document as CombinedPrincipalData));
+    dispatch(setPrincipalData(document as CombinedPrincipalData));
     setLoading(false);
     nProgress.done();
     // eslint-disable-next-line
@@ -124,6 +125,14 @@ function App() {
                 element={
                   <ProtectedRoute loading={loading}>
                     <Classes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teachers"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <Teachers />
                   </ProtectedRoute>
                 }
               />
