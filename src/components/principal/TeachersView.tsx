@@ -7,7 +7,7 @@ import { RootState } from "../../redux/store";
 import { SingleTeacherData } from "../../utils/interfaces";
 import { omit } from "lodash";
 import { TeachersTable } from "./teachers/TeachersTable";
-import { SearchButton } from "../searchButtona/SearchButton";
+import { SearchButton } from "../searchButton/SearchButton";
 export type TeachersDataWithoutPassword = Omit<SingleTeacherData, "password">[];
 export const TeachersView: React.FC = () => {
   const [teachersData, setTeachersData] = useState<TeachersDataWithoutPassword>(
