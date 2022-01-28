@@ -7,11 +7,20 @@ import { SingleTeacherData } from "../../utils/interfaces";
 import { omit } from "lodash";
 import { TeachersTable } from "./teachers/TeachersTable";
 import { SearchButton } from "../searchButton/SearchButton";
+import { RemoveTeacherModal } from "./teachers/RemoveTeacherModal";
 export type TeachersDataWithoutPassword = Omit<SingleTeacherData, "password">[];
+export interface ModalOptionsTeachers {
+  isOpen: boolean;
+  removedTeacher: Omit<SingleTeacherData, "password"> | null;
+}
 export const TeachersView: React.FC = () => {
   const [teachersData, setTeachersData] = useState<TeachersDataWithoutPassword>(
     []
   );
+  const [ModalOption, setModalOptions] = useState<ModalOptionsTeachers>({
+    isOpen: false,
+    removedTeacher: null,
+  });
   const [searchQuery, setsearchQuery] = useState<string>("");
   const state = useSelector((state: RootState) => state.principal);
   useEffect(() => {
@@ -35,19 +44,30 @@ export const TeachersView: React.FC = () => {
     }
   }, [state.schoolData?.teachers, searchQuery]);
   return (
-    <section className="card bg-base-200 px-8 py-4 relative">
-      <Link to="/" className="flex w-max items-center mb-2 gap-2">
-        <BsFillArrowLeftCircleFill className="transition-all hover:-translate-x-1.5 duration-300" />
-        Powrót do Panelu Dyrektora
-      </Link>
-      <header className="flex justify-center flex-col items-center gap-4">
-        <h2 className="text-primary text-2xl text-center">Lista Nauczycieli</h2>
-        <SearchButton
-          searchQuery={searchQuery}
-          setSearchQuery={setsearchQuery}
+    <>
+      <RemoveTeacherModal
+        ModalOptions={ModalOption}
+        setModalOptions={setModalOptions}
+      />
+      <section className="card bg-base-200 px-8 py-4 relative">
+        <Link to="/" className="flex w-max items-center mb-2 gap-2">
+          <BsFillArrowLeftCircleFill className="transition-all hover:-translate-x-1.5 duration-300" />
+          Powrót do Panelu Dyrektora
+        </Link>
+        <header className="flex justify-center flex-col items-center gap-4">
+          <h2 className="text-primary text-2xl text-center">
+            Lista Nauczycieli
+          </h2>
+          <SearchButton
+            searchQuery={searchQuery}
+            setSearchQuery={setsearchQuery}
+          />
+        </header>
+        <TeachersTable
+          teachersData={teachersData}
+          setModalOptions={setModalOptions}
         />
-      </header>
-      <TeachersTable teachersData={teachersData} />
-    </section>
+      </section>
+    </>
   );
 };

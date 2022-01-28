@@ -2,12 +2,17 @@ import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
-import { TeachersDataWithoutPassword } from "../TeachersView";
+import {
+  ModalOptionsTeachers,
+  TeachersDataWithoutPassword,
+} from "../TeachersView";
 interface TeachersTableProps {
   teachersData: TeachersDataWithoutPassword;
+  setModalOptions: React.Dispatch<React.SetStateAction<ModalOptionsTeachers>>;
 }
 export const TeachersTable: React.FC<TeachersTableProps> = ({
   teachersData,
+  setModalOptions,
 }) => {
   const hideEmailGender = useMediaQuery("(max-width:1000px)");
   const hideClassSubject = useMediaQuery("(max-width:768px)");
@@ -47,7 +52,12 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
                 >
                   <FaUserEdit size={20} />
                 </button>
-                <button className="btn btn-square btn-error btn-sm ml-2">
+                <button
+                  className="btn btn-square btn-error btn-sm ml-2"
+                  onClick={() =>
+                    setModalOptions({ isOpen: true, removedTeacher: x })
+                  }
+                >
                   <AiFillDelete size={20} />
                 </button>
               </td>

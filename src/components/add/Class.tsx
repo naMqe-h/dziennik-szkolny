@@ -34,7 +34,9 @@ export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
+  const schoolData = useSelector(
+    (state: RootState) => state.principal?.schoolData
+  );
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const [fieldErrors, setFieldErrors] = useState<classCredentialsErrors>(defaultErrorState);
@@ -120,7 +122,13 @@ export const Class = () => {
     const fullName = name + " - " + profile;
 
     const objWrapper: ClassesDataFromFirebase = {
-      [name]: { ...classCredential, fullName, subjects: [], students: [] },
+      [name.replaceAll(/\s/g, "")]: {
+        ...classCredential,
+        name: classCredential.name.replaceAll(/\s/g, ""),
+        fullName,
+        subjects: [],
+        students: [],
+      },
     };
     // update firebase
     setDocument(domain as string, "classes", objWrapper);
