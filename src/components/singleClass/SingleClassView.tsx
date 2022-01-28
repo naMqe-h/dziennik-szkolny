@@ -20,13 +20,13 @@ export const SingleClassView = () => {
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
   const classes = useSelector(
-    (state: RootState) => state.user.schoolData?.classes
+    (state: RootState) => state.principal.schoolData?.classes
   );
   const teachers = useSelector(
-    (state: RootState) => state.user.schoolData?.teachers
+    (state: RootState) => state.principal.schoolData?.teachers
   );
   const allStudents = useSelector(
-    (state: RootState) => state.user.schoolData?.students
+    (state: RootState) => state.principal.schoolData?.students
   );
   const isMobile = useMediaQuery("(max-width:700px)");
   useEffect(() => {

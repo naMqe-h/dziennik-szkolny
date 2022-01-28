@@ -1,4 +1,3 @@
-import { emit } from "process";
 import { useEffect, useState } from "react";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -14,7 +13,7 @@ export const TeachersView: React.FC = () => {
     []
   );
   const [searchQuery, setsearchQuery] = useState<string>("");
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
   useEffect(() => {
     if (state.schoolData?.teachers) {
       const TeachersDataWithoutPassword = Object.values(

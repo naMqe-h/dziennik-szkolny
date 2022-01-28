@@ -22,7 +22,7 @@ interface ModalOptions {
 export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const state = useSelector((state: RootState) => state.user);
+  const state = useSelector((state: RootState) => state.principal);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [ModalOptions, setModalOptions] = useState<ModalOptions>({

@@ -8,14 +8,15 @@ import {
 } from "../../../utils/interfaces";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { Link } from "react-router-dom";
 
 export const Stats: React.FC = () => {
   const userData = useSelector(
-    (state: RootState) => state.user.data
+    (state: RootState) => state.principal.data
   ) as CombinedPrincipalData;
 
   const schoolData = useSelector(
-    (state: RootState) => state.user.schoolData
+    (state: RootState) => state.principal.schoolData
   ) as CombinedSchoolDataFromFirebase;
 
   const { firstName } = userData;
@@ -74,7 +75,7 @@ export const Stats: React.FC = () => {
         <div className="stat-title">Aktualny Plan</div>
         <div className="stat-value">{planType}</div>
         <div className="stat-actions">
-          <button className="btn btn-sm btn-primary">Zmień plan</button>
+          <Link to='/settings/plan' className="btn btn-sm btn-primary">Zmień plan</Link>
         </div>
       </div>
     </div>

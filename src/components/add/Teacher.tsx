@@ -15,7 +15,7 @@ export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
   const { setDocument } = useSetDocument();
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.principal);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
     firstName: "",
@@ -96,7 +96,7 @@ export const Teacher = () => {
     if (user.schoolData) {
       setIsAdding(true);
       const objWrapper: TeachersDataFromFirebase = {
-        [teacher.email]: { ...teacher, classTeacher: "" },
+        [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [] },
       };
       setDocument(
         user.schoolData?.information.domain as string,

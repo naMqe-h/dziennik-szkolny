@@ -1,6 +1,6 @@
 import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { TeachersDataWithoutPassword } from "../TeachersView";
 interface TeachersTableProps {
