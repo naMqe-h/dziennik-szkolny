@@ -114,17 +114,17 @@ export const Teacher = () => {
     let errors = false;
     if (teacher.firstName.length === 0) {
       setFieldErrors((prev) => (
-            {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
+            {...prev, firstName: {'error':true, 'text':"Podaj Imię"}}))
         errors = true
     }
     if (teacher.lastName.length === 0) {
       setFieldErrors((prev) => (
-            {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}))
+            {...prev, lastName: {'error':true, 'text':"Podaj Nazwisko"}}))
        errors = true
     }
     if (teacher.email.length === 0 || teacher.password.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['emailAndPassword']: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
+        {...prev, emailAndPassword: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
       ))
       errors = true;
     }

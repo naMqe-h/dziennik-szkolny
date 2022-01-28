@@ -51,7 +51,7 @@ export const Subject: React.FC = () => {
     // }
     if (subjectData.name.length === 0){
       setFieldErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwe przedmiotu"}}))
+        {...prev, name: {'error':true, 'text':"Podaj nazwe przedmiotu"}}))
         errors = true
     }
     
@@ -64,7 +64,7 @@ export const Subject: React.FC = () => {
         )
       ) {
         setFieldErrors((prev) => (
-          {...prev, ['name']: {'error':true, 'text':"Podaj nazwa przedmiotu jest już zajęta"}}))
+          {...prev, name: {'error':true, 'text':"Podaj nazwa przedmiotu jest już zajęta"}}))
           errors = true
       }
     }
@@ -76,7 +76,7 @@ export const Subject: React.FC = () => {
         ).some((x) => x === nameWithoutWhitespace)
       ) {
         setFieldErrors((prev) => (
-          {...prev, ['name']: {'error':true, 'text':"Podany przedmiot już istnieje"}}))
+          {...prev, name: {'error':true, 'text':"Podany przedmiot już istnieje"}}))
           errors = true
       }
     }

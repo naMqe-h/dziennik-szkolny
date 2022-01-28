@@ -84,7 +84,7 @@ export const Class = () => {
     let errors = false;
     if (classCredential.name.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę klasy"}}
+        {...prev, name: {'error':true, 'text':"Podaj nazwę klasy"}}
       ))
       errors = true;
     }
@@ -93,19 +93,19 @@ export const Class = () => {
       if (classes) {
         if (classes.some((x) => x === classCredential.name)) {
           setFieldErrors((prev) => (
-            {...prev, ['name']: {'error':true, 'text':"Podana klasa już istenije"}}))
+            {...prev, name: {'error':true, 'text':"Podana klasa już istenije"}}))
             errors = true;
         }
       }
     }
     if (classCredential.profile.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['profile']: {'error':true, 'text':"Podaj Profil"}}))
+        {...prev, profile: {'error':true, 'text':"Podaj Profil"}}))
         errors = true;
     }
     if (classCredential.classTeacher.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['classTeacher']: {'error':true, 'text':"Wybierz wychowawcę"}}))
+        {...prev, classTeacher: {'error':true, 'text':"Wybierz wychowawcę"}}))
         errors = true;
     }
     

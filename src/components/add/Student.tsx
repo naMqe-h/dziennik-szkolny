@@ -95,37 +95,37 @@ export const Student = () => {
     let errors = false;
     if (student.firstName.length === 0) {
      setFieldErrors((prev) => (
-        {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}
+        {...prev, firstName: {'error':true, 'text':"Podaj Imię"}}
       ))
       errors = true;
     }
     if (student.lastName.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}
+        {...prev, lastName: {'error':true, 'text':"Podaj Nazwisko"}}
       ))
       errors = true;
     }
     if (student.birth.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['birth']: {'error':true, 'text':"Podaj Datę urodzenia"}}
+        {...prev, birth: {'error':true, 'text':"Podaj Datę urodzenia"}}
       ))
       errors = true;
     }
     if (student.pesel.length === 0 || !validatePesel(student.pesel)) {
       setFieldErrors((prev) => (
-        {...prev, ['pesel']: {'error':true, 'text':"Niepoprawny pesel"}}
+        {...prev, pesel: {'error':true, 'text':"Niepoprawny pesel"}}
       ))
       errors = true;
     }
     if (student.class.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['class']: {'error':true, 'text':"Wybierz klasę"}}
+        {...prev, class: {'error':true, 'text':"Wybierz klasę"}}
       ))
       errors = true;
     }
     if (student.email.length === 0 || student.password.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['emailAndPassword']: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
+        {...prev, emailAndPassword: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
       ))
       errors = true;
     }
