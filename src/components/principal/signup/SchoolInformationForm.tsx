@@ -75,34 +75,34 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       for (const item of takenDomains.names) {
         if (userData.domain === item) {
           setFieldErrors((prev) => (
-            {...prev, ['domain']: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
+            {...prev, domain: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
           errors = true
         }
       }
     }
     if (userData.name.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę szkoły"}}))
+        {...prev, name: {'error':true, 'text':"Podaj nazwę szkoły"}}))
       errors = true
     }
     if (userData.domain.split("").find((x) => x === "@")){
       setFieldErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj domenę bez @"}}))
+        {...prev, domain: {'error':true, 'text':"Podaj domenę bez @"}}))
         errors = true
       }
     if (userData.domain.length === 0){
       setFieldErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj poprawną domene"}}))
+        {...prev, domain: {'error':true, 'text':"Podaj poprawną domene"}}))
         errors = true
     }
     if (userData.address.city.length === 0){
       setAddressErrors((prev) => (
-        {...prev, ['city']: {'error':true, 'text':"Podaj miasto"}}))
+        {...prev, city: {'error':true, 'text':"Podaj miasto"}}))
         errors = true
     }
     if (userData.address.street.length === 0){
       setAddressErrors((prev) => (
-        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
+        {...prev, street: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
         errors = true
     }
     if (
@@ -110,12 +110,12 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       userData.address.postCode[2] !== "-"
     ){
       setAddressErrors((prev) => (
-        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
+        {...prev, postCode: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
         errors = true
     }
     if (userData.address.houseNumber === 0){
       setAddressErrors((prev) => (
-        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
+        {...prev, houseNumber: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
         errors = true
     }
 

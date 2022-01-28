@@ -70,38 +70,38 @@ export const PersonalInformationForm: React.FC<
     
     if(userData.firstName.length === 0){
       setFieldErrors((prev) => (
-        {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
+        {...prev, firstName: {'error':true, 'text':"Podaj Imię"}}))
         errors = true
     }
     if (userData.lastName.length === 0){
       setFieldErrors((prev) => (
-        {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}))
+        {...prev, lastName: {'error':true, 'text':"Podaj Nazwisko"}}))
         errors = true
     }
     if(userData.birth === ""){
       setFieldErrors((prev) => (
-        {...prev, ['birth']: {'error':true, 'text':"Podaj datę urodzenia"}}))
+        {...prev, birth: {'error':true, 'text':"Podaj datę urodzenia"}}))
         errors = true
     }
     if (userData.pesel.length !== 11){
       setFieldErrors((prev) => (
-        {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
+        {...prev, pesel: {'error':true, 'text':"Podaj poprawny pesel"}}))
         errors = true
     }
     if (!validatePesel(userData.pesel)){
       setFieldErrors((prev) => (
-        {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
+        {...prev, pesel: {'error':true, 'text':"Podaj poprawny pesel"}}))
         errors = true
     }
     if (userData.address.city.length === 0){
       setAddressErrors((prev) => (
-        {...prev, ['city']: {'error':true, 'text':"Podaj Miasto"}}))
+        {...prev, city: {'error':true, 'text':"Podaj Miasto"}}))
         errors = true
     }
     if (userData.address.street.length === 0){
       
       setAddressErrors((prev) => (
-        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę na której mieszkasz"}}))
+        {...prev, street: {'error':true, 'text':"Podaj ulicę na której mieszkasz"}}))
         errors = true
     }
     if (
@@ -109,12 +109,12 @@ export const PersonalInformationForm: React.FC<
       userData.address.postCode[2] !== "-"
     ){
       setAddressErrors((prev) => (
-        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny Kod Pocztowy"}}))
+        {...prev, postCode: {'error':true, 'text':"Podaj poprawny Kod Pocztowy"}}))
         errors = true
     }
     if (userData.address.houseNumber < 1 || userData.address.houseNumber.toString().length === 0){
       setAddressErrors((prev) => (
-        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny Numer Domu"}}))
+        {...prev, houseNumber: {'error':true, 'text':"Podaj poprawny Numer Domu"}}))
         errors = true
     }
 

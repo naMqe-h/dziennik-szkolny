@@ -76,18 +76,18 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
     let errors = false;
     if (!validateEmail(userData.email)){
       setFieldErrors((prev) => (
-        {...prev, ['email']: {'error':true, 'text':"Podaj Poprawny Email"}}))
+        {...prev, email: {'error':true, 'text':"Podaj Poprawny Email"}}))
         errors = true
     }
     
     if (userData.password.length < 6){
       setFieldErrors((prev) => (
-        {...prev, ['password']: {'error':true, 'text':"Hasło musi mieć 6 liter"}}))
+        {...prev, password: {'error':true, 'text':"Hasło musi mieć 6 liter"}}))
         errors = true
     }
     if (userData.password !== userData.repeatedPassword){
       setFieldErrors((prev) => (
-        {...prev, ['repeatedPassword']: {'error':true, 'text':"Podane hasła się nie zgadzają"}}))
+        {...prev, repeatedPassword: {'error':true, 'text':"Podane hasła się nie zgadzają"}}))
         errors = true
     }
 
