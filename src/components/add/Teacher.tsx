@@ -3,6 +3,7 @@ import {
   genderType,
   TeachersDataFromFirebase,
   TeacherData as teacherInterface,
+  ErrorObj,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { generateEmail, generatePassword } from "../../utils/utils";
@@ -10,6 +11,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+
+type TeachersCredentialsErrors = {
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  emailAndPassword: ErrorObj;
+};
+const defaultErrorState:TeachersCredentialsErrors = {
+  firstName: {error:false, text: ''},
+  lastName: {error:false, text: ''},
+  emailAndPassword: {error:false, text: ''},
+};
+
 
 export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
@@ -35,13 +48,28 @@ export const Teacher = () => {
       password: "",
     });
   }
+
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
+  const [fieldErrors, setFieldErrors] = useState<TeachersCredentialsErrors>(defaultErrorState);
+
+
   useEffect(() => {
     if (teacher.firstName.length >= 3 && teacher.lastName.length >= 3) {
       setCanBeGenerated(true);
+    } else {
+      setCanBeGenerated(false);
     }
   }, [teacher.firstName, teacher.lastName]);
+
+
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors]);
+
+
   useEffect(() => {
     if (user.schoolData?.subjects) {
       const temp: string[] = Object.values(user.schoolData.subjects).map(
@@ -53,6 +81,8 @@ export const Teacher = () => {
       });
     }
   }, [user.schoolData?.subjects]);
+
+
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const newPassword = generatePassword();
@@ -66,6 +96,7 @@ export const Teacher = () => {
     });
   };
 
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -78,19 +109,35 @@ export const Teacher = () => {
     });
   };
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (isAdding) return;
-    if (teacher.firstName.length === 0 && teacher.lastName.length === 0) {
-      return toast.error("Podaj wszystkie dane", { autoClose: 2000 });
-    }
-
+  const validateInputs = () => {
+    setFieldErrors(defaultErrorState);
+    let errors = false;
     if (teacher.firstName.length === 0) {
-      return toast.error("Podaj Imię", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+            {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
+        errors = true
     }
     if (teacher.lastName.length === 0) {
-      return toast.error("Podaj Nazwisko", { autoClose: 2000 });
+      setFieldErrors((prev) => (
+            {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}))
+       errors = true
     }
+    if (teacher.email.length === 0 || teacher.password.length === 0) {
+      setFieldErrors((prev) => (
+        {...prev, ['emailAndPassword']: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
+      ))
+      errors = true;
+    }
+    
+    return errors
+  }
+
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (isAdding || validateInputs()) return;
+
+    
     //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
     // const newObj:single
     if (user.schoolData) {
@@ -134,7 +181,7 @@ export const Teacher = () => {
             <span className="label-text">Imię</span>
           </label>
           <input
-            className="input"
+            className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Imię"
             name="firstName"
@@ -146,7 +193,7 @@ export const Teacher = () => {
             <span className="label-text">Naziwsko</span>
           </label>
           <input
-            className="input"
+            className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Naziwsko"
             name="lastName"

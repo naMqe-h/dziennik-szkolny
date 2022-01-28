@@ -1,52 +1,117 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
+  ErrorObj,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
 import { validateEmail } from "../../../utils/utils";
+
+
 interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
   setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
 }
+// ! template error handeling
+// ! --------------------------------
+// type LoginCredentialsErrors = {
+//   email: {error:boolean, text: string};
+//   password: {error:boolean, text: string};
+//   repeatedPassword: {error:boolean, text: string};
+// };
+// const defaultErrorState:LoginCredentialsErrors = {
+//   email: {error:false, text: ''},
+//   password: {error:false, text: ''},
+//   repeatedPassword: {error:false, text: ''},
+// };
+
+// const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+
+// className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
+
+// useEffect(() => {
+//   Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+//     toast.error(field.text, { autoClose: 2000 })
+//   ))
+// }, [fieldErrors]);
+
+// const validateInputs = () => {
+//   setFieldErrors(defaultErrorState);
+//   let errors = false;
+//   if (userData.email.length === 0){
+//     setFieldErrors((prev) => (
+//           {...prev, ['email']: {'error':true, 'text':"Podaj Email"}}))
+//     errors = true
+//   }
+//   return errors
+// }
+// ! --------------------------------
+
+
+type LoginCredentialsErrors = {
+  email: ErrorObj;
+  password: ErrorObj;
+  repeatedPassword: ErrorObj;
+};
+const defaultErrorState:LoginCredentialsErrors = {
+  email: {error:false, text: ''},
+  password: {error:false, text: ''},
+  repeatedPassword: {error:false, text: ''},
+};
 
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   set,
   setStep,
 }) => {
+
   const [userData, setuserData] = useState<PrincipalLoginCredentials>({
     email: "",
     password: "",
     repeatedPassword: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+
+  const validateInputs = () => {
+    setFieldErrors(defaultErrorState);
+    let errors = false;
+    if (!validateEmail(userData.email)){
+      setFieldErrors((prev) => (
+        {...prev, ['email']: {'error':true, 'text':"Podaj Poprawny Email"}}))
+        errors = true
+    }
+    
+    if (userData.password.length < 6){
+      setFieldErrors((prev) => (
+        {...prev, ['password']: {'error':true, 'text':"Hasło musi mieć 6 liter"}}))
+        errors = true
+    }
+    if (userData.password !== userData.repeatedPassword){
+      setFieldErrors((prev) => (
+        {...prev, ['repeatedPassword']: {'error':true, 'text':"Podane hasła się nie zgadzają"}}))
+        errors = true
+    }
+
+    return errors
+  }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setuserData((prev) => {
       return { ...prev, [name]: value };
     });
   }
+
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors]);
+
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    if (
-      userData.email.length === 0 &&
-      userData.password.length === 0 &&
-      userData.repeatedPassword.length === 0
-    )
-      return toast.error("Podaj dane", { autoClose: 2000 });
-    if (userData.email.length === 0)
-      return toast.error("Podaj Email", { autoClose: 2000 });
-    if (
-      userData.password.length === 0 &&
-      userData.repeatedPassword.length === 0
-    )
-      return toast.error("Podaj Hasło", { autoClose: 2000 });
-    if (!validateEmail(userData.email))
-      return toast.error("Podaj Poprawny Email", { autoClose: 2000 });
+    if(validateInputs()) return;
     //Todo Add auth
-    if (userData.password.length < 6)
-      return toast.error("Hasło musi mieć 6 liter ", { autoClose: 2000 });
-    if (userData.password !== userData.repeatedPassword)
-      return toast.error("Podane hasła się nie zgadzają", { autoClose: 2000 });
+    
     set({
       email: userData.email,
       password: userData.password,
@@ -65,7 +130,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             type="email"
             name="email"
             onChange={handleChange}
-            className="input"
+            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
             autoComplete="email"
             placeholder="your@email.com"
             value={userData.email}
@@ -79,7 +144,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="password"
             autoComplete="new-password"
             onChange={handleChange}
-            className="input"
+            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
             value={userData.password}
             placeholder="********"
           />
@@ -91,7 +156,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="repeatedPassword"
             autoComplete="repeat-password"
             onChange={handleChange}
-            className="input"
+            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
             value={userData.repeatedPassword}
             placeholder="********"
           />

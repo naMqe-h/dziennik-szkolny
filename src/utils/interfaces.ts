@@ -204,3 +204,11 @@ export interface updateClassStudents {
 export interface updatePrincipalPlanType{
   [key: string]: PlanTypes;
 }
+export type AddressErrors = {
+  city: ErrorObj;
+  houseNumber: ErrorObj;
+  postCode: ErrorObj;
+  street: ErrorObj;
+};
+
+export type ErrorObj = {error:boolean, text: string};

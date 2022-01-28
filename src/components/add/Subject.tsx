@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ErrorObj,
   SchoolSubjectsDataFromFirebase,
   SubjectData,
 } from "../../utils/interfaces";
@@ -17,18 +18,43 @@ const defaultState: SubjectDataForm = {
   name: "",
   teachers: [],
 };
+
+type SubjectCredentialsErrors = {
+  name: ErrorObj;
+  
+};
+const defaultErrorState:SubjectCredentialsErrors = {
+  name: {error:false, text: ''},
+};
+
 export const Subject: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const schoolData = useSelector((state: RootState) => state.principal.schoolData);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
-  function validateData(e: React.SyntheticEvent) {
-    e.preventDefault();
-    const nameWithoutWhitespace = subjectData.name.replaceAll(/\s+/g, "");
-    if (isAdding) return;
-    if (subjectData.name.length === 0)
-      return toast.error("Podaj nazwe przedmiotu", { autoClose: 2000 });
+  const [fieldErrors, setFieldErrors] = useState<SubjectCredentialsErrors>(defaultErrorState);
+
+  useEffect(() => {
+    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+      toast.error(field.text, { autoClose: 2000 })
+    ))
+  }, [fieldErrors]);
+
+  const validateInputs = (nameWithoutWhitespace: string) => {
+    setFieldErrors(defaultErrorState);
+    let errors = false;
+    // if (teacher.firstName.length === 0) {
+    //   setFieldErrors((prev) => (
+    //         {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
+    //     errors = true
+    // }
+    if (subjectData.name.length === 0){
+      setFieldErrors((prev) => (
+        {...prev, ['name']: {'error':true, 'text':"Podaj nazwe przedmiotu"}}))
+        errors = true
+    }
+    
     if (schoolData?.subjects) {
       if (
         Object.keys(schoolData?.subjects).some(
@@ -37,9 +63,9 @@ export const Subject: React.FC = () => {
             nameWithoutWhitespace.toLowerCase()
         )
       ) {
-        return toast.error("Podaj nazwa przedmiotu jest już zajęta", {
-          autoClose: 2000,
-        });
+        setFieldErrors((prev) => (
+          {...prev, ['name']: {'error':true, 'text':"Podaj nazwa przedmiotu jest już zajęta"}}))
+          errors = true
       }
     }
 
@@ -49,11 +75,20 @@ export const Subject: React.FC = () => {
           schoolData?.subjects as SchoolSubjectsDataFromFirebase
         ).some((x) => x === nameWithoutWhitespace)
       ) {
-        return toast.error("Podany przedmiot już istnieje", {
-          autoClose: 2000,
-        });
+        setFieldErrors((prev) => (
+          {...prev, ['name']: {'error':true, 'text':"Podany przedmiot już istnieje"}}))
+          errors = true
       }
     }
+    
+    return errors
+  }
+
+  function validateData(e: React.SyntheticEvent) {
+    e.preventDefault();
+    const nameWithoutWhitespace = subjectData.name.replaceAll(/\s+/g, "");
+    if (isAdding || validateInputs(nameWithoutWhitespace)) return;
+    
     setIsAdding(true);
     const wrapperObj: SubjectData = {
       name: subjectData.name,
@@ -105,10 +140,10 @@ export const Subject: React.FC = () => {
           <input
             type="text"
             name="name"
-            className="input"
+            className={`input ${fieldErrors.name.error ? "border-red-500" : ''}`}
             autoComplete="name"
             value={subjectData.name}
-            placeholder="Name"
+            placeholder="Nazwa przedmiotu"
             onChange={handleChange}
           />
         </div>
