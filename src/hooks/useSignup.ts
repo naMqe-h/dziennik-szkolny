@@ -21,11 +21,8 @@ export const useSignup = () => {
 
   useEffect(() => {
     getDocument('utils', 'domains')
+    // eslint-disable-next-line
   }, [])
-  
-  useEffect(() => {
-    console.log(document?.names);
-  }, [document])
 
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();

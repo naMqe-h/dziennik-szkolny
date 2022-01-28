@@ -129,9 +129,9 @@ export const SingleClassView = () => {
         </div>
         {subpage === "info" && (
           <div className="grid grid-cols-2 gap-2 xl:flex">
-            <button className="btn btn-primary btn-outline ml-2">
+            <Link to='/add/student' className="btn btn-primary btn-outline ml-2">
               Dodaj ucznia
-            </button>
+            </Link>
             <button className="btn btn-primary btn-outline ml-2">
               Wygeneruj uczniów
             </button>
