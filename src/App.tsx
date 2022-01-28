@@ -22,6 +22,7 @@ import { Loader } from "./loader/Loader";
 import { Classes } from "./pages/Classes";
 import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
+import { Teachers } from "./pages/Teachers";
 
 function App() {
   // eslint-disable-next-line
@@ -124,6 +125,14 @@ function App() {
                 element={
                   <ProtectedRoute loading={loading}>
                     <Classes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teachers"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <Teachers />
                   </ProtectedRoute>
                 }
               />
