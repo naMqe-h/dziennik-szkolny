@@ -148,6 +148,7 @@ export interface SingleStudentDataFromFirebase {
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
+  teachedClasses: string[]
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {

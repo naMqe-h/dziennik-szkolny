@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 export const Navbar = () => {
-  const userState = useSelector((state: RootState) => state.user.user);
+  const userState = useSelector((state: RootState) => state.principal.user);
   const { logoutUser } = useLogout();
 
   const handleLogout = () => {

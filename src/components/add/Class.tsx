@@ -24,16 +24,12 @@ export interface invalidInputs {
   profile: boolean;
   classTeacher: boolean;
 }
-const defaultStateForInvalidInputs: invalidInputs = {
-  name: false,
-  profile: false,
-  classTeacher: false,
-};
+
 export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
+  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const domain = schoolData?.information?.domain;

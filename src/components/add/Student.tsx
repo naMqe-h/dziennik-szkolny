@@ -28,7 +28,7 @@ export const Student = () => {
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.user?.schoolData);
+  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
   const classes = schoolData?.classes !== undefined ? schoolData.classes : {};
   const domain = schoolData?.information?.domain;
   const classNames: string[] = Object.keys(classes);

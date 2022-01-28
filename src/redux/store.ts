@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import principalReducer from "./principalSlice";
+import teacherSlice from "./teacherSlice";
+import studentSlice from "./studentSlice";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    principal: principalReducer,
+    teacher: teacherSlice,
+    student: studentSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

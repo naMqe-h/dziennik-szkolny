@@ -25,9 +25,9 @@ interface SubjectDataWithKey extends SubjectData {
 export const Subjects: React.FC<SubjectsProps> = ({ subjects, singleClass, isOpen, setIsOpen }) => {
     const { setDocument } = useSetDocument()
 
-    const allSubjects = useSelector((state: RootState) => state.user.schoolData?.subjects)
-    const allTeachers = useSelector((state: RootState) => state.user.schoolData?.teachers)
-    const domain = useSelector((state: RootState) => state.user.schoolData?.information.domain)
+    const allSubjects = useSelector((state: RootState) => state.principal.schoolData?.subjects)
+    const allTeachers = useSelector((state: RootState) => state.principal.schoolData?.teachers)
+    const domain = useSelector((state: RootState) => state.principal.schoolData?.information.domain)
 
     const [newSubjects, setNewSubjects] = useState<SubjectDataWithKey[]>()
     const [availableTeachers, setAvailableTeachers] = useState<SingleTeacherData[]>()
@@ -102,10 +102,15 @@ export const Subjects: React.FC<SubjectsProps> = ({ subjects, singleClass, isOpe
     const handleAdd = async () => {
         if(teacherValue !== '' && subjectValue !== '') {
             if(singleClass) {
-                const data = { [singleClass.name]: { ...singleClass, subjects: [...singleClass.subjects, { name: subjectValue, teacher: teacherValue }] }}
-                await setDocument(domain as string, 'classes', data)
-                setTeacherValue('')
-                setSubjectValue('')
+                if(allTeachers) {
+                    const allTeachedClasses = allTeachers[teacherValue].teachedClasses
+                    const data = {[singleClass.name]: { subjects: [...singleClass.subjects, { name: subjectValue, teacher: teacherValue }] }}
+                    const data2 = { [teacherValue]: { teachedClasses: [ ...allTeachedClasses, singleClass.name] } }
+                    await setDocument(domain as string, 'classes', data)
+                    await setDocument(domain as string, 'teachers', data2)
+                    setTeacherValue('')
+                    setSubjectValue('')
+                }
             }
         } else {
             toast.error('Wypełnij wszystkie pola', { autoClose: 2000 })

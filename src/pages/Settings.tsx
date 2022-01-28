@@ -13,10 +13,10 @@ import { Plan } from "../components/settings/Plan";
 
 
 export const Settings = () => {
-  const userType = useSelector((state: RootState) => state.user.userType);
-  const userData = useSelector((state: RootState) => state.user.data);
-  const userAuth = useSelector((state: RootState) => state.user.user);
-  const schoolData = useSelector((state: RootState) => state.user.schoolData?.information)
+  const userType = useSelector((state: RootState) => state.principal.userType);
+  const userData = useSelector((state: RootState) => state.principal.data);
+  const userAuth = useSelector((state: RootState) => state.principal.user);
+  const schoolData = useSelector((state: RootState) => state.principal.schoolData?.information)
   const { type } = useParams();
   const { setDocument } = useSetDocument();
   const navigate = useNavigate()
@@ -67,8 +67,8 @@ export const Settings = () => {
         const domain = userAuth.displayName?.split("~")[0];
 
   
-        setDocument(userType, uid, {["planType"]: plan});
-        setDocument(domain as string, "information", {["planType"]: plan});
+        setDocument(userType, uid, {planType: plan});
+        setDocument(domain as string, "information", {planType: plan});
   
       }
     }
