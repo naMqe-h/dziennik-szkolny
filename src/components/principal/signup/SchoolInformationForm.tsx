@@ -14,6 +14,7 @@ const schoolTypes = [
 interface SchoolInformationFormProps {
   set: React.Dispatch<React.SetStateAction<SchoolInformation>>;
   setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+  credentialsData: SchoolInformation
 }
 
 type LoginCredentialsErrors = {
@@ -35,19 +36,9 @@ const defaultAddressErrors:AddressErrors ={
 export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   set,
   setStep,
+  credentialsData
 }) => {
   const { getDocument, document: takenDomains } = useDocument();
-  const [userData, setUserData] = useState<SchoolInformation>({
-    name: "",
-    address: {
-      street: "",
-      houseNumber: 0,
-      postCode: "",
-      city: "",
-    },
-    type: "Technikum",
-    domain: "",
-  });
   const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
   const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
 
@@ -73,47 +64,47 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
 
     if (takenDomains) {
       for (const item of takenDomains.names) {
-        if (userData.domain === item) {
+        if (credentialsData.domain === item) {
           setFieldErrors((prev) => (
             {...prev, ['domain']: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
           errors = true
         }
       }
     }
-    if (userData.name.length === 0) {
+    if (credentialsData.name.length === 0) {
       setFieldErrors((prev) => (
         {...prev, ['name']: {'error':true, 'text':"Podaj nazwę szkoły"}}))
       errors = true
     }
-    if (userData.domain.split("").find((x) => x === "@")){
+    if (credentialsData.domain.split("").find((x) => x === "@")){
       setFieldErrors((prev) => (
         {...prev, ['domain']: {'error':true, 'text':"Podaj domenę bez @"}}))
         errors = true
       }
-    if (userData.domain.length === 0){
+    if (credentialsData.domain.length === 0){
       setFieldErrors((prev) => (
         {...prev, ['domain']: {'error':true, 'text':"Podaj poprawną domene"}}))
         errors = true
     }
-    if (userData.address.city.length === 0){
+    if (credentialsData.address.city.length === 0){
       setAddressErrors((prev) => (
         {...prev, ['city']: {'error':true, 'text':"Podaj miasto"}}))
         errors = true
     }
-    if (userData.address.street.length === 0){
+    if (credentialsData.address.street.length === 0){
       setAddressErrors((prev) => (
         {...prev, ['street']: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
         errors = true
     }
     if (
-      userData.address.postCode.length !== 6 ||
-      userData.address.postCode[2] !== "-"
+      credentialsData.address.postCode.length !== 6 ||
+      credentialsData.address.postCode[2] !== "-"
     ){
       setAddressErrors((prev) => (
         {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
         errors = true
     }
-    if (userData.address.houseNumber === 0){
+    if (credentialsData.address.houseNumber === 0){
       setAddressErrors((prev) => (
         {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
         errors = true
@@ -126,14 +117,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if(validateInputs()) return
-    
 
-    set({
-      address: userData.address,
-      name: userData.name,
-      type: userData.type,
-      domain: userData.domain,
-    });
     setStep(4);
   };
   const handleChange = (
@@ -146,13 +130,13 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       name === "postCode" ||
       name === "street"
     ) {
-      let addressObject = { ...userData.address };
+      let addressObject = { ...credentialsData.address };
       const newObj = { ...addressObject, [name]: value };
-      setUserData((prev) => {
+      set((prev) => {
         return { ...prev, address: newObj };
       });
     } else {
-      setUserData((prev) => {
+      set((prev) => {
         return { ...prev, [name]: value };
       });
     }
@@ -170,6 +154,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           type="text"
           placeholder="Nazwa szkoły"
           name="name"
+          value={credentialsData.name}
           onChange={handleChange}
         />
         <label className="label">
@@ -180,6 +165,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           type="text"
           placeholder="DomenaSzkolna.pl"
           name="domain"
+          value={credentialsData.domain}
           onChange={handleChange}
         />
 
@@ -188,7 +174,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
         </label>
         <select
           className="select select-bordered w-full"
-          value={userData.type}
+          value={credentialsData.type}
           name="type"
           onChange={(e) => handleChange(e)}
         >
@@ -209,7 +195,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="city"
-              value={userData.address.city}
+              value={credentialsData.address.city}
               className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Miasto"
@@ -222,7 +208,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="postCode"
-              value={userData.address.postCode}
+              value={credentialsData.address.postCode}
               className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="xx/xxx"
@@ -235,7 +221,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="street"
-              value={userData.address.street}
+              value={credentialsData.address.street}
               className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Ulica"
@@ -248,7 +234,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="number"
               name="houseNumber"
-              value={userData.address.houseNumber}
+              value={credentialsData.address.houseNumber}
               className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Numer Domu"

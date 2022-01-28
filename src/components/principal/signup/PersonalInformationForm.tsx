@@ -11,6 +11,7 @@ import { validatePesel } from "../../../utils/utils";
 interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
   setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+  credentialsData: PrincipalPersonalInformation;
 }
 
 type PersonalInfoCredentialsErrors = {
@@ -34,20 +35,7 @@ const defaultAddressErrors:AddressErrors ={
 
 export const PersonalInformationForm: React.FC<
   PersonalInformationFormProps
-> = ({ set, setStep }) => {
-  const [userData, setUserData] = useState<PrincipalPersonalInformation>({
-    birth: new Date().toISOString().split("T")[0],
-    firstName: "",
-    lastName: "",
-    pesel: "",
-    gender: "Mężczyzna",
-    address: {
-      city: "",
-      houseNumber: 0,
-      postCode: "",
-      street: "",
-    },
-  });
+> = ({ set, setStep, credentialsData }) => {
 
   const [fieldErrors, setFieldErrors] = useState<PersonalInfoCredentialsErrors>(defaultErrorState);
   const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
@@ -68,51 +56,51 @@ export const PersonalInformationForm: React.FC<
     
 
     
-    if(userData.firstName.length === 0){
+    if(credentialsData.firstName.length === 0){
       setFieldErrors((prev) => (
         {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
         errors = true
     }
-    if (userData.lastName.length === 0){
+    if (credentialsData.lastName.length === 0){
       setFieldErrors((prev) => (
         {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}))
         errors = true
     }
-    if(userData.birth === ""){
+    if(credentialsData.birth === ""){
       setFieldErrors((prev) => (
         {...prev, ['birth']: {'error':true, 'text':"Podaj datę urodzenia"}}))
         errors = true
     }
-    if (userData.pesel.length !== 11){
+    if (credentialsData.pesel.length !== 11){
       setFieldErrors((prev) => (
         {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
         errors = true
     }
-    if (!validatePesel(userData.pesel)){
+    if (!validatePesel(credentialsData.pesel)){
       setFieldErrors((prev) => (
         {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
         errors = true
     }
-    if (userData.address.city.length === 0){
+    if (credentialsData.address.city.length === 0){
       setAddressErrors((prev) => (
         {...prev, ['city']: {'error':true, 'text':"Podaj Miasto"}}))
         errors = true
     }
-    if (userData.address.street.length === 0){
+    if (credentialsData.address.street.length === 0){
       
       setAddressErrors((prev) => (
         {...prev, ['street']: {'error':true, 'text':"Podaj ulicę na której mieszkasz"}}))
         errors = true
     }
     if (
-      userData.address.postCode.length !== 6 ||
-      userData.address.postCode[2] !== "-"
+      credentialsData.address.postCode.length !== 6 ||
+      credentialsData.address.postCode[2] !== "-"
     ){
       setAddressErrors((prev) => (
         {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny Kod Pocztowy"}}))
         errors = true
     }
-    if (userData.address.houseNumber < 1 || userData.address.houseNumber.toString().length === 0){
+    if (credentialsData.address.houseNumber < 1 || credentialsData.address.houseNumber.toString().length === 0){
       setAddressErrors((prev) => (
         {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny Numer Domu"}}))
         errors = true
@@ -128,7 +116,7 @@ export const PersonalInformationForm: React.FC<
   ) {
     const { name, value } = e.target;
     if (name === "pesel") {
-      setUserData((prev) => {
+      set((prev) => {
         return { ...prev, [name]: String(value) };
       });
     } else if (
@@ -137,13 +125,13 @@ export const PersonalInformationForm: React.FC<
       name === "postCode" ||
       name === "street"
     ) {
-      let addressObject = { ...userData.address };
+      let addressObject = { ...credentialsData.address };
       const newObj = { ...addressObject, [name]: value };
-      setUserData((prev) => {
+      set((prev) => {
         return { ...prev, address: newObj };
       });
     }
-    setUserData((prev) => {
+    set((prev) => {
       return { ...prev, [name]: value };
     });
   }
@@ -151,15 +139,6 @@ export const PersonalInformationForm: React.FC<
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
     if(validateInputs()) return;
-
-    set({
-      address: userData.address,
-      birth: userData.birth,
-      firstName: userData.firstName,
-      gender: userData.gender,
-      lastName: userData.lastName,
-      pesel: userData.pesel,
-    });
     setStep(3);
   }
   return (
@@ -177,7 +156,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="firstName"
-                value={userData.firstName}
+                value={credentialsData.firstName}
                 className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Imię"
@@ -190,7 +169,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="lastName"
-                value={userData.lastName}
+                value={credentialsData.lastName}
                 className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Nazwisko"
@@ -203,7 +182,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="date"
                 name="birth"
-                value={userData.birth}
+                value={credentialsData.birth}
                 max={new Date().toISOString().split("T")[0]}
                 className={`input ${fieldErrors.birth.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
@@ -216,7 +195,7 @@ export const PersonalInformationForm: React.FC<
               </label>
               <select
                 name="gender"
-                value={userData.gender}
+                value={credentialsData.gender}
                 className="select"
                 onChange={handleChange}
               >
@@ -234,7 +213,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="number"
                 name="pesel"
-                value={userData.pesel}
+                value={credentialsData.pesel}
                 className={`input ${fieldErrors.pesel.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Pesel"
@@ -254,7 +233,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="city"
-                value={userData.address.city}
+                value={credentialsData.address.city}
                 className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Miasto"
@@ -267,7 +246,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="postCode"
-                value={userData.address.postCode}
+                value={credentialsData.address.postCode}
                 className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="xx-xxx"
@@ -280,7 +259,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="street"
-                value={userData.address.street}
+                value={credentialsData.address.street}
                 className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Ulica"
@@ -293,7 +272,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="number"
                 name="houseNumber"
-                value={userData.address.houseNumber}
+                value={credentialsData.address.houseNumber}
                 className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Numer Domu"

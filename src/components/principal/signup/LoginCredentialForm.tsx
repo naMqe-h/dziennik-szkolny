@@ -11,41 +11,9 @@ import { validateEmail } from "../../../utils/utils";
 interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
   setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+  credentialsData: PrincipalLoginCredentials;
+  OnStepChange: (validate:any, step:currentStepType) => void;
 }
-// ! template error handeling
-// ! --------------------------------
-// type LoginCredentialsErrors = {
-//   email: {error:boolean, text: string};
-//   password: {error:boolean, text: string};
-//   repeatedPassword: {error:boolean, text: string};
-// };
-// const defaultErrorState:LoginCredentialsErrors = {
-//   email: {error:false, text: ''},
-//   password: {error:false, text: ''},
-//   repeatedPassword: {error:false, text: ''},
-// };
-
-// const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
-
-// className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
-
-// useEffect(() => {
-//   Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-//     toast.error(field.text, { autoClose: 2000 })
-//   ))
-// }, [fieldErrors]);
-
-// const validateInputs = () => {
-//   setFieldErrors(defaultErrorState);
-//   let errors = false;
-//   if (userData.email.length === 0){
-//     setFieldErrors((prev) => (
-//           {...prev, ['email']: {'error':true, 'text':"Podaj Email"}}))
-//     errors = true
-//   }
-//   return errors
-// }
-// ! --------------------------------
 
 
 type LoginCredentialsErrors = {
@@ -62,30 +30,28 @@ const defaultErrorState:LoginCredentialsErrors = {
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   set,
   setStep,
+  credentialsData,
+  OnStepChange
 }) => {
 
-  const [userData, setuserData] = useState<PrincipalLoginCredentials>({
-    email: "",
-    password: "",
-    repeatedPassword: "",
-  });
   const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+  const [validated, setValidated] = useState<Boolean>(false);
 
   const validateInputs = () => {
     setFieldErrors(defaultErrorState);
     let errors = false;
-    if (!validateEmail(userData.email)){
+    if (!validateEmail(credentialsData.email)){
       setFieldErrors((prev) => (
         {...prev, ['email']: {'error':true, 'text':"Podaj Poprawny Email"}}))
         errors = true
     }
     
-    if (userData.password.length < 6){
+    if (credentialsData.password.length < 6){
       setFieldErrors((prev) => (
         {...prev, ['password']: {'error':true, 'text':"Hasło musi mieć 6 liter"}}))
         errors = true
     }
-    if (userData.password !== userData.repeatedPassword){
+    if (credentialsData.password !== credentialsData.repeatedPassword){
       setFieldErrors((prev) => (
         {...prev, ['repeatedPassword']: {'error':true, 'text':"Podane hasła się nie zgadzają"}}))
         errors = true
@@ -96,10 +62,19 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setuserData((prev) => {
+    set((prev) => {
       return { ...prev, [name]: value };
     });
   }
+  useEffect(() => {
+    setValidated(false);
+  }, [])
+  
+  useEffect(() => () => {
+    if(!validated){
+      OnStepChange(validateInputs, 1)
+    }
+  }, [])
 
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -110,13 +85,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
     if(validateInputs()) return;
-    //Todo Add auth
-    
-    set({
-      email: userData.email,
-      password: userData.password,
-      repeatedPassword: userData.repeatedPassword,
-    });
+    setValidated(true);
     setStep(2);
   }
   return (
@@ -133,7 +102,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
             autoComplete="email"
             placeholder="your@email.com"
-            value={userData.email}
+            value={credentialsData.email}
           />
 
           <label className="label mt-3">
@@ -144,8 +113,8 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="password"
             autoComplete="new-password"
             onChange={handleChange}
-            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
-            value={userData.password}
+            className={`input ${fieldErrors.password.error ? "border-red-500" : ''}`}
+            value={credentialsData.password}
             placeholder="********"
           />
           <label className="label mt-3">
@@ -156,8 +125,8 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="repeatedPassword"
             autoComplete="repeat-password"
             onChange={handleChange}
-            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
-            value={userData.repeatedPassword}
+            className={`input ${fieldErrors.repeatedPassword.error ? "border-red-500" : ''}`}
+            value={credentialsData.repeatedPassword}
             placeholder="********"
           />
           <button

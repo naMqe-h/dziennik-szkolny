@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginCredentialForm } from "./signup/LoginCredentialForm";
 import { PersonalInformationForm } from "./signup/PersonalInformationForm";
 import Steps from "./signup/Steps";
@@ -13,8 +13,11 @@ import { SchoolInformationForm } from "./signup/SchoolInformationForm";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChoosePlanForm } from "./signup/ChoosePlanForm";
 import { Summary } from "./signup/Summary";
+import reactSelect from "react-select";
+import { toast } from "react-toastify";
 export const SignupPrincipalView: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<currentStepType>(1);
+  const [maxStep, setMaxStep] = useState<currentStepType>(1);
   const [PrincipalLoginCredentials, setPrincipalLoginCredentials] =
     useState<PrincipalLoginCredentials>({
       email: "",
@@ -23,7 +26,7 @@ export const SignupPrincipalView: React.FC = () => {
     });
   const [PrincipalPersonalInformation, setPrincipalPersonalInformation] =
     useState<PrincipalPersonalInformation>({
-      birth: "",
+      birth: new Date().toISOString().split("T")[0],
       firstName: "",
       lastName: "",
       pesel: "",
@@ -48,11 +51,34 @@ export const SignupPrincipalView: React.FC = () => {
       domain: "",
     }
   );
+
+  // TODO
+  // ? ----------------------------------------------------------
+  // ! Przenieść walidacje
+  // ! nowa funkcja setStep która najpierw sprawdza validate
+  // ! switch currentStep na odpowiedni validator
+  // ? ----------------------------------------------------------
+
   const [chosenPlan, setchosenPlan] = useState<PlanTypes>("Basic");
+
+    useEffect(() => {
+      if(currentStep > maxStep){
+        setMaxStep(currentStep);
+      }
+    }, [currentStep]);
+
+  const OnStepChange = (validate: any, componentStep: currentStepType):void => {
+    if(validate()){
+      toast.error('Podano niepoprawne dane.', { autoClose: 2000 })
+      setCurrentStep(componentStep);
+    }
+  }
+    
+
   return (
     <div className="flex justify-center">
       <section className="flex justify-center items-center p-4 px-2 m-4  rounded-xl w-[80%] flex-col">
-        <Steps currentStep={currentStep} />
+        <Steps currentStep={maxStep} setStep={setCurrentStep} />
         <AnimatePresence exitBeforeEnter>
           <motion.div
             key={currentStep}
@@ -67,18 +93,22 @@ export const SignupPrincipalView: React.FC = () => {
               <LoginCredentialForm
                 set={setPrincipalLoginCredentials}
                 setStep={setCurrentStep}
+                credentialsData={PrincipalLoginCredentials}
+                OnStepChange={OnStepChange}
               />
             )}
             {currentStep === 2 && (
               <PersonalInformationForm
                 set={setPrincipalPersonalInformation}
                 setStep={setCurrentStep}
+                credentialsData={PrincipalPersonalInformation}
               />
             )}
             {currentStep === 3 && (
               <SchoolInformationForm
                 set={setSchoolInformation}
                 setStep={setCurrentStep}
+                credentialsData={SchoolInformation}
               />
             )}
             {currentStep === 4 && (

@@ -1,5 +1,6 @@
 export interface StepsProps {
   currentStep: number;
+  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
 }
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
 export type userType = "principals" | "teachers" | "students";
