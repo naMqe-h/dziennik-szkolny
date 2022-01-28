@@ -66,13 +66,7 @@ export interface TeacherData {
   email: string;
   password: string;
 }
-//! Domyslne zmienic
-type schoolSubject =
-  | "Matematyka"
-  | "Angielski"
-  | "Język Polski"
-  | "WF"
-  | "Historia";
+
 //?? Interfejs przy dodawaniu formularza dla nowego studenta
 export interface StudentData {
   firstName: string;
@@ -145,10 +139,20 @@ export interface SingleStudentDataFromFirebase {
   class: string;
   grades: { [key: string]: SchoolGrade[] };
 }
+//? Interface dla lepszej walidacji dostępnych godzin nauczyciela
+interface teacherWorkingHours {
+  dayOfWeek: daysOfWeek,
+  hour: number,
+  className: string
+}
+//? Interface dni tygodnia
+type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
+
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
   teachedClasses: string[]
+  workingHours: teacherWorkingHours[]
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {

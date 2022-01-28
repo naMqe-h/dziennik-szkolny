@@ -96,7 +96,7 @@ export const Teacher = () => {
     if (user.schoolData) {
       setIsAdding(true);
       const objWrapper: TeachersDataFromFirebase = {
-        [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [] },
+        [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [], workingHours: [] },
       };
       setDocument(
         user.schoolData?.information.domain as string,
