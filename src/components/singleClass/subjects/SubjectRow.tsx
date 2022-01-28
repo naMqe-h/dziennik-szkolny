@@ -23,7 +23,7 @@ export const SubjectRow: React.FC<SubjectRowProps> = ({ subject, number }) => {
                 }
             }
         }
-
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -34,7 +34,8 @@ export const SubjectRow: React.FC<SubjectRowProps> = ({ subject, number }) => {
                 }
             }
         }
-    }, [subjectInfo])
+        // eslint-disable-next-line
+    }, [allTeachers, subjectInfo])
 
     return (
         <tr>

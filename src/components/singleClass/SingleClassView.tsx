@@ -17,6 +17,7 @@ export const SingleClassView = () => {
   const [singleClass, setSingleClass] = useState<SingleClassData>();
   const [classTeacherName, setClassTeacherName] = useState<string>();
   const [studentsInfo, setStudentsInfo] = useState({});
+  const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
   const classes = useSelector(
     (state: RootState) => state.user.schoolData?.classes
@@ -28,7 +29,6 @@ export const SingleClassView = () => {
     (state: RootState) => state.user.schoolData?.students
   );
   const isMobile = useMediaQuery("(max-width:700px)");
-  const buttonsMQ = useMediaQuery("(max-width:1200px)");
   useEffect(() => {
     if (classes && id) {
       for (const [key, value] of Object.entries(classes)) {
@@ -139,7 +139,7 @@ export const SingleClassView = () => {
         )}
         {subpage === "subjects" && (
           <div className="grid grid-cols-1 gap-2 xl:flex">
-            <button className="btn btn-primary btn-outline ml-2">
+            <button onClick={() => setIsSubjectOpen(prev => !prev)} className="btn btn-primary btn-outline ml-2">
               Dodaj przedmiot
             </button>
           </div>
@@ -154,7 +154,7 @@ export const SingleClassView = () => {
       </div>
 
       {subpage === "info" && <SingleClassTable studentsInfo={studentsInfo} />}
-      {subpage === "subjects" && <Subjects subjects={singleClass?.subjects} />}
+      {subpage === "subjects" && <Subjects setIsOpen={setIsSubjectOpen} isOpen={isSubjectOpen} subjects={singleClass?.subjects} singleClass={singleClass} />}
       {subpage === "lesson-plan" && <p>Plan lekcji</p>}
       {subpage === "frequency" && <p>frekwencja</p>}
       {subpage === "grades" && <Grades studentsInfo={studentsInfo} />}
