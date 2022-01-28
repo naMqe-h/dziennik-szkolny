@@ -1,14 +1,7 @@
-import {
-  updateDoc,
-  doc,
-  deleteField,
-  arrayRemove,
-  setDoc,
-} from "firebase/firestore";
+import { deleteField, arrayRemove } from "firebase/firestore";
 import nProgress from "nprogress";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { db } from "../../../firebase/firebase.config";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../../redux/store";
