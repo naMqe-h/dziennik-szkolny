@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { AddressErrors, currentStepType, ErrorObj, SchoolInformation } from "../../../utils/interfaces";
-import { useDocument } from "../../../hooks/useDocument";
+import { AddressErrors, currentStepType, SchoolCredentialsErrors, SchoolInformation } from "../../../utils/interfaces";
+
 
 const schoolTypes = [
   "Szkoła Podstawowa",
@@ -13,39 +13,19 @@ const schoolTypes = [
 
 interface SchoolInformationFormProps {
   set: React.Dispatch<React.SetStateAction<SchoolInformation>>;
-  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
-  credentialsData: SchoolInformation
+  setStep: (step: currentStepType, current: currentStepType) => void;
+  credentialsData: SchoolInformation;
+  fieldErrors: SchoolCredentialsErrors;
+  addressErrors: AddressErrors;
 }
-
-type LoginCredentialsErrors = {
-  name: ErrorObj;
-  domain: ErrorObj;
-};
-const defaultErrorState:LoginCredentialsErrors = {
-  name: {error:false, text: ''},
-  domain: {error:false, text: ''},
-};
-const defaultAddressErrors:AddressErrors ={
-  city: {error:false, text: ''},
-  houseNumber: {error:false, text: ''},
-  postCode: {error:false, text: ''},
-  street: {error:false, text: ''},
-}
-
 
 export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   set,
   setStep,
-  credentialsData
+  credentialsData,
+  fieldErrors,
+  addressErrors
 }) => {
-  const { getDocument, document: takenDomains } = useDocument();
-  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
-  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
-
-  useEffect(() => {
-    getDocument("utils", "domains");
-    // eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -57,69 +37,13 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   }, [fieldErrors, addressErrors]);
 
 
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    setAddressErrors(defaultAddressErrors);
-    let errors = false;
-
-    if (takenDomains) {
-      for (const item of takenDomains.names) {
-        if (credentialsData.domain === item) {
-          setFieldErrors((prev) => (
-            {...prev, ['domain']: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
-          errors = true
-        }
-      }
-    }
-    if (credentialsData.name.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę szkoły"}}))
-      errors = true
-    }
-    if (credentialsData.domain.split("").find((x) => x === "@")){
-      setFieldErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj domenę bez @"}}))
-        errors = true
-      }
-    if (credentialsData.domain.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj poprawną domene"}}))
-        errors = true
-    }
-    if (credentialsData.address.city.length === 0){
-      setAddressErrors((prev) => (
-        {...prev, ['city']: {'error':true, 'text':"Podaj miasto"}}))
-        errors = true
-    }
-    if (credentialsData.address.street.length === 0){
-      setAddressErrors((prev) => (
-        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
-        errors = true
-    }
-    if (
-      credentialsData.address.postCode.length !== 6 ||
-      credentialsData.address.postCode[2] !== "-"
-    ){
-      setAddressErrors((prev) => (
-        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
-        errors = true
-    }
-    if (credentialsData.address.houseNumber === 0){
-      setAddressErrors((prev) => (
-        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
-        errors = true
-    }
-
-    return errors
-  }
-
+ 
 
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if(validateInputs()) return
-
-    setStep(4);
+    setStep(4, 3);
   };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {

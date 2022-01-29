@@ -3,42 +3,23 @@ import { toast } from "react-toastify";
 import {
   AddressErrors,
   currentStepType,
-  ErrorObj,
+  PersonalInfoCredentialsErrors,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
 import { validatePesel } from "../../../utils/utils";
 
 interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
-  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+  setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: PrincipalPersonalInformation;
-}
-
-type PersonalInfoCredentialsErrors = {
-  firstName: ErrorObj;
-  lastName: ErrorObj;
-  birth: ErrorObj;
-  pesel: ErrorObj;
-};
-const defaultErrorState:PersonalInfoCredentialsErrors = {
-  firstName: {error:false, text: ''},
-  lastName: {error:false, text: ''},
-  birth: {error:false, text: ''},
-  pesel: {error:false, text: ''},
-};
-const defaultAddressErrors:AddressErrors ={
-  city: {error:false, text: ''},
-  houseNumber: {error:false, text: ''},
-  postCode: {error:false, text: ''},
-  street: {error:false, text: ''},
+  fieldErrors: PersonalInfoCredentialsErrors;
+  addressErrors: AddressErrors
 }
 
 export const PersonalInformationForm: React.FC<
   PersonalInformationFormProps
-> = ({ set, setStep, credentialsData }) => {
+> = ({ set, setStep, credentialsData, fieldErrors, addressErrors }) => {
 
-  const [fieldErrors, setFieldErrors] = useState<PersonalInfoCredentialsErrors>(defaultErrorState);
-  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
  
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -49,67 +30,6 @@ export const PersonalInformationForm: React.FC<
     ))
   }, [fieldErrors, addressErrors]);
 
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    setAddressErrors(defaultAddressErrors);
-    let errors = false;
-    
-
-    
-    if(credentialsData.firstName.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
-        errors = true
-    }
-    if (credentialsData.lastName.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, ['lastName']: {'error':true, 'text':"Podaj Nazwisko"}}))
-        errors = true
-    }
-    if(credentialsData.birth === ""){
-      setFieldErrors((prev) => (
-        {...prev, ['birth']: {'error':true, 'text':"Podaj datę urodzenia"}}))
-        errors = true
-    }
-    if (credentialsData.pesel.length !== 11){
-      setFieldErrors((prev) => (
-        {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
-        errors = true
-    }
-    if (!validatePesel(credentialsData.pesel)){
-      setFieldErrors((prev) => (
-        {...prev, ['pesel']: {'error':true, 'text':"Podaj poprawny pesel"}}))
-        errors = true
-    }
-    if (credentialsData.address.city.length === 0){
-      setAddressErrors((prev) => (
-        {...prev, ['city']: {'error':true, 'text':"Podaj Miasto"}}))
-        errors = true
-    }
-    if (credentialsData.address.street.length === 0){
-      
-      setAddressErrors((prev) => (
-        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę na której mieszkasz"}}))
-        errors = true
-    }
-    if (
-      credentialsData.address.postCode.length !== 6 ||
-      credentialsData.address.postCode[2] !== "-"
-    ){
-      setAddressErrors((prev) => (
-        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny Kod Pocztowy"}}))
-        errors = true
-    }
-    if (credentialsData.address.houseNumber < 1 || credentialsData.address.houseNumber.toString().length === 0){
-      setAddressErrors((prev) => (
-        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny Numer Domu"}}))
-        errors = true
-    }
-
-    
-
-    return errors
-  }  
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -138,8 +58,7 @@ export const PersonalInformationForm: React.FC<
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    if(validateInputs()) return;
-    setStep(3);
+    setStep(3, 2);
   }
   return (
     <section className="p-10 card justify-center items-center bg-base-200  mt-5 md:mt-20">

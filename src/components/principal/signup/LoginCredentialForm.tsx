@@ -3,62 +3,25 @@ import { toast } from "react-toastify";
 import {
   currentStepType,
   ErrorObj,
+  LoginCredentialsErrors,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
-import { validateEmail } from "../../../utils/utils";
 
 
 interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
-  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+  setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: PrincipalLoginCredentials;
-  OnStepChange: (validate:any, step:currentStepType) => void;
+  fieldErrors: LoginCredentialsErrors;
 }
-
-
-type LoginCredentialsErrors = {
-  email: ErrorObj;
-  password: ErrorObj;
-  repeatedPassword: ErrorObj;
-};
-const defaultErrorState:LoginCredentialsErrors = {
-  email: {error:false, text: ''},
-  password: {error:false, text: ''},
-  repeatedPassword: {error:false, text: ''},
-};
 
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   set,
   setStep,
   credentialsData,
-  OnStepChange
+  fieldErrors
 }) => {
-
-  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
-  const [validated, setValidated] = useState<Boolean>(false);
-
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    let errors = false;
-    if (!validateEmail(credentialsData.email)){
-      setFieldErrors((prev) => (
-        {...prev, ['email']: {'error':true, 'text':"Podaj Poprawny Email"}}))
-        errors = true
-    }
-    
-    if (credentialsData.password.length < 6){
-      setFieldErrors((prev) => (
-        {...prev, ['password']: {'error':true, 'text':"Hasło musi mieć 6 liter"}}))
-        errors = true
-    }
-    if (credentialsData.password !== credentialsData.repeatedPassword){
-      setFieldErrors((prev) => (
-        {...prev, ['repeatedPassword']: {'error':true, 'text':"Podane hasła się nie zgadzają"}}))
-        errors = true
-    }
-
-    return errors
-  }
+  
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -66,15 +29,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
       return { ...prev, [name]: value };
     });
   }
-  useEffect(() => {
-    setValidated(false);
-  }, [])
   
-  useEffect(() => () => {
-    if(!validated){
-      OnStepChange(validateInputs, 1)
-    }
-  }, [])
 
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -84,9 +39,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    if(validateInputs()) return;
-    setValidated(true);
-    setStep(2);
+    setStep(2, 1);
   }
   return (
     <section className="p-10 card justify-center items-center bg-base-200  mt-5 md:mt-20">
