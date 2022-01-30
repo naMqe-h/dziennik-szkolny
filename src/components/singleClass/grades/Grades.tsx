@@ -1,4 +1,4 @@
-import { StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { SingleStudentDataFromFirebase, StudentsDataFromFirebase } from "../../../utils/interfaces"
 import { SingleStudentGradeRow } from "./SingleStudentGradeRow";
 
 interface GradesProps {
@@ -6,7 +6,15 @@ interface GradesProps {
 }
 
 export const Grades: React.FC<GradesProps> = ({ studentsInfo }) => {
-    const students = Object.values(studentsInfo)
+    const tempStudents = Object.values(studentsInfo)
+
+    const students = tempStudents.sort(
+        (a: SingleStudentDataFromFirebase, b: SingleStudentDataFromFirebase) =>
+            a.lastName.localeCompare(b.lastName, "pl")
+    );
+    
+    
+    console.log(students)
 
     return (
         <div className="overflow-x-auto">
