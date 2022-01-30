@@ -133,7 +133,7 @@ export const Student = () => {
     return errors
   }
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (isAdding || validateInputs() ) return;
     
@@ -143,13 +143,13 @@ export const Student = () => {
     };
     if (schoolData) {
       const previousStudents = schoolData.classes[student.class].students;
-      setDocument(domain as string, "students", objWrapper);
-      setDocument(domain as string, "classes", {
+      await setDocument(domain as string, "students", objWrapper);
+      await setDocument(domain as string, "classes", {
         [student.class]: {
           students: [...previousStudents, student.email],
         },
       });
-      updateCounter(domain as string, "studentsCount", 'increment');
+      await updateCounter(domain as string, "studentsCount", 'increment');
       clearForm();
       setIsAdding(false);
       return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
