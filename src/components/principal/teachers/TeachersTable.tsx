@@ -16,15 +16,15 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
 }) => {
   const hideEmailGender = useMediaQuery("(max-width:1000px)");
   const hideClassSubject = useMediaQuery("(max-width:768px)");
-  const hideLP = useMediaQuery("(max-width:430px)");
+  const hideLPDelete = useMediaQuery("(max-width:430px)");
   const navigate = useNavigate();
   return (
     <table className="table table-zebra mt-4  w-full text-center">
       <thead>
         <tr>
-          {!hideLP && <th>LP.</th>}
-          <th>Imię</th>
+          {!hideLPDelete && <th>LP.</th>}
           <th>Nazwisko</th>
+          <th>Imię</th>
           {!hideEmailGender && <th>Email</th>}
           {!hideClassSubject && <th>Klasa</th>}
           {!hideClassSubject && <th>Przedmiot</th>}
@@ -36,9 +36,9 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
         {teachersData.map((x, index) => {
           return (
             <tr className="hover:brightness-125 cursor-pointer" key={x.email}>
-              {!hideLP && <td>{index + 1}</td>}
-              <td>{x.firstName}</td>
+              {!hideLPDelete && <td>{index + 1}</td>}
               <td>{x.lastName}</td>
+              <td>{x.firstName}</td>
               {!hideEmailGender && <td>{x.email}</td>}
               {!hideClassSubject && (
                 <td>{x.classTeacher === "" ? "Brak klasy" : x.classTeacher}</td>
@@ -52,14 +52,16 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
                 >
                   <FaUserEdit size={20} />
                 </button>
-                <button
-                  className="btn btn-square btn-error btn-sm ml-2"
-                  onClick={() =>
-                    setModalOptions({ isOpen: true, removedTeacher: x })
-                  }
-                >
-                  <AiFillDelete size={20} />
-                </button>
+                {!hideLPDelete && (
+                  <button
+                    className="btn btn-square btn-error btn-sm ml-2"
+                    onClick={() =>
+                      setModalOptions({ isOpen: true, removedTeacher: x })
+                    }
+                  >
+                    <AiFillDelete size={20} />
+                  </button>
+                )}
               </td>
             </tr>
           );

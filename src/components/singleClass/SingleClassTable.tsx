@@ -7,10 +7,12 @@ import { SingleClassTableRow } from "./SingleClassTableRow";
 
 interface SingleClassTableProps {
   studentsInfo: StudentsDataFromFirebase;
+  showDelete: boolean;
 }
 
 export const SingleClassTable: React.FC<SingleClassTableProps> = ({
   studentsInfo,
+  showDelete,
 }) => {
   const tempStudents: SingleStudentDataFromFirebase[] =
     Object.values(studentsInfo);
@@ -45,6 +47,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   number={index + 1}
                   isMobile={isMobile}
                   isExtraSmallDevice={isExtraSmallDevice}
+                  showDelete={showDelete}
                 />
               ))}
             </tbody>
@@ -68,6 +71,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   number={index + 1}
                   isMobile={isMobile}
                   isExtraSmallDevice={isExtraSmallDevice}
+                  showDelete={showDelete}
                 />
               ))}
             </tbody>

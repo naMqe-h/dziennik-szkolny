@@ -1,3 +1,5 @@
+import { AiFillDelete } from "react-icons/ai";
+import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SingleClassData } from "../../../utils/interfaces";
@@ -13,7 +15,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
   removeClass,
 }) => {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery("(max-width:750px)");
   return (
     <table className="table table-zebra w-full text-center ">
       <thead>
@@ -64,18 +66,18 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   <td>{item.students.length}</td>
                   <td>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-square btn-warning btn-sm "
                       onClick={() => navigate(`/class/${item.name}/info`)}
                     >
-                      Wyświetl
+                      <FaUserEdit size={20} />
                     </button>
                     <button
-                      className="btn btn-error ml-4"
+                      className="btn btn-square btn-error btn-sm ml-2"
                       onClick={() => {
                         removeClass(item, false);
                       }}
                     >
-                      Usuń
+                      <AiFillDelete size={20} />
                     </button>
                   </td>
                 </tr>
