@@ -1,5 +1,4 @@
-import { FirebaseError } from "firebase/app";
-import { deleteField, FirestoreErrorCode } from "firebase/firestore";
+import { deleteField } from "firebase/firestore";
 import nProgress from "nprogress";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,11 +8,11 @@ import { RootState } from "../../../redux/store";
 import { SingleStudentDataFromFirebase } from "../../../utils/interfaces";
 import { ModalOptionsStudent } from "../StudentsView";
 
-interface RemoveStudentModal {
+interface RemoveStudentModalProps {
   ModalOptions: ModalOptionsStudent;
   setModalOptions: React.Dispatch<React.SetStateAction<ModalOptionsStudent>>;
 }
-export const RemoveStudentModal: React.FC<RemoveStudentModal> = ({
+export const RemoveStudentModal: React.FC<RemoveStudentModalProps> = ({
   ModalOptions,
   setModalOptions,
 }) => {

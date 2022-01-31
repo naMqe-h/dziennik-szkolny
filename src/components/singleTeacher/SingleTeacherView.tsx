@@ -11,6 +11,6 @@ export const SingleTeacherView = () => {
     const queryEmail = `${email}@${domain}`;
     //!State Nauczyciela
     console.log(state.schoolData?.teachers[queryEmail]);
-  }, [email]);
+  }, [email, state.schoolData?.information.domain, state.schoolData?.teachers]);
   return <div></div>;
 };
