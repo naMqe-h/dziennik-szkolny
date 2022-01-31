@@ -6,6 +6,7 @@ interface SingleClassTableRowProps {
   number: number;
   isMobile: boolean;
   isExtraSmallDevice: boolean;
+  showDelete: boolean;
 }
 
 export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
@@ -13,6 +14,7 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
   number,
   isMobile,
   isExtraSmallDevice,
+  showDelete,
 }) => {
   return !isMobile ? (
     <tr>
@@ -42,9 +44,11 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
         <button className="btn btn-square btn-warning btn-sm">
           <FaUserEdit size={20} />
         </button>
-        <button className="btn btn-square btn-error btn-sm ml-2">
-          <AiFillDelete size={20} />
-        </button>
+        {!showDelete && (
+          <button className="btn btn-square btn-error btn-sm ml-2">
+            <AiFillDelete size={20} />
+          </button>
+        )}
       </td>
     </tr>
   );

@@ -139,11 +139,14 @@ export const ClassesView: React.FC = () => {
         </div>
       </div>
       <div className="bg-base-200 rounded-xl shadow-lg p-8 overflow-x-auto  border-base-300 flex flex-col items-center relative">
+        <h2 className="text-primary text-2xl text-center mb-4">Lista Klas</h2>
         <Link
           to="/"
           className="flex w-max items-center mb-2 gap-2 absolute left-6"
         >
-          <BsFillArrowLeftCircleFill className="transition-all hover:-translate-x-1.5 duration-300" />
+          <BsFillArrowLeftCircleFill
+            className={`transition-all hover:-translate-x-1.5 duration-300 text-2xl`}
+          />
           {!isMobile && "Powrót do Panelu Dyrektora"}
         </Link>
         <SearchButton

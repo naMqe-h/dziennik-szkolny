@@ -8,6 +8,7 @@ import { omit } from "lodash";
 import { TeachersTable } from "./teachers/TeachersTable";
 import { SearchButton } from "../searchButton/SearchButton";
 import { RemoveTeacherModal } from "./teachers/RemoveTeacherModal";
+import useMediaQuery from "../../hooks/useMediaQuery";
 export type TeachersDataWithoutPassword = Omit<SingleTeacherData, "password">[];
 export interface ModalOptionsTeachers {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export const TeachersView: React.FC = () => {
     isOpen: false,
     removedTeacher: null,
   });
+  const isMobile = useMediaQuery("(max-width:768px)");
   const [searchQuery, setsearchQuery] = useState<string>("");
   const state = useSelector((state: RootState) => state.principal);
   useEffect(() => {
@@ -39,7 +41,7 @@ export const TeachersView: React.FC = () => {
         return keyed.some((v) =>
           v.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
-      });
+      }).sort((a, b) => (b.lastName < a.lastName ? 1 : -1));
       setTeachersData(searchedClasses);
     }
   }, [state.schoolData?.teachers, searchQuery]);
@@ -51,8 +53,10 @@ export const TeachersView: React.FC = () => {
       />
       <section className="card bg-base-200 px-8 py-4 relative">
         <Link to="/" className="flex w-max items-center mb-2 gap-2">
-          <BsFillArrowLeftCircleFill className="transition-all hover:-translate-x-1.5 duration-300" />
-          Powrót do Panelu Dyrektora
+          <BsFillArrowLeftCircleFill
+            className={`transition-all hover:-translate-x-1.5 duration-300 text-2xl`}
+          />
+          {!isMobile && "Powrót do Panelu Dyrektora"}
         </Link>
         <header className="flex justify-center flex-col items-center gap-4">
           <h2 className="text-primary text-2xl text-center">

@@ -28,6 +28,8 @@ import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
 import { Teachers } from "./pages/Teachers";
 import { Students } from "./pages/Students";
+import { SingleStudent } from "./pages/SingleStudent";
+import { SingleTeacher } from "./pages/SingleTeacher";
 
 function App() {
   // eslint-disable-next-line
@@ -140,10 +142,26 @@ function App() {
                 }
               />
               <Route
+                path="/teachers/:email"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <SingleTeacher />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/students"
                 element={
                   <ProtectedRoute loading={loading}>
                     <Students />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/students/:email"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <SingleStudent />
                   </ProtectedRoute>
                 }
               />
