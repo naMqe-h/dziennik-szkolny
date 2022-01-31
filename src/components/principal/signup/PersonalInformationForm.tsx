@@ -3,22 +3,54 @@ import { toast } from "react-toastify";
 import {
   AddressErrors,
   currentStepType,
-  PersonalInfoCredentialsErrors,
+  ErrorObj,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
+import { validatePesel } from "../../../utils/utils";
 
 interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
-  setStep: (step: currentStepType, current: currentStepType) => void;
-  credentialsData: PrincipalPersonalInformation;
-  fieldErrors: PersonalInfoCredentialsErrors;
-  addressErrors: AddressErrors
+  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
+}
+
+type PersonalInfoCredentialsErrors = {
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  birth: ErrorObj;
+  pesel: ErrorObj;
+};
+const defaultErrorState:PersonalInfoCredentialsErrors = {
+  firstName: {error:false, text: ''},
+  lastName: {error:false, text: ''},
+  birth: {error:false, text: ''},
+  pesel: {error:false, text: ''},
+};
+const defaultAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
 }
 
 export const PersonalInformationForm: React.FC<
   PersonalInformationFormProps
-> = ({ set, setStep, credentialsData, fieldErrors, addressErrors }) => {
+> = ({ set, setStep }) => {
+  const [userData, setUserData] = useState<PrincipalPersonalInformation>({
+    birth: new Date().toISOString().split("T")[0],
+    firstName: "",
+    lastName: "",
+    pesel: "",
+    gender: "Mężczyzna",
+    address: {
+      city: "",
+      houseNumber: 0,
+      postCode: "",
+      street: "",
+    },
+  });
 
+  const [fieldErrors, setFieldErrors] = useState<PersonalInfoCredentialsErrors>(defaultErrorState);
+  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
  
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -33,6 +65,8 @@ export const PersonalInformationForm: React.FC<
     setFieldErrors(defaultErrorState);
     setAddressErrors(defaultAddressErrors);
     let errors = false;
+    
+
     
     if(userData.firstName.length === 0){
       setFieldErrors((prev) => (
@@ -94,7 +128,7 @@ export const PersonalInformationForm: React.FC<
   ) {
     const { name, value } = e.target;
     if (name === "pesel") {
-      set((prev) => {
+      setUserData((prev) => {
         return { ...prev, [name]: String(value) };
       });
     } else if (
@@ -103,20 +137,30 @@ export const PersonalInformationForm: React.FC<
       name === "postCode" ||
       name === "street"
     ) {
-      let addressObject = { ...credentialsData.address };
+      let addressObject = { ...userData.address };
       const newObj = { ...addressObject, [name]: value };
-      set((prev) => {
+      setUserData((prev) => {
         return { ...prev, address: newObj };
       });
     }
-    set((prev) => {
+    setUserData((prev) => {
       return { ...prev, [name]: value };
     });
   }
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    setStep(3, 2);
+    if(validateInputs()) return;
+
+    set({
+      address: userData.address,
+      birth: userData.birth,
+      firstName: userData.firstName,
+      gender: userData.gender,
+      lastName: userData.lastName,
+      pesel: userData.pesel,
+    });
+    setStep(3);
   }
   return (
     <section className="p-10 card justify-center items-center bg-base-200  mt-5 md:mt-20">
@@ -133,7 +177,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="firstName"
-                value={credentialsData.firstName}
+                value={userData.firstName}
                 className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Imię"
@@ -146,7 +190,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="lastName"
-                value={credentialsData.lastName}
+                value={userData.lastName}
                 className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Nazwisko"
@@ -159,7 +203,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="date"
                 name="birth"
-                value={credentialsData.birth}
+                value={userData.birth}
                 max={new Date().toISOString().split("T")[0]}
                 className={`input ${fieldErrors.birth.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
@@ -172,7 +216,7 @@ export const PersonalInformationForm: React.FC<
               </label>
               <select
                 name="gender"
-                value={credentialsData.gender}
+                value={userData.gender}
                 className="select"
                 onChange={handleChange}
               >
@@ -190,7 +234,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="number"
                 name="pesel"
-                value={credentialsData.pesel}
+                value={userData.pesel}
                 className={`input ${fieldErrors.pesel.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Pesel"
@@ -210,7 +254,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="city"
-                value={credentialsData.address.city}
+                value={userData.address.city}
                 className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Miasto"
@@ -223,7 +267,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="postCode"
-                value={credentialsData.address.postCode}
+                value={userData.address.postCode}
                 className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="xx-xxx"
@@ -236,7 +280,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="text"
                 name="street"
-                value={credentialsData.address.street}
+                value={userData.address.street}
                 className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Ulica"
@@ -249,7 +293,7 @@ export const PersonalInformationForm: React.FC<
               <input
                 type="number"
                 name="houseNumber"
-                value={credentialsData.address.houseNumber}
+                value={userData.address.houseNumber}
                 className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Numer Domu"

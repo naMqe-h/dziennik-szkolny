@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { AddressErrors, currentStepType, SchoolCredentialsErrors, SchoolInformation } from "../../../utils/interfaces";
-
+import { AddressErrors, currentStepType, ErrorObj, SchoolInformation } from "../../../utils/interfaces";
+import { useDocument } from "../../../hooks/useDocument";
 
 const schoolTypes = [
   "Szkoła Podstawowa",
@@ -13,19 +13,48 @@ const schoolTypes = [
 
 interface SchoolInformationFormProps {
   set: React.Dispatch<React.SetStateAction<SchoolInformation>>;
-  setStep: (step: currentStepType, current: currentStepType) => void;
-  credentialsData: SchoolInformation;
-  fieldErrors: SchoolCredentialsErrors;
-  addressErrors: AddressErrors;
+  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
 }
+
+type LoginCredentialsErrors = {
+  name: ErrorObj;
+  domain: ErrorObj;
+};
+const defaultErrorState:LoginCredentialsErrors = {
+  name: {error:false, text: ''},
+  domain: {error:false, text: ''},
+};
+const defaultAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
+}
+
 
 export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   set,
   setStep,
-  credentialsData,
-  fieldErrors,
-  addressErrors
 }) => {
+  const { getDocument, document: takenDomains } = useDocument();
+  const [userData, setUserData] = useState<SchoolInformation>({
+    name: "",
+    address: {
+      street: "",
+      houseNumber: 0,
+      postCode: "",
+      city: "",
+    },
+    type: "Technikum",
+    domain: "",
+  });
+  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+  const [addressErrors, setAddressErrors] = useState<AddressErrors>(defaultAddressErrors);
+
+  useEffect(() => {
+    getDocument("utils", "domains");
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -35,6 +64,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       toast.error(field.text, { autoClose: 2000 })
     ))
   }, [fieldErrors, addressErrors]);
+
 
   const validateInputs = () => {
     setFieldErrors(defaultErrorState);
@@ -92,11 +122,20 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
     return errors
   }
 
+
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    setStep(4, 3);
-  };
+    if(validateInputs()) return
+    
 
+    set({
+      address: userData.address,
+      name: userData.name,
+      type: userData.type,
+      domain: userData.domain,
+    });
+    setStep(4);
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -107,13 +146,13 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
       name === "postCode" ||
       name === "street"
     ) {
-      let addressObject = { ...credentialsData.address };
+      let addressObject = { ...userData.address };
       const newObj = { ...addressObject, [name]: value };
-      set((prev) => {
+      setUserData((prev) => {
         return { ...prev, address: newObj };
       });
     } else {
-      set((prev) => {
+      setUserData((prev) => {
         return { ...prev, [name]: value };
       });
     }
@@ -131,7 +170,6 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           type="text"
           placeholder="Nazwa szkoły"
           name="name"
-          value={credentialsData.name}
           onChange={handleChange}
         />
         <label className="label">
@@ -142,7 +180,6 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
           type="text"
           placeholder="DomenaSzkolna.pl"
           name="domain"
-          value={credentialsData.domain}
           onChange={handleChange}
         />
 
@@ -151,7 +188,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
         </label>
         <select
           className="select select-bordered w-full"
-          value={credentialsData.type}
+          value={userData.type}
           name="type"
           onChange={(e) => handleChange(e)}
         >
@@ -172,7 +209,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="city"
-              value={credentialsData.address.city}
+              value={userData.address.city}
               className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Miasto"
@@ -185,7 +222,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="postCode"
-              value={credentialsData.address.postCode}
+              value={userData.address.postCode}
               className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="xx/xxx"
@@ -198,7 +235,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="text"
               name="street"
-              value={credentialsData.address.street}
+              value={userData.address.street}
               className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Ulica"
@@ -211,7 +248,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
             <input
               type="number"
               name="houseNumber"
-              value={credentialsData.address.houseNumber}
+              value={userData.address.houseNumber}
               className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Numer Domu"
