@@ -13,6 +13,45 @@ import { SchoolInformationForm } from "./signup/SchoolInformationForm";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChoosePlanForm } from "./signup/ChoosePlanForm";
 import { Summary } from "./signup/Summary";
+
+import { validateEmail, validatePesel } from "../../utils/utils";
+import { useDocument } from "../../hooks/useDocument";
+
+// ? Interfaces
+// ? ----------------------------------------------------------
+// ! Login 
+const LoginErrorState:LoginCredentialsErrors = {
+  email: {error:false, text: ''},
+  password: {error:false, text: ''},
+  repeatedPassword: {error:false, text: ''},
+};
+
+// ! Personal
+const PersonalErrorState:PersonalInfoCredentialsErrors = {
+  firstName: {error:false, text: ''},
+  lastName: {error:false, text: ''},
+  birth: {error:false, text: ''},
+  pesel: {error:false, text: ''},
+};
+const PersonalAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
+}
+// ! School
+const SchoolErrorState:SchoolCredentialsErrors = {
+  name: {error:false, text: ''},
+  domain: {error:false, text: ''},
+};
+const SchoolAddressErrors:AddressErrors ={
+  city: {error:false, text: ''},
+  houseNumber: {error:false, text: ''},
+  postCode: {error:false, text: ''},
+  street: {error:false, text: ''},
+}
+// ? ----------------------------------------------------------
+
 export const SignupPrincipalView: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<currentStepType>(1);
   const [PrincipalLoginCredentials, setPrincipalLoginCredentials] =
