@@ -8,15 +8,15 @@ interface ProtectedRouteProps {
   loading: boolean;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  loading,
-}) => {
-  const state = useSelector((state: RootState) => state.principal);
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, loading }) => {
+  const principal = useSelector((state: RootState) => state.principal);
+  const student = useSelector((state: RootState) => state.student)
+  const { userType } = useSelector((state: RootState) => state.userType)
+
   if (loading) {
     return <Loader />;
   } else {
-    if (state.data && state.schoolData && state.user && state.userType) {
+    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType)) {
       return children;
     }
     return <Navigate to="/login" />;

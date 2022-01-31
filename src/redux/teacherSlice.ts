@@ -1,18 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "firebase/auth";
-import { SingleClassData, SingleTeacherData, userType } from "../utils/interfaces";
+import { SingleClassData, SingleTeacherData } from "../utils/interfaces";
 import { RootState } from "./store";
 
 interface teacherState {
     user: User | null;
-    userType: userType | undefined;
     data: SingleTeacherData | null;
     teachedClassesInfo: SingleClassData[] | null
 }
 
 const initialState: teacherState = {
     user: null,
-    userType: undefined,
     data: null,
     teachedClassesInfo: null,
 }
@@ -21,10 +19,7 @@ export const teacherSlice = createSlice({
     name: "teacher",
     initialState,
     reducers: {
-        setUserType: (state, action: PayloadAction<userType>) => {
-            state.userType = action.payload;
-        },
-        setUserAuth: (state, action: PayloadAction<User>) => {
+        setTeacherAuth: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
         },
         setTeacherData: (state, action: PayloadAction<SingleTeacherData>) => {
@@ -38,8 +33,7 @@ export const teacherSlice = createSlice({
 })
 
 export const {
-    setUserType,
-    setUserAuth,
+    setTeacherAuth,
     setTeacherData,
     setTeachedClassesInfo,
     logout,

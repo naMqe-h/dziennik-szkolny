@@ -3,7 +3,9 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { auth } from "../firebase/firebase.config";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/principalSlice";
+import { logout as principalLogout } from "../redux/principalSlice";
+import { logout as studentLogout } from "../redux/studentSlice";
+import { clearUserType } from "../redux/userTypeSlice";
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -11,7 +13,9 @@ export const useLogout = () => {
   const logoutUser = () => {
     signOut(auth)
       .then(() => {
-        dispatch(logout());
+        dispatch(clearUserType())
+        dispatch(principalLogout())
+        dispatch(studentLogout())
         toast.success("Udało ci się wylogować");
         navigate("/login");
       })
