@@ -2,23 +2,66 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
-  LoginCredentialsErrors,
+  ErrorObj,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
+import { validateEmail } from "../../../utils/utils";
 
 
 interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
-  setStep: (step: currentStepType, current: currentStepType) => void;
-  credentialsData: PrincipalLoginCredentials;
-  fieldErrors: LoginCredentialsErrors;
+  setStep: React.Dispatch<React.SetStateAction<currentStepType>>;
 }
+// ! template error handeling
+// ! --------------------------------
+// type LoginCredentialsErrors = {
+//   email: {error:boolean, text: string};
+//   password: {error:boolean, text: string};
+//   repeatedPassword: {error:boolean, text: string};
+// };
+// const defaultErrorState:LoginCredentialsErrors = {
+//   email: {error:false, text: ''},
+//   password: {error:false, text: ''},
+//   repeatedPassword: {error:false, text: ''},
+// };
+
+// const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+
+// className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
+
+// useEffect(() => {
+//   Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
+//     toast.error(field.text, { autoClose: 2000 })
+//   ))
+// }, [fieldErrors]);
+
+// const validateInputs = () => {
+//   setFieldErrors(defaultErrorState);
+//   let errors = false;
+//   if (userData.email.length === 0){
+//     setFieldErrors((prev) => (
+//           {...prev, ['email']: {'error':true, 'text':"Podaj Email"}}))
+//     errors = true
+//   }
+//   return errors
+// }
+// ! --------------------------------
+
+
+type LoginCredentialsErrors = {
+  email: ErrorObj;
+  password: ErrorObj;
+  repeatedPassword: ErrorObj;
+};
+const defaultErrorState:LoginCredentialsErrors = {
+  email: {error:false, text: ''},
+  password: {error:false, text: ''},
+  repeatedPassword: {error:false, text: ''},
+};
 
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   set,
   setStep,
-  credentialsData,
-  fieldErrors
 }) => {
 
   const [userData, setuserData] = useState<PrincipalLoginCredentials>({
@@ -29,11 +72,10 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    set((prev) => {
+    setuserData((prev) => {
       return { ...prev, [name]: value };
     });
   }
-  
 
   useEffect(() => {
     Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
@@ -43,7 +85,15 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    setStep(2, 1);
+    if(validateInputs()) return;
+    //Todo Add auth
+    
+    set({
+      email: userData.email,
+      password: userData.password,
+      repeatedPassword: userData.repeatedPassword,
+    });
+    setStep(2);
   }
   return (
     <section className="p-10 card justify-center items-center bg-base-200  mt-5 md:mt-20">
@@ -59,7 +109,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
             autoComplete="email"
             placeholder="your@email.com"
-            value={credentialsData.email}
+            value={userData.email}
           />
 
           <label className="label mt-3">
@@ -70,8 +120,8 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="password"
             autoComplete="new-password"
             onChange={handleChange}
-            className={`input ${fieldErrors.password.error ? "border-red-500" : ''}`}
-            value={credentialsData.password}
+            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
+            value={userData.password}
             placeholder="********"
           />
           <label className="label mt-3">
@@ -82,8 +132,8 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             name="repeatedPassword"
             autoComplete="repeat-password"
             onChange={handleChange}
-            className={`input ${fieldErrors.repeatedPassword.error ? "border-red-500" : ''}`}
-            value={credentialsData.repeatedPassword}
+            className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
+            value={userData.repeatedPassword}
             placeholder="********"
           />
           <button
