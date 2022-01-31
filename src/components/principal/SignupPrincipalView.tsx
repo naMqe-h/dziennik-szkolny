@@ -55,9 +55,6 @@ const SchoolAddressErrors:AddressErrors ={
 }
 // ? ----------------------------------------------------------
 
-
-
-
 export const SignupPrincipalView: React.FC = () => {
   
   // ? Error states
