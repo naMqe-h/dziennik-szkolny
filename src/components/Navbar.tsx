@@ -15,9 +15,9 @@ export const Navbar = () => {
   return (
     <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content fixed top-0 z-20 w-screen">
       <div className="flex-1 px-2 mx-2">
-        <FaBook className="mr-3" size={30} />
-        <NavLink to="/" className="text-xl text-center font-bold">
-          Dziennik szkolny
+        <NavLink to="/" className="text-xl text-center font-bold flex">
+          <FaBook className="mr-3" size={30} />
+            Dziennik szkolny
         </NavLink>
       </div>
 

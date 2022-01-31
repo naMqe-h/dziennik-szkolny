@@ -11,7 +11,7 @@ import { Subjects } from "./subjects/Subjects";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { AiOutlineClose } from "react-icons/ai";
-import useFetch from "../../hooks/useFecth";
+import useFetch from "../../hooks/useFetch";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 

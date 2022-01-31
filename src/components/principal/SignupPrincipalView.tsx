@@ -214,34 +214,34 @@ export const SignupPrincipalView: React.FC = () => {
       for (const item of takenDomains.names) {
         if (SchoolInformation.domain === item) {
           setSchoolErrors((prev) => (
-            {...prev, ['domain']: {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
+            {...prev, 'domain': {'error':true, 'text':"Szkoła z podaną domena jest już zarejestrowana"}}))
           errors = true
         }
       }
     }
     if (SchoolInformation.name.length === 0) {
       setSchoolErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę szkoły"}}))
+        {...prev, 'name': {'error':true, 'text':"Podaj nazwę szkoły"}}))
       errors = true
     }
     if (SchoolInformation.domain.split("").find((x) => x === "@")){
       setSchoolErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj domenę bez @"}}))
+        {...prev, 'domain': {'error':true, 'text':"Podaj domenę bez @"}}))
         errors = true
       }
     if (SchoolInformation.domain.length === 0){
       setSchoolErrors((prev) => (
-        {...prev, ['domain']: {'error':true, 'text':"Podaj poprawną domene"}}))
+        {...prev, 'domain': {'error':true, 'text':"Podaj poprawną domene"}}))
         errors = true
     }
     if (SchoolInformation.address.city.length === 0){
       setSchoolAddressErrors((prev) => (
-        {...prev, ['city']: {'error':true, 'text':"Podaj miasto"}}))
+        {...prev, 'city': {'error':true, 'text':"Podaj miasto"}}))
         errors = true
     }
     if (SchoolInformation.address.street.length === 0){
       setSchoolAddressErrors((prev) => (
-        {...prev, ['street']: {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
+        {...prev, 'street': {'error':true, 'text':"Podaj ulicę, na której znajduje się szkoła"}}))
         errors = true
     }
     if (
@@ -249,12 +249,12 @@ export const SignupPrincipalView: React.FC = () => {
       SchoolInformation.address.postCode[2] !== "-"
     ){
       setSchoolAddressErrors((prev) => (
-        {...prev, ['postCode']: {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
+        {...prev, 'postCode': {'error':true, 'text':"Podaj poprawny kod pocztowy"}}))
         errors = true
     }
     if (SchoolInformation.address.houseNumber === 0){
       setSchoolAddressErrors((prev) => (
-        {...prev, ['houseNumber']: {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
+        {...prev, 'houseNumber': {'error':true, 'text':"Podaj poprawny numer budynku szkoły"}}))
         errors = true
     }
 
@@ -292,7 +292,7 @@ export const SignupPrincipalView: React.FC = () => {
       if(currentStep > maxStep){
         setMaxStep(currentStep);
       }
-    }, [currentStep]);
+    }, [currentStep, maxStep]);
 
     
 

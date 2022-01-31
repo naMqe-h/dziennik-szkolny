@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
@@ -20,12 +20,6 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
   credentialsData,
   fieldErrors
 }) => {
-
-  const [userData, setuserData] = useState<PrincipalLoginCredentials>({
-    email: "",
-    password: "",
-    repeatedPassword: "",
-  });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
