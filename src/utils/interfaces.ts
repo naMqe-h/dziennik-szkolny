@@ -76,6 +76,17 @@ export interface StudentData {
   birth: string;
   class: string;
 }
+
+export interface StudentDataFromAPI {
+  firstName: string;
+  lastName: string;
+  gender: genderType;
+  email: string;
+  password: string;
+  pesel: string;
+  birth: string;
+  dateFirebase: string,
+}
 //?Interfejs Pojedynczej oceny
 export interface SchoolGrade {
   grade: number;
