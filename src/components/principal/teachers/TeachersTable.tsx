@@ -48,7 +48,7 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
               <td>
                 <button
                   className="btn btn-square btn-warning btn-sm "
-                  onClick={() => navigate(`/${x.email}`)}
+                  onClick={() => navigate(`/teachers/${x.email.split("@")[0]}`)}
                 >
                   <FaUserEdit size={20} />
                 </button>

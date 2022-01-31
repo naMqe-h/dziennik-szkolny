@@ -13,10 +13,11 @@ export const DashboardView = () => {
         <div className="md:row-span-4 p-5 bg-base-200 rounded-xl flex flex-col justify-center">
           <Stats />
         </div>
-
-        <Card text="Oceny">
-          <RiNumbersLine size={70} />
-        </Card>
+        <Link to={"/students"}>
+          <Card text="Uczniowie">
+            <RiNumbersLine size={70} />
+          </Card>
+        </Link>
         <Link to={"/classes"}>
           <Card
             text="Klasy"
@@ -33,7 +34,7 @@ export const DashboardView = () => {
         </Card>
         <Link to={"/Teachers"}>
           <Card
-            text="Inne"
+            text="Nauczyciele"
             background="radial-gradient(circle, rgba(226,98,124,1) 9%, rgba(204,91,114,1) 37%, rgba(33,33,33,1) 100%)"
           >
             <AiOutlinePartition size={70} />

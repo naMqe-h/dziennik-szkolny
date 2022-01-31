@@ -16,13 +16,18 @@ import { auth } from "./firebase/firebase.config";
 import { useDocument } from "./hooks/useDocument";
 import { useRealTimeCollection } from "./hooks/useRealTimeCollection";
 import { RootState } from "./redux/store";
-import { setPrincipalData, setUserType, setUserAuth } from "./redux/principalSlice";
+import {
+  setPrincipalData,
+  setUserType,
+  setUserAuth,
+} from "./redux/principalSlice";
 import { CombinedPrincipalData, userType } from "./utils/interfaces";
 import { Loader } from "./loader/Loader";
 import { Classes } from "./pages/Classes";
 import { Settings } from "./pages/Settings";
 import { SingleClass } from "./pages/SingleClass";
 import { Teachers } from "./pages/Teachers";
+import { Students } from "./pages/Students";
 
 function App() {
   // eslint-disable-next-line
@@ -135,6 +140,14 @@ function App() {
                 }
               />
               <Route
+                path="/students"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <Students />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/class/:id/:subpage"
                 element={
                   <ProtectedRoute loading={loading}>
@@ -156,7 +169,7 @@ function App() {
           </LayoutWrapper>
         </BrowserRouter>
         <ToastContainer
-          position="top-right"
+          position="bottom-left"
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
