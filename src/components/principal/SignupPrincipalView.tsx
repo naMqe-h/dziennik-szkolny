@@ -17,8 +17,6 @@ import { SchoolInformationForm } from "./signup/SchoolInformationForm";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChoosePlanForm } from "./signup/ChoosePlanForm";
 import { Summary } from "./signup/Summary";
-import reactSelect from "react-select";
-import { toast } from "react-toastify";
 import { validateEmail, validatePesel } from "../../utils/utils";
 import { useDocument } from "../../hooks/useDocument";
 
@@ -119,13 +117,6 @@ export const SignupPrincipalView: React.FC = () => {
     getDocument("utils", "domains");
     // eslint-disable-next-line
   }, []);
-
-  // TODO
-  // ? ----------------------------------------------------------
-  // ! Przenieść walidacje
-  // ! nowa funkcja setStep która najpierw sprawdza validate
-  // ! switch currentStep na odpowiedni validator
-  // ? ----------------------------------------------------------
 
   // ? Walidacja 
   // ? ----------------------------------------------------------
@@ -274,7 +265,6 @@ export const SignupPrincipalView: React.FC = () => {
 
   // ? Funckja przed zmiana stepu
   const changeStep = (step: currentStepType, current:currentStepType) => {
-    console.log(current);
     if(current === 1){
       if(!validateLogin()){
         setCurrentStep(step);
@@ -282,7 +272,6 @@ export const SignupPrincipalView: React.FC = () => {
     }
     else if(current === 2){
       if(!validatePersonal()){
-        console.log('ddd')
         setCurrentStep(step);
       }
     }

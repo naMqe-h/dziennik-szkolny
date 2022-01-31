@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
-  ErrorObj,
   LoginCredentialsErrors,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";

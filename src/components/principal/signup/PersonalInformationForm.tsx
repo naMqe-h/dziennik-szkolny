@@ -6,7 +6,6 @@ import {
   PersonalInfoCredentialsErrors,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
-import { validatePesel } from "../../../utils/utils";
 
 interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
