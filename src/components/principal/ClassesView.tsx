@@ -1,5 +1,5 @@
 import { deleteField, doc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -23,6 +23,7 @@ export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const state = useSelector((state: RootState) => state.principal);
+  const classesDataWithoutConverting = useRef<null | SingleClassData[]>(null);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [ModalOptions, setModalOptions] = useState<ModalOptions>({
@@ -51,16 +52,24 @@ export const ClassesView: React.FC = () => {
         });
       } else {
         const { domain } = state.schoolData.information;
-        const teacherEmail = removedClassData.classTeacher;
+        const RemovedTeacherObject = Object.values(
+          state.schoolData.teachers
+        ).find((x) => {
+          const Name = `${x.firstName} ${x.lastName}`;
+          return Name === removedClassData.classTeacher;
+        });
+        const teacherEmail = RemovedTeacherObject?.email;
         await updateDoc(doc(db, domain, "classes"), {
           [removedClassData.name]: deleteField(),
         });
         try {
-          setDocument(domain, "teachers", {
-            [teacherEmail]: {
-              classTeacher: "",
-            },
-          });
+          if (teacherEmail) {
+            setDocument(domain, "teachers", {
+              [teacherEmail as string]: {
+                classTeacher: "",
+              },
+            });
+          }
           updateCounter(domain, "classesCount", "decrement");
         } catch (error) {
           console.log(error);
@@ -72,9 +81,12 @@ export const ClassesView: React.FC = () => {
   useEffect(() => {
     if (state.schoolData?.classes) {
       //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
+      classesDataWithoutConverting.current = Object.values(
+        state.schoolData.classes
+      );
       const allClasses = Object.values(state.schoolData.classes).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
-        return { ...x, classTeacher: newName };
+        return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
       //Then we implement Search by matching every string field on classes to our searchQuery
       const searchedClasses = allClasses.filter((x) => {

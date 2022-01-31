@@ -34,7 +34,9 @@ export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.principal?.schoolData);
+  const schoolData = useSelector(
+    (state: RootState) => state.principal?.schoolData
+  );
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const [fieldErrors, setFieldErrors] = useState<classCredentialsErrors>(defaultErrorState);
@@ -84,7 +86,7 @@ export const Class = () => {
     let errors = false;
     if (classCredential.name.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['name']: {'error':true, 'text':"Podaj nazwę klasy"}}
+        {...prev, name: {'error':true, 'text':"Podaj nazwę klasy"}}
       ))
       errors = true;
     }
@@ -93,19 +95,19 @@ export const Class = () => {
       if (classes) {
         if (classes.some((x) => x === classCredential.name)) {
           setFieldErrors((prev) => (
-            {...prev, ['name']: {'error':true, 'text':"Podana klasa już istenije"}}))
+            {...prev, name: {'error':true, 'text':"Podana klasa już istenije"}}))
             errors = true;
         }
       }
     }
     if (classCredential.profile.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['profile']: {'error':true, 'text':"Podaj Profil"}}))
+        {...prev, profile: {'error':true, 'text':"Podaj Profil"}}))
         errors = true;
     }
     if (classCredential.classTeacher.length === 0) {
       setFieldErrors((prev) => (
-        {...prev, ['classTeacher']: {'error':true, 'text':"Wybierz wychowawcę"}}))
+        {...prev, classTeacher: {'error':true, 'text':"Wybierz wychowawcę"}}))
         errors = true;
     }
     
@@ -120,7 +122,13 @@ export const Class = () => {
     const fullName = name + " - " + profile;
 
     const objWrapper: ClassesDataFromFirebase = {
-      [name]: { ...classCredential, fullName, subjects: [], students: [] },
+      [name.replaceAll(/\s/g, "")]: {
+        ...classCredential,
+        name: classCredential.name.replaceAll(/\s/g, ""),
+        fullName,
+        subjects: [],
+        students: [],
+      },
     };
     // update firebase
     setDocument(domain as string, "classes", objWrapper);

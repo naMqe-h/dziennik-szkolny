@@ -13,8 +13,17 @@ import {
 } from "../utils/interfaces";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDocument } from "./useDocument";
+import { useEffect } from "react";
 
 export const useSignup = () => {
+  const { getDocument, document } = useDocument()
+
+  useEffect(() => {
+    getDocument('utils', 'domains')
+    // eslint-disable-next-line
+  }, [])
+
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();
   const signupPrincipal = async (
@@ -32,6 +41,7 @@ export const useSignup = () => {
           schoolData.principalUID = res.user.uid;
           setDocument("principals", res.user.uid, data);
           setDocument(data.schoolInformation.domain, "information", schoolData);
+          setDocument('utils', 'domains', { names: [ ...document?.names, data.schoolInformation.domain ] });
           toast.success("Udało ci się utworzyć konto 😎");
           navigate("/");
           nProgress.done();

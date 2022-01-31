@@ -56,7 +56,6 @@ function App() {
     setLoading(true);
     nProgress.start();
     if (state.data && state.schoolData && state.user && state.userType) {
-      console.log(loading, state.user, state.data);
       setLoading(false);
       nProgress.done();
     } else {
@@ -70,7 +69,6 @@ function App() {
           //pobieram z bazy danych informacje o uzytkowniku i kolekcję szkoły
           await getDocument("principals", user.uid);
         } else {
-          console.log(loading, state.user, state.data);
           setLoading(false);
           nProgress.done();
         }

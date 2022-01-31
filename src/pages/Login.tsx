@@ -47,17 +47,17 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
     let errors = false;
     if (userData.email.length === 0){
       setFieldErrors((prev) => (
-            {...prev, ['email']: {'error':true, 'text':"Podaj Email"}}))
+            {...prev, email: {'error':true, 'text':"Podaj Email"}}))
       errors = true
     }
     if (userData.password.length === 0){
       setFieldErrors((prev) => (
-        {...prev, ['password']: {'error':true, 'text':"Podaj Hasło"}}))
+        {...prev, password: {'error':true, 'text':"Podaj Hasło"}}))
        errors = true
     }
     if (!validateEmail(userData.email)){
       setFieldErrors((prev) => (
-        {...prev, ['password']: {'error':true, 'text':"Podaj Poprawny Email"}}))
+        {...prev, password: {'error':true, 'text':"Podaj Poprawny Email"}}))
        errors = true
     }
     return errors
