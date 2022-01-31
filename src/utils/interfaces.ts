@@ -1,6 +1,4 @@
-export interface StepsProps {
-  currentStep: number;
-}
+
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
 export type userType = "principals" | "teachers" | "students";
 export interface FormData {
@@ -222,4 +220,24 @@ export type AddressErrors = {
   street: ErrorObj;
 };
 
+
+//? Walidacja SignUp
 export type ErrorObj = {error:boolean, text: string};
+
+export type LoginCredentialsErrors = {
+  email: ErrorObj;
+  password: ErrorObj;
+  repeatedPassword: ErrorObj;
+};
+
+export type PersonalInfoCredentialsErrors = {
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  birth: ErrorObj;
+  pesel: ErrorObj;
+};
+
+export type SchoolCredentialsErrors = {
+  name: ErrorObj;
+  domain: ErrorObj;
+};
