@@ -27,28 +27,44 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
       const email = removedTeacher.email as string;
       try {
         nProgress.start();
-        setDocument(domain, "teachers", {
-          [email]: deleteField(),
-        });
-        const subjectName = removedTeacher.subject.replaceAll(/\s/g, "");
-        setDocument(domain, "subjects", {
-          [subjectName]: {
-            teachers: arrayRemove(removedTeacher.email),
-          },
-        });
-        if (removedTeacher.classTeacher !== "Brak klasy") {
-          setDocument(domain, "classes", {
-            [removedTeacher.classTeacher.replaceAll(/\s/g, "")]: {
-              classTeacher: "",
+        if (state.schoolData) {
+          let allClasses = { ...state.schoolData.classes };
+          const keys = Object.keys(state.schoolData.classes).filter((x) => {
+            return removedTeacher.teachedClasses.some((y) => y === x);
+          });
+          Object.entries(allClasses).forEach((item) => {
+            if (keys.some((y) => y === item[0])) {
+              const FilteredArray = item[1].subjects.filter(
+                (x) => x.teacher !== removedTeacher.email
+              );
+              allClasses[item[0]] = { ...item[1], subjects: FilteredArray };
+            }
+          });
+          setDocument(domain, "teachers", {
+            [email]: deleteField(),
+          });
+          const subjectName = removedTeacher.subject.replaceAll(/\s/g, "");
+          setDocument(domain, "subjects", {
+            [subjectName]: {
+              teachers: arrayRemove(removedTeacher.email),
             },
           });
+          setDocument(domain, "classes", allClasses);
+          if (removedTeacher.classTeacher !== "Brak klasy") {
+            setDocument(domain, "classes", {
+              [removedTeacher.classTeacher.replaceAll(/\s/g, "")]: {
+                classTeacher: "",
+              },
+            });
+          }
+          updateCounter(domain, "teachersCount", "decrement");
+          nProgress.done();
+          setModalOptions({ isOpen: false, removedTeacher: null });
+          toast.success("Udało ci się usunąć nauczyciela", { autoClose: 2000 });
         }
-        updateCounter(domain, "teachersCount", "decrement");
-        nProgress.done();
-        setModalOptions({ isOpen: false, removedTeacher: null });
-        toast.success("Udało ci się usunąć nauczyciela", { autoClose: 2000 });
       } catch (error) {
         nProgress.done();
+        console.log(error);
         toast.error("Wystąpił błąd przy usuwaniu dokumentu", {
           autoClose: 2000,
         });
