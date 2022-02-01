@@ -155,7 +155,7 @@ interface teacherWorkingHours {
   className: string
 }
 //? Interface dni tygodnia
-type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
+export type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
 
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
@@ -191,6 +191,7 @@ export interface TeachersDataFromFirebase {
 export interface CombinedSchoolDataFromFirebase {
   classes: ClassesDataFromFirebase;
   information: CombinedSchoolInformationFromFirebase;
+  lessonPlans: LessonPlansDataFromFirebase;
   students: StudentsDataFromFirebase;
   subjects: SchoolSubjectsDataFromFirebase;
   teachers: TeachersDataFromFirebase;
