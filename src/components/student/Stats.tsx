@@ -15,19 +15,18 @@ export const Stats: React.FC = () => {
     const domain = userData.email.split("@")[1];
     const [studentClassTeacher, setStudentClassTeacher] = useState<SingleTeacherData | undefined>(undefined);
 
-
     const frequence = 70;
 
-    
-    
     useEffect(() => {
         getDoc();
+        // eslint-disable-next-line
     },[]);
 
     useEffect(() => {
         if(document){
             setStudentClassTeacher(Object.values(document).find((doc) => doc.classTeacher === userData.class));
         }
+        // eslint-disable-next-line
     },[document])    
 
     const getDoc = async () => {

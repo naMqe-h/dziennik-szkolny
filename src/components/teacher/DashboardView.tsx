@@ -1,16 +1,12 @@
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai"
 import { BsJournalBookmark } from "react-icons/bs"
 import { RiNumbersLine } from "react-icons/ri"
-import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { RootState } from "../../redux/store"
 import { Card } from "../dashboard/Card"
 import { Events } from "../dashboard/Events"
 import { Stats } from "./Stats"
 
 export const DashboardView = () => {
-    const teacher = useSelector((state: RootState) => state.teacher)
-
     return (
         <div className="flex justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
