@@ -5,6 +5,7 @@ import { auth } from "../firebase/firebase.config";
 import { useNavigate } from "react-router-dom";
 import { logout as principalLogout } from "../redux/principalSlice";
 import { logout as studentLogout } from "../redux/studentSlice";
+import { logout as teacherLogout } from "../redux/teacherSlice";
 import { clearUserType } from "../redux/userTypeSlice";
 
 export const useLogout = () => {
@@ -16,6 +17,7 @@ export const useLogout = () => {
         dispatch(clearUserType())
         dispatch(principalLogout())
         dispatch(studentLogout())
+        dispatch(teacherLogout())
         toast.success("Udało ci się wylogować");
         navigate("/login");
       })

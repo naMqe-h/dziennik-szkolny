@@ -11,12 +11,13 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, loading }) => {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student)
+  const teacher = useSelector((state: RootState) => state.teacher)
   const { userType } = useSelector((state: RootState) => state.userType)
 
   if (loading) {
     return <Loader />;
   } else {
-    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType)) {
+    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType) || (teacher.data && userType)) {
       return children;
     }
     return <Navigate to="/login" />;

@@ -41,10 +41,11 @@ import { setUserType } from './redux/userTypeSlice'
 import { setStudentAuth, setStudentData } from './redux/studentSlice'
 
 // utils
-import { CombinedPrincipalData, CombinedSchoolDataFromFirebase, SingleStudentDataFromFirebase, StudentsDataFromFirebase, userType } from "./utils/interfaces";
+import { CombinedPrincipalData, CombinedSchoolDataFromFirebase, SingleStudentDataFromFirebase, SingleTeacherData, StudentsDataFromFirebase, TeachersDataFromFirebase, userType } from "./utils/interfaces";
 
 //loader
 import { Loader } from "./loader/Loader";
+import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
 
 function App() {
   // eslint-disable-next-line
@@ -55,6 +56,7 @@ function App() {
   // redux
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
+  const teacher = useSelector((state: RootState) => state.teacher)
   const userType = useSelector((state: RootState) => state.userType.userType)
   
   // states
@@ -69,7 +71,7 @@ function App() {
   }, [realTimeDocuments])
 
 //sprawdzic nowego usera
-  // sprawdza czy dyrektor czy uczen i zapisauje pobrane dane do reduxa
+  // sprawdza czy dyrektor czy uczen czy nauczyciel i zapisauje pobrane dane do reduxa
   useEffect(() => {
     if(type === 'principals') {
       dispatch(setPrincipalData(document as CombinedPrincipalData));
@@ -83,16 +85,35 @@ function App() {
         }
       }
     }
+    if(type === 'teachers') {
+      if(document) {
+        for(const [key, value] of Object.entries(document as TeachersDataFromFirebase)) {
+          if(key === teacher.user?.email) {
+            dispatch(setTeacherData(value as SingleTeacherData))
+          }
+        }
+      }
+    }
     // eslint-disable-next-line
   }, [document, domain, type]);
 
+  // sprawdzanie czy juz cały student się zapisał i wtedy kończy ładowanie
   useEffect(() => {
     if(student.data) {
       setLoading(false);
       nProgress.done();
     }
   }, [student.data])
+  
+  // sprawdzanie czy juz cały teacher się zapisał i wtedy kończy ładowanie
+  useEffect(() => {
+    if(teacher.data) {
+      setLoading(false);
+      nProgress.done();
+    }
+  }, [teacher.data])
 
+  // sprawdzanie czy juz cały principal się zapisał i wtedy kończy ładowanie
   useEffect(() => {
     if(principal.data && principal.schoolData) {
       setLoading(false);
@@ -109,6 +130,12 @@ function App() {
   }, [principal, userType]);
 
   useEffect(() => {
+    if(userType === 'teachers') {
+      console.log(teacher);
+    }
+  }, [teacher, userType]);
+
+  useEffect(() => {
     if(userType === 'students') {
       console.log(student);
     }
@@ -117,17 +144,17 @@ function App() {
 
   // sprawdzanie czy uzytkownik juz jest zapisany w store 
   useEffect(() => {
-    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType)) {
+    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType) || (teacher.data && userType)) {
       setLoading(false);
       nProgress.done();
     }
-  }, [principal.data, userType, principal.schoolData, principal.user, student.user, student.data]);
+  }, [principal.data, userType, principal.schoolData, principal.user, student.user, student.data, teacher.data]);
 
   // sprawdzanie stanu auth,  
   useEffect(() => {
     setLoading(true);
     nProgress.start();
-    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType)) {
+    if ((principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType) || (teacher.data && userType)) {
       setLoading(false);
       nProgress.done();
     } else {
@@ -147,8 +174,13 @@ function App() {
           } else if (_type === 'students') {
             //zapisuje uzytkownika z auth
             dispatch(setStudentAuth(user))
-            //pobieram z bazy danych informacje o uczniu
+            //pobieram z bazy danych informacje o uczniach
             await getDocument(_domain as string, 'students');
+          } else if (_type === 'teachers') {
+            //zapisuje uzytkownika z auth
+            dispatch(setTeacherAuth(user))
+            //pobieram z bazy danych informacje o nauczycielach
+            await getDocument(_domain as string, 'teachers');
           }
         } else {
           setLoading(false);

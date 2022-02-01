@@ -12,6 +12,7 @@ import { RootState } from "../redux/store";
 import { useLogin } from "../hooks/useLogin";
 import { useStudentLogin } from '../hooks/useStudentLogin'
 import { useCollection } from "../hooks/useCollection";
+import { useTeacherLogin } from "../hooks/useTeacherLogin";
 
 interface LoginProps {
   loading: boolean;
@@ -36,6 +37,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
 
   const { principalLogin } = useLogin();
   const { studentLogin } = useStudentLogin();
+  const { teacherLogin } = useTeacherLogin()
   const { getCollection, documents  } = useCollection()
 
   useEffect(() => {
@@ -113,7 +115,11 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
     } 
 
     if(userData.role === 'teachers') {
-      handleTeacherLogin()
+      if(allPrincipalsEmails.includes(userData.email)) {
+        return toast.error('Wybierz poprawny typ logowania', { autoClose: 4000 })
+      } else {
+        handleTeacherLogin()
+      }
     } 
   }
   function handleChange(
@@ -143,7 +149,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   //logowanie dla nauczyciela
   const handleTeacherLogin = async () => { 
     nProgress.start();
-    console.log('nauczyciel')
+    await teacherLogin(userData.email, userData.password)
     nProgress.done();
   };
 

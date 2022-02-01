@@ -5,8 +5,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 export const Navbar = () => {
-  const principal = useSelector((state: RootState) => state.principal);
+  const principal = useSelector((state: RootState) => state.principal)
   const student = useSelector((state: RootState) => state.student)
+  const teacher = useSelector((state: RootState) => state.teacher)
   const { logoutUser } = useLogout();
 
   const handleLogout = () => {
@@ -22,7 +23,8 @@ export const Navbar = () => {
         </NavLink>
       </div>
 
-      {student.user || principal.user ? (
+      {/* zmienic ze tylko dyrektor widzi te linki do /add */}
+      {student.user || principal.user || teacher.user ? (
         <>
           <div className="flex-none mx-6">
             <div className="dropdown dropdown-end dropdown-hover">
@@ -48,7 +50,7 @@ export const Navbar = () => {
             <div className="dropdown dropdown-end dropdown-hover">
               <FaUserTie size={30} className="cursor-pointer" />
               <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-                {(!principal.user || student.user) && (!student.user || principal.user) ? (
+                {(!principal.user || student.user || teacher.user) && (!student.user || principal.user || teacher.user) && (!teacher.user || student.user || principal.user) ? (
                   <>
                     <li>
                       <Link to="/login">Zaloguj się</Link>
