@@ -2,14 +2,14 @@ import { FaArrowRight } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { currentStepType, PlanTypes } from "../../../utils/interfaces";
 import "../../../../node_modules/react-lazy-load-image-component/src/effects/blur.css";
-interface cardProps{
+interface cardProps {
   name: PlanTypes;
   badge: string;
   image: string;
   price: number;
   setStep?: React.Dispatch<React.SetStateAction<currentStepType>>;
   set: React.Dispatch<React.SetStateAction<PlanTypes>>;
-  currentPlanType? : PlanTypes;
+  currentPlanType?: PlanTypes;
 }
 
 const basicPros = [
@@ -17,6 +17,7 @@ const basicPros = [
   "Limit 100 nauczycieli",
   "Limit 30 klas w szkole",
   "Podstawowa pomoc techniczna",
+  "Podstawowa ilośc motywów",
 ];
 
 const premiumPros = [
@@ -24,6 +25,7 @@ const premiumPros = [
   "Bez limitu nauczycieli",
   "Bez limitu klas w szkole",
   "Pełna pomoc techniczna 24/7",
+  "3 Unikalne motywy Premium",
 ];
 
 export const PaymentPlanCard: React.FC<cardProps> = ({
@@ -33,7 +35,7 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
   price,
   set,
   setStep,
-  currentPlanType
+  currentPlanType,
 }) => {
   return (
     <div className="card card-bordered bg-base-200 md:w-96 max-w-lg">
@@ -76,42 +78,59 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
           </h2>
         </div>
         <div className="justify-end card-actions">
-          {setStep ?(
+          {setStep ? (
             <button
-            className="btn btn-primary"
-            onClick={() => {
-              setStep(5);
-              set(name);
-            }}
-          >
-            Wybieram
-            <FaArrowRight className="ml-3" size={16} />
-          </button>
-          ) : (<>
-            {currentPlanType === name ? (
-            <label className="btn btn-success">Aktualny</label> ):( <label htmlFor={`my-modal-${name}`} className="btn btn-primary modal-button">Wybierz</label>)}
-
-            <input type="checkbox" id={`my-modal-${name}`} className="modal-toggle" /> 
-            <div className="modal">
-              <div className="modal-box flex flex-col items-center justify-center">
-                <p>Czy napewno chcesz zmienić plan?</p> 
-                <div className="modal-action">
-                <label htmlFor={`my-modal-${name}`} className="btn btn-primary" onClick={() => set(name)}>
-                  Akceptuj
+              className="btn btn-primary"
+              onClick={() => {
+                setStep(5);
+                set(name);
+              }}
+            >
+              Wybieram
+              <FaArrowRight className="ml-3" size={16} />
+            </button>
+          ) : (
+            <>
+              {currentPlanType === name ? (
+                <label className="btn btn-success">Aktualny</label>
+              ) : (
+                <label
+                  htmlFor={`my-modal-${name}`}
+                  className="btn btn-primary modal-button"
+                >
+                  Wybierz
                 </label>
-                  <label htmlFor={`my-modal-${name}`} className="btn btn-neutral">Zamknij</label>
+              )}
+
+              <input
+                type="checkbox"
+                id={`my-modal-${name}`}
+                className="modal-toggle"
+              />
+              <div className="modal">
+                <div className="modal-box flex flex-col items-center justify-center">
+                  <p>Czy napewno chcesz zmienić plan?</p>
+                  <div className="modal-action">
+                    <label
+                      htmlFor={`my-modal-${name}`}
+                      className="btn btn-primary"
+                      onClick={() => set(name)}
+                    >
+                      Akceptuj
+                    </label>
+                    <label
+                      htmlFor={`my-modal-${name}`}
+                      className="btn btn-neutral"
+                    >
+                      Zamknij
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-          ) } 
-            
-           
-          
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
-
-          
