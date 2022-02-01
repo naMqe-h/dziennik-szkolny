@@ -1,6 +1,6 @@
 import { Stats } from "./dashboard/Stats";
-import { Events } from "./dashboard/Events";
-import { Card } from "./dashboard/Card";
+import { Events } from "../dashboard/Events";
+import { Card } from "../dashboard/Card";
 import { RiNumbersLine } from "react-icons/ri";
 import { BsJournalBookmark } from "react-icons/bs";
 import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";

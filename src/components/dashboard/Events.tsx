@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ImArrowLeft, ImArrowRight, ImCross } from "react-icons/im";
 import Moment from "react-moment";
 import moment from "moment";
-import { Event } from "../../../utils/interfaces";
+import { Event } from "../../utils/interfaces";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Events: React.FC = () => {
@@ -64,7 +64,7 @@ export const Events: React.FC = () => {
           <ImArrowLeft size={40} />
         </div>
         <div className="text-xl text-center">
-          <span>Zadania na: </span>
+          <span>Terminarz </span>
           <Moment format="DD.MM.YYYY" date={date} />
         </div>
         <div
