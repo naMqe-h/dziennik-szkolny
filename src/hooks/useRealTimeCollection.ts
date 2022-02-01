@@ -1,14 +1,13 @@
 import { db } from "../firebase/firebase.config";
 import { collection, onSnapshot } from "firebase/firestore";
-import { setSchoolData } from "../redux/principalSlice";
 import { CombinedSchoolDataFromFirebase } from "../utils/interfaces";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { RootState } from "../redux/store";
 
 export const useRealTimeCollection = () => {
-  const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.principal);
+  const [realTimeDocuments, setRealTimeDocuments] = useState<CombinedSchoolDataFromFirebase>()
 
   useEffect(() => {
     if (state.user) {
@@ -19,7 +18,7 @@ export const useRealTimeCollection = () => {
         snapshot.docs.forEach((doc) => {
           data = { ...data, [doc.id]: { ...doc.data() } };
         });
-        dispatch(setSchoolData(data as CombinedSchoolDataFromFirebase));
+        setRealTimeDocuments(data as CombinedSchoolDataFromFirebase)
       });
 
       return () => unsub();
@@ -27,5 +26,5 @@ export const useRealTimeCollection = () => {
     // eslint-disable-next-line
   }, [state.user]);
 
-  return {};
+  return { realTimeDocuments };
 };

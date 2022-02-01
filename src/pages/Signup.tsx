@@ -7,8 +7,11 @@ interface SingUpProps {
 }
 export const Signup: React.FC<SingUpProps> = ({ loading }) => {
   const state = useSelector((state: RootState) => state.principal);
+  const { userType } = useSelector((state: RootState) => state.userType)
+
+
   if (!loading) {
-    return state.user && state.data && state.schoolData && state.userType ? (
+    return state.user && state.data && state.schoolData && userType ? (
       <Navigate to="/" />
     ) : (
       <div>{<SignupPrincipalView />}</div>

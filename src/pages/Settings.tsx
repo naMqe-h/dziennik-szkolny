@@ -18,7 +18,7 @@ import { School } from "../components/settings/School";
 import { Plan } from "../components/settings/Plan";
 
 export const Settings = () => {
-  const userType = useSelector((state: RootState) => state.principal.userType);
+  const { userType } = useSelector((state: RootState) => state.userType)
   const userData = useSelector((state: RootState) => state.principal.data);
   const userAuth = useSelector((state: RootState) => state.principal.user);
   const schoolData = useSelector(
@@ -30,8 +30,7 @@ export const Settings = () => {
 
   const [activeRoute, setActiveRoute] = useState(type);
 
-  const possibleRoutes =
-    userType === "principals" ? ["profile", "school", "plan"] : ["profile"];
+  const possibleRoutes = userType === 'principals' ? ["profile", "school", "plan"] : ["profile"];
 
   useEffect(() => {}, []);
 

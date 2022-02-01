@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FormData } from "../utils/interfaces";
-import { useLogin } from "../hooks/useLogin";
+import { CombinedPrincipalData, FormData } from "../utils/interfaces";
 import nProgress from "nprogress";
 import { validateEmail } from "../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserType } from "../redux/principalSlice";
+import { setUserType } from "../redux/userTypeSlice";
 import { RootState } from "../redux/store";
+
+// importy logowania
+import { useLogin } from "../hooks/useLogin";
+import { useStudentLogin } from '../hooks/useStudentLogin'
+import { useCollection } from "../hooks/useCollection";
+import { useTeacherLogin } from "../hooks/useTeacherLogin";
 
 interface LoginProps {
   loading: boolean;
@@ -25,8 +30,34 @@ const defaultErrorState:LoginCredentialsErrors = {
 
 export const Login: React.FC<LoginProps> = ({ loading }) => {
   const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state.principal);
-  const { login } = useLogin();
+  const principal = useSelector((state: RootState) => state.principal);
+  const student = useSelector((state: RootState) => state.student);
+  const { userType } = useSelector((state: RootState) => state.userType)
+  const [allPrincipalsEmails, setAllPrincipalsEmails] = useState<string[]>([])
+
+  const { principalLogin } = useLogin();
+  const { studentLogin } = useStudentLogin();
+  const { teacherLogin } = useTeacherLogin()
+  const { getCollection, documents  } = useCollection()
+
+  useEffect(() => {
+    getCollection('principals')
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    setAllPrincipalsEmails([])
+    // eslint-disable-next-line
+    for(const [key, _value] of Object.entries(documents)) {
+      const value : CombinedPrincipalData = _value as CombinedPrincipalData
+      setAllPrincipalsEmails(prev => (
+        [
+          ...prev,
+          value.email,
+        ]
+      ))
+    }
+  }, [documents])
 
   const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
 
@@ -67,8 +98,29 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
     e.preventDefault();
     if(validateInputs()) return
     
-    //Todo Add auth
-    handleLogin();
+    if(userData.role === 'principals') {
+      if(allPrincipalsEmails.includes(userData.email)) {
+        handlePrincipalLogin()
+      } else {
+        return toast.error('Nie ma dyrektora z takim adresem email', { autoClose: 4000 })
+      }
+    } 
+    
+    if(userData.role === 'students') {
+      if(allPrincipalsEmails.includes(userData.email)) {
+        return toast.error('Wybierz poprawny typ logowania', { autoClose: 4000 })
+      } else {
+        handleStudentLogin()
+      }
+    } 
+
+    if(userData.role === 'teachers') {
+      if(allPrincipalsEmails.includes(userData.email)) {
+        return toast.error('Wybierz poprawny typ logowania', { autoClose: 4000 })
+      } else {
+        handleTeacherLogin()
+      }
+    } 
   }
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -79,15 +131,30 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
     });
   }
 
-  const handleLogin = async () => {
+  //logowanie dla dyrektora
+  const handlePrincipalLogin = async () => { 
     nProgress.start();
     dispatch(setUserType(userData.role));
-    await login(userData.email, userData.password, userData.role);
+    await principalLogin(userData.email, userData.password, userData.role);
+    nProgress.done();
+  };
+
+  //logowanie dla ucznia
+  const handleStudentLogin = async () => { 
+    nProgress.start();
+    await studentLogin(userData.email, userData.password)
+    nProgress.done();
+  };
+
+  //logowanie dla nauczyciela
+  const handleTeacherLogin = async () => { 
+    nProgress.start();
+    await teacherLogin(userData.email, userData.password)
     nProgress.done();
   };
 
   if (!loading) {
-    return state.user && state.data && state.schoolData && state.userType ? (
+    return (principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType) ? (
       <Navigate to="/" />
     ) : (
       <div className="mt-12 flex items-center justify-center">
