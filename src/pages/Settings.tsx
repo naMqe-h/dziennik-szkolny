@@ -7,8 +7,12 @@ import {
   CombinedSchoolInformationFromFirebase,
   PlanTypes,
   SchoolInformation,
+  SingleStudentDataFromFirebase,
+  SingleTeacherData,
   StudentData,
+  StudentsDataFromFirebase,
   TeacherData,
+  TeachersDataFromFirebase,
   userType,
 } from "../utils/interfaces";
 import { useSetDocument } from "../hooks/useSetDocument";
@@ -19,8 +23,24 @@ import { Plan } from "../components/settings/Plan";
 
 export const Settings = () => {
   const { userType } = useSelector((state: RootState) => state.userType)
-  const userData = useSelector((state: RootState) => state.principal.data);
-  const userAuth = useSelector((state: RootState) => state.principal.user);
+  const userData = useSelector((state: RootState) => {
+    if(userType === 'principals'){
+      return state.principal.data
+    } else if(userType === 'students'){
+      return state.student.data
+    }else{
+      return state.teacher.data
+    }
+  });
+  const userAuth = useSelector((state: RootState) => {
+    if(userType === 'principals'){
+      return state.principal.user
+    } else if(userType === 'students'){
+      return state.student.user
+    }else{
+      return state.teacher.user
+    }
+  });
   const schoolData = useSelector(
     (state: RootState) => state.principal.schoolData?.information
   );
@@ -31,8 +51,6 @@ export const Settings = () => {
   const [activeRoute, setActiveRoute] = useState(type);
 
   const possibleRoutes = userType === 'principals' ? ["profile", "school", "plan"] : ["profile"];
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     setActiveRoute(type);
@@ -54,15 +72,18 @@ export const Settings = () => {
       const uid = userAuth?.uid;
       setDocument(userType, uid, data as CombinedPrincipalData);
     }
-    // TODO kiedy bedzie gotowe logowanie ucznia i nauczyicela
-    // else {
-    //   const domain = userAuth.displayName?.split("~")[0];
-    //   if(userType ==="students"){
-    //     let tempData: StudentsDataFromFirebase= {[data.email]: data };
-    //   }
-    //   console.log(tempData);
-    //   addDocument(domain as string, userType, data )
-    // }
+    else {
+      const domain = userAuth.displayName?.split("~")[0];
+
+      if(userType ==="students"){
+        let tempData: StudentsDataFromFirebase ={[data.email] :{...userData as SingleStudentDataFromFirebase, ...data}}
+        setDocument(domain as string, userType, tempData)
+      } else {
+        let tempData: TeachersDataFromFirebase = {[data.email]:{ ...userData as SingleTeacherData, ...data}}
+        setDocument(domain as string, userType, tempData)
+      }
+
+    }
   };
   const handlePlanChange = (plan: PlanTypes) => {
     if (!userAuth || !userType) {
@@ -189,7 +210,7 @@ export const Settings = () => {
             {type === "profile" && (
               <Profile
                 userType={userType as userType}
-                userData={userData as CombinedPrincipalData}
+                userData={userData as CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData}
                 save={handleProfileSubmit}
               />
             )}
