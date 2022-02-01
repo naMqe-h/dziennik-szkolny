@@ -48,7 +48,6 @@ import { Loader } from "./loader/Loader";
 import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
 
 function App() {
-  // eslint-disable-next-line
   const { realTimeDocuments } = useRealTimeCollection();
   const { getDocument, document } = useDocument();
   const dispatch = useDispatch();
@@ -97,30 +96,13 @@ function App() {
     // eslint-disable-next-line
   }, [document, domain, type]);
 
-  // sprawdzanie czy juz cały student się zapisał i wtedy kończy ładowanie
+  // sprawdzanie czy juz cały user się zapisał i wtedy kończy ładowanie
   useEffect(() => {
-    if(student.data) {
+    if((principal.data && principal.schoolData) || teacher.data || student.data) {
       setLoading(false);
       nProgress.done();
     }
-  }, [student.data])
-  
-  // sprawdzanie czy juz cały teacher się zapisał i wtedy kończy ładowanie
-  useEffect(() => {
-    if(teacher.data) {
-      setLoading(false);
-      nProgress.done();
-    }
-  }, [teacher.data])
-
-  // sprawdzanie czy juz cały principal się zapisał i wtedy kończy ładowanie
-  useEffect(() => {
-    if(principal.data && principal.schoolData) {
-      setLoading(false);
-      nProgress.done();
-    }
-  }, [principal.data, principal.schoolData])
-
+  }, [principal.data, principal.schoolData, teacher.data, student.data])
 
   // wyświetla aktualny stan store
   useEffect(() => {

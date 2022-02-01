@@ -32,7 +32,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   const dispatch = useDispatch();
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
-  const { userType } = useSelector((state: RootState) => state.userType)
+  const userType = useSelector((state: RootState) => state.userType.userType)
   const [allPrincipalsEmails, setAllPrincipalsEmails] = useState<string[]>([])
 
   const { principalLogin } = useLogin();
