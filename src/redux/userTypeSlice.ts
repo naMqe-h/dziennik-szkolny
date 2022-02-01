@@ -3,7 +3,7 @@ import { userType } from "../utils/interfaces";
 import { RootState } from "./store";
 
 interface userTypeState {
-    userType: userType | undefined | string;
+    userType: userType | undefined;
 }
 
 const initialState: userTypeState = {

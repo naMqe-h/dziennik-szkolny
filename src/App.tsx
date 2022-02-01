@@ -108,6 +108,7 @@ function App() {
   useEffect(() => {
     if(userType === 'principals') {
       console.log(principal);
+
     }
   }, [principal, userType]);
 
@@ -120,6 +121,7 @@ function App() {
   useEffect(() => {
     if(userType === 'students') {
       console.log(student);
+      console.log(userType);
     }
   }, [student, userType]);
   ///
