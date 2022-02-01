@@ -46,6 +46,7 @@ import { CombinedPrincipalData, CombinedSchoolDataFromFirebase, SingleStudentDat
 //loader
 import { Loader } from "./loader/Loader";
 import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
+import { Generate } from "./components/principal/lessonPlan/Generate";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
@@ -261,6 +262,14 @@ function App() {
                 element={
                   <ProtectedRoute loading={loading}>
                     <SingleClass />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/lesson-plan/generate"
+                element={
+                  <ProtectedRoute loading={loading}>
+                    <Generate />
                   </ProtectedRoute>
                 }
               />

@@ -241,3 +241,22 @@ export type SchoolCredentialsErrors = {
   name: ErrorObj;
   domain: ErrorObj;
 };
+
+//? Interfejsy związane z planem lekcji
+
+export interface LessonPlansDataFromFirebase {
+  [key: string]: singleClasslessonPlan;
+}
+export interface singleClasslessonPlan {
+  monday: singleHoursFromLessonPlan[];
+  tuesday: singleHoursFromLessonPlan[];
+  wednesday: singleHoursFromLessonPlan[];
+  thursday: singleHoursFromLessonPlan[];
+  friday: singleHoursFromLessonPlan[];
+}
+export type schoolHourType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export interface singleHoursFromLessonPlan {
+  subject: string;
+  teacher: string;
+  hour: number;
+}
