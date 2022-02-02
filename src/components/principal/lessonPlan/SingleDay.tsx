@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { singleHoursFromLessonPlan, daysOfWeek } from "../../../utils/interfaces"
+import { singleHoursFromLessonPlan } from "../../../utils/interfaces"
 import { SingleHour } from "./SingleHour"
 interface SingleDayProps {
     lessons: singleHoursFromLessonPlan[] | undefined
-    dayOfWeek: daysOfWeek
+    dayOfWeek: string
 }
 
 export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
     const [sortedLessons, setSortedLessons] = useState<singleHoursFromLessonPlan[] | undefined[]>([])
+    const [jsx, setJsx] = useState<any[]>()
 
     useEffect(() => {
         let tempArray: any = []
@@ -19,19 +20,17 @@ export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
     }, [lessons])
 
     useEffect(() => {
+        let temp = []
         for(let i = 0; i < 8; i++) {
-            if(!sortedLessons[i]) {
-                sortedLessons[i] = undefined
-            }
+            temp.push(<SingleHour key={i} isEmpty={!sortedLessons[i]} lesson={sortedLessons[i]} />)
         }
+        setJsx(temp)
     }, [sortedLessons])
 
     return (
         <tr>
             <th className="text-primary-focus">{dayOfWeek}</th> 
-            {sortedLessons?.map((lesson,index) => (
-                <SingleHour key={index} isEmpty={lesson === undefined} lesson={lesson} />
-            ))}
+            {jsx}
         </tr>
     )
 }
