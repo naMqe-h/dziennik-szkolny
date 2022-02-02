@@ -16,7 +16,9 @@ export const Navbar = () => {
     (state: RootState) =>
       state.principal.schoolData?.information.planType === "Premium"
   );
-  const [theme, setTheme] = useState<string>("halloween");
+  const [theme, setTheme] = useState<string>(
+    localStorage.getItem("theme") ?? "halloween"
+  );
   useEffect(() => {
     themeChange(theme);
   }, [theme]);
