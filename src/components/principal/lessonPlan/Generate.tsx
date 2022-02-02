@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/store"
 import { SingleDay } from "./SingleDay"
-import { SingleClassData, SubjectData, singleClasslessonPlan } from '../../../utils/interfaces'
+import { SingleClassData, SubjectData, singleClassLessonPlan, singleHoursFromLessonPlan } from '../../../utils/interfaces'
+import { useGeneratePlanFunc } from './useGeneratePlanFunc'
 
 interface SubjectDataWithShortName extends SubjectData {
     shortName: string
@@ -13,11 +14,13 @@ interface SubejctsInputsValues {
 }
 
 export const Generate = () => {
+    const { generatePlanFunc } = useGeneratePlanFunc()
+
     // pojedyńcza wybrana klasa
     const [selectClassValue, setSelectClassValue] = useState<string>('')
     const [singleClassInfo, setSingleClassInfo] = useState<SingleClassData>()
     const [singleClassSubjects, setSingleClassSubjects] = useState<SubjectDataWithShortName[]>([])
-    const [singleClassLessonPlan, setSingleClassLessonPlan] = useState<singleClasslessonPlan>()
+    const [singleClassLessonPlan, setSingleClassLessonPlan] = useState<singleClassLessonPlan>()
 
     //tablica z nazwami przedmiotów z wybranej klasy
     const [subjectNames, setSubjectNames] = useState<string[]>([])
@@ -40,7 +43,7 @@ export const Generate = () => {
             }
             //!do zmiany
             // setSelectClassValue(tempArray[0].name)
-            setSelectClassValue('1c')
+            setSelectClassValue('2a')
             setAllClassesArray(tempArray)
         }
     }, [schoolData])
@@ -106,6 +109,11 @@ export const Generate = () => {
     //     console.log(singleClassLessonPlan);
     // }, [singleClassLessonPlan])
 
+    const handleGenerate = () => {
+        const plan = generatePlanFunc(subejctsInputsValues, singleClassInfo)
+        setSingleClassLessonPlan(plan)
+    }
+
     return (
         <div className="mx-auto flex gap-4 pt-12 mr-8">
             <div className="flex-none w-64 p-4">
@@ -117,16 +125,17 @@ export const Generate = () => {
                 </select>
                 <div className="divider"></div>
                 
-                <div> {/*wszystkie przedmioty */}
+                <div>
                     <h1 className="text-xl font-bold text-center text-primary">Liczba godzin</h1>
                     {singleClassSubjects.map(item => (
                         <div key={item.name} className="form-control">
                             <label className="label">
                                 <span className="label-text">{item.name}</span>
                             </label> 
-                            <input value={subejctsInputsValues?.[item.shortName] || 0} onChange={(e) => setSubejctsInputsValues(prev => ({...prev, [item.shortName]: +e.target.value}))} type="number" placeholder="3" className="input input-bordered" />
+                            <input min={0} max={40} value={subejctsInputsValues?.[item.shortName] || 0} onChange={(e) => setSubejctsInputsValues(prev => ({...prev, [item.shortName]: +e.target.value}))} type="number" placeholder="3" className="input input-bordered" />
                         </div>
                     ))}
+                    <button className="btn btn-outline btn-primary" onClick={handleGenerate} >Generuj plan</button>
                 </div>
             </div>
             <div className="flex-1 w-full overflow-x-auto">

@@ -148,13 +148,13 @@ export interface SingleStudentDataFromFirebase {
   grades: { [key: string]: SchoolGrade[] };
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
-interface teacherWorkingHours {
+export interface teacherWorkingHours {
   dayOfWeek: daysOfWeek;
   hour: number;
   className: string;
 }
 //? Interface dni tygodnia
-export type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
+export type daysOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday'
 
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
@@ -244,9 +244,9 @@ export type SchoolCredentialsErrors = {
 //? Interfejsy związane z planem lekcji
 
 export interface LessonPlansDataFromFirebase {
-  [key: string]: singleClasslessonPlan;
+  [key: string]: singleClassLessonPlan;
 }
-export interface singleClasslessonPlan {
+export interface singleClassLessonPlan {
   monday: singleHoursFromLessonPlan[];
   tuesday: singleHoursFromLessonPlan[];
   wednesday: singleHoursFromLessonPlan[];
