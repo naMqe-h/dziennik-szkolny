@@ -1,4 +1,3 @@
-
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
 export type userType = "principals" | "teachers" | "students";
 export interface FormData {
@@ -85,7 +84,7 @@ export interface StudentDataFromAPI {
   password: string;
   pesel: string;
   birth: string;
-  dateFirebase: string,
+  dateFirebase: string;
 }
 //?Interfejs Pojedynczej oceny
 export interface SchoolGrade {
@@ -97,8 +96,8 @@ export interface SchoolGrade {
 }
 
 export interface SingleSubjectInClasses {
-  name: string,
-  teacher: string
+  name: string;
+  teacher: string;
 }
 
 //? Interfejs Klasy do formularza dodawania
@@ -150,18 +149,18 @@ export interface SingleStudentDataFromFirebase {
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
 interface teacherWorkingHours {
-  dayOfWeek: daysOfWeek,
-  hour: number,
-  className: string
+  dayOfWeek: daysOfWeek;
+  hour: number;
+  className: string;
 }
 //? Interface dni tygodnia
-type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
+export type daysOfWeek = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek'
 
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
-  teachedClasses: string[]
-  workingHours: teacherWorkingHours[]
+  teachedClasses: string[];
+  workingHours: teacherWorkingHours[];
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {
@@ -191,6 +190,7 @@ export interface TeachersDataFromFirebase {
 export interface CombinedSchoolDataFromFirebase {
   classes: ClassesDataFromFirebase;
   information: CombinedSchoolInformationFromFirebase;
+  lessonPlans: LessonPlansDataFromFirebase;
   students: StudentsDataFromFirebase;
   subjects: SchoolSubjectsDataFromFirebase;
   teachers: TeachersDataFromFirebase;
@@ -210,7 +210,7 @@ export interface updateClassStudents {
     students: string[];
   };
 }
-export interface updatePrincipalPlanType{
+export interface updatePrincipalPlanType {
   [key: string]: PlanTypes;
 }
 export type AddressErrors = {
@@ -220,9 +220,8 @@ export type AddressErrors = {
   street: ErrorObj;
 };
 
-
 //? Walidacja SignUp
-export type ErrorObj = {error:boolean, text: string};
+export type ErrorObj = { error: boolean; text: string };
 
 export type LoginCredentialsErrors = {
   email: ErrorObj;
@@ -241,3 +240,22 @@ export type SchoolCredentialsErrors = {
   name: ErrorObj;
   domain: ErrorObj;
 };
+
+//? Interfejsy związane z planem lekcji
+
+export interface LessonPlansDataFromFirebase {
+  [key: string]: singleClasslessonPlan;
+}
+export interface singleClasslessonPlan {
+  monday: singleHoursFromLessonPlan[];
+  tuesday: singleHoursFromLessonPlan[];
+  wednesday: singleHoursFromLessonPlan[];
+  thursday: singleHoursFromLessonPlan[];
+  friday: singleHoursFromLessonPlan[];
+}
+export type schoolHourType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export interface singleHoursFromLessonPlan {
+  subject: string;
+  teacher: string;
+  hour: number;
+}
