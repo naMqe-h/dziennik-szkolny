@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/store"
 import { SingleDay } from "./SingleDay"
 import { SingleClassData, SubjectData, singleClassLessonPlan } from '../../../utils/interfaces'
-import { useGeneratePlanFunc } from './useGeneratePlanFunc'
+import { useGeneratePlan } from '../../../hooks/useGeneratePlan'
+import { toast } from "react-toastify"
 
 interface SubjectDataWithShortName extends SubjectData {
     shortName: string
@@ -14,7 +15,9 @@ interface SubejctsInputsValues {
 }
 
 export const Generate = () => {
-    const { generatePlanFunc } = useGeneratePlanFunc()
+    const { generatePlan, savePlan } = useGeneratePlan()
+
+    const [isPlanNew, setIsPlanNew] = useState<boolean>(false)
 
     // pojedyńcza wybrana klasa
     const [selectClassValue, setSelectClassValue] = useState<string>('')
@@ -30,6 +33,7 @@ export const Generate = () => {
 
     // wartośći inputów od przedmiotów
     const [subejctsInputsValues, setSubejctsInputsValues] = useState<SubejctsInputsValues>({})
+    const [sumSubjectsInputsValues, setSumSubjectsInputsValues] = useState<number>(0)
 
     // redux
     const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
@@ -41,9 +45,7 @@ export const Generate = () => {
             for(const [key, value] of Object.entries(schoolData?.classes)) {
                 tempArray.push(value)
             }
-            //!do zmiany
-            // setSelectClassValue(tempArray[0].name)
-            setSelectClassValue('2a')
+            setSelectClassValue(tempArray[0].name)
             setAllClassesArray(tempArray)
         }
     }, [schoolData])
@@ -56,6 +58,7 @@ export const Generate = () => {
             for(const [key, value] of Object.entries(schoolData.lessonPlans)) {
                 if(key === selectClassValue) {
                     setSingleClassLessonPlan(value)
+                    //ustawiasz ze plan juz ustniał - state
                 }
             }
         }
@@ -94,6 +97,7 @@ export const Generate = () => {
             singleClassSubjects.forEach(item => {
                 tempState = {
                     ...tempState,
+                    GodzinaWychowawcza: 1,
                     [item.shortName]: 0,
                 }
             })
@@ -101,22 +105,35 @@ export const Generate = () => {
         }
     }, [singleClassSubjects])
 
-    // useEffect(() => {
-    //     console.log(subejctsInputsValues);
-    // }, [subejctsInputsValues])
+    useEffect(() => {
+        if(Object.values(subejctsInputsValues).length > 0) {
+            let tempHours: number = Object.values(subejctsInputsValues).reduce((a,b) => a + b)
+            setSumSubjectsInputsValues(tempHours)
+        }
+    }, [subejctsInputsValues])
     
-    // useEffect(() => {
-    //     console.log(singleClassLessonPlan);
-    // }, [singleClassLessonPlan])
-
     const handleGenerate = () => {
-        const plan = generatePlanFunc(subejctsInputsValues, singleClassInfo)
-        setSingleClassLessonPlan(plan)
+        setIsPlanNew(true)
+        if(sumSubjectsInputsValues > 40) {
+            toast.error('Maksymalna ilość godzin lekcyjnych w tygodniu wynosi 40', { autoClose: 3000 })
+        } else {
+            const plan = generatePlan(subejctsInputsValues, singleClassInfo)
+            setSingleClassLessonPlan(plan)
+        }
+    }
+
+    const handleSave = () => {
+        setIsPlanNew(false)
+        savePlan(selectClassValue)
+    }
+
+    const handleAddSubjectValue = (e: React.ChangeEvent<HTMLInputElement>, item: SubjectDataWithShortName) => {
+        setSubejctsInputsValues(prev => ({...prev, [item.shortName]: +e.target.value}))
     }
 
     return (
-        <div className="mx-auto flex gap-4 pt-12 mr-8">
-            <div className="flex-none w-64 p-4">
+        <div className="mx-auto flex gap-2 pt-12 mr-8">
+            <div className="flex-none w-72 p-4">
                 <h1 className="text-xl font-bold text-center text-primary">Wybierz klasę:</h1>
                 <select value={selectClassValue} onChange={(e) => setSelectClassValue(e.currentTarget.value)} className="select select-bordered w-full max-w-xs mt-4">
                     {allClassesArray?.map((item) => (
@@ -125,18 +142,19 @@ export const Generate = () => {
                 </select>
                 <div className="divider"></div>
                 
-                <div>
-                    <h1 className="text-xl font-bold text-center text-primary">Liczba godzin</h1>
+                <div className="max-h-[450px] overflow-auto px-5">
+                    <h1 className="text-xl font-bold text-center text-primary">Liczba godzin: {sumSubjectsInputsValues}/40</h1>
                     {singleClassSubjects.map(item => (
                         <div key={item.name} className="form-control">
                             <label className="label">
                                 <span className="label-text">{item.name}</span>
                             </label> 
-                            <input min={0} max={40} value={subejctsInputsValues?.[item.shortName] || 0} onChange={(e) => setSubejctsInputsValues(prev => ({...prev, [item.shortName]: +e.target.value}))} type="number" placeholder="3" className="input input-bordered" />
+                            <input min={0} max={40} value={subejctsInputsValues?.[item.shortName] || 0} onChange={(e) => handleAddSubjectValue(e, item)} type="number" placeholder="3" className="input input-bordered" />
                         </div>
                     ))}
-                    <button className="btn btn-outline btn-primary" onClick={handleGenerate} >Generuj plan</button>
                 </div>
+                <button className="btn btn-outline btn-primary w-full mt-4" onClick={handleGenerate} >Generuj plan</button>
+                {isPlanNew && <button className="btn btn-success btn-outline w-full mt-4" onClick={handleSave}>Zatwierdź</button>}
             </div>
             <div className="flex-1 w-full overflow-x-auto">
                 <table className="table w-full border-2 border-base-200">
