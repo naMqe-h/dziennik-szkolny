@@ -20,7 +20,8 @@ export const Navbar = () => {
     localStorage.getItem("theme") ?? "halloween"
   );
   useEffect(() => {
-    themeChange(theme);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
   const { logoutUser } = useLogout();
 
