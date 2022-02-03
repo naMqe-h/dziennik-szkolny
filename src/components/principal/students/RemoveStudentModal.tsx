@@ -16,7 +16,8 @@ export const RemoveStudentModal: React.FC<RemoveStudentModalProps> = ({
   ModalOptions,
   setModalOptions,
 }) => {
-  const state = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
   const { updateCounter } = useUpdateInfoCounter();
   const { setDocument } = useSetDocument();
   async function removeStudent(
@@ -24,9 +25,9 @@ export const RemoveStudentModal: React.FC<RemoveStudentModalProps> = ({
   ) {
     try {
       nProgress.start();
-      if (state.schoolData) {
-        const { domain } = state.schoolData.information;
-        const studentsClass = state.schoolData?.classes[removedStudent.class];
+      if (schoolData) {
+        const { domain } = schoolData.information;
+        const studentsClass = schoolData?.classes[removedStudent.class];
         const newStudentsList = studentsClass?.students.filter(
           (x) => x !== removedStudent.email
         );

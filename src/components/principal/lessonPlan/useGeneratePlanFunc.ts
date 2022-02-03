@@ -1,11 +1,12 @@
-import { indexOf } from "lodash"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/store"
-import { daysOfWeek, LessonPlansDataFromFirebase, SingleClassData, singleClassLessonPlan, teacherWorkingHours } from "../../../utils/interfaces"
+import { daysOfWeek, SingleClassData, singleClassLessonPlan, teacherWorkingHours } from "../../../utils/interfaces"
 
 export const useGeneratePlanFunc = () => {
-    const daysOfWeekArray: daysOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
-    const teachers = useSelector((state: RootState) => state.principal.schoolData?.teachers)
+    const daysOfWeekArray: daysOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']  
+    const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
+    const teachers = schoolData?.teachers
 
     const getWorkingHourOfTeacher = (teacherEmail: string) => {
         if(teachers) {
@@ -53,15 +54,16 @@ export const useGeneratePlanFunc = () => {
                     console.log(generatedDay);
                     const filteredArray = plan[generatedDay].filter(item => item !== undefined)
                     console.log(filteredArray);
-                    if(filteredArray.length < 8) {
+                    if(filteredArray.length < 11) {
                         console.log(key, value);
                         break
                     }
                     console.log(key, value, 'pełne');
                 }
 
-                for(let i = 0; i < 8; i++) {
+                for(let i = 0; i < 11; i++) {
                     if(plan[generatedDay][i] === undefined) { // 1
+                        // eslint-disable-next-line
                         const temp = workingHours.some(item => item.dayOfWeek === generatedDay && item.hour === i+1)
                         if(!temp) {
                             plan[generatedDay][i] = {

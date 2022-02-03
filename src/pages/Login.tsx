@@ -32,7 +32,9 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   const dispatch = useDispatch();
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
+  const teacher = useSelector((state: RootState) => state.teacher);
   const userType = useSelector((state: RootState) => state.userType.userType)
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [allPrincipalsEmails, setAllPrincipalsEmails] = useState<string[]>([])
 
   const { principalLogin } = useLogin();
@@ -154,7 +156,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   };
 
   if (!loading) {
-    return (principal.user && principal.data && principal.schoolData && userType) || (student.data && student.user && userType) ? (
+    return (principal.user && principal.data && schoolData && userType) || (student.data && student.user && userType) || (teacher.data && schoolData) ? (
       <Navigate to="/" />
     ) : (
       <div className="mt-12 flex items-center justify-center">

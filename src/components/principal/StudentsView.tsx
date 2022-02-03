@@ -28,11 +28,12 @@ export const StudentsView = () => {
   });
   const isMobile = useMediaQuery("(max-width:768px)");
 
-  const state = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
   useEffect(() => {
-    if (state.schoolData?.students) {
+    if (schoolData?.students) {
       const StudentsDataWithoutPassword = Object.values(
-        state.schoolData.students
+        schoolData.students
       ).map((x) => {
         let newX;
         if (x.class === "") {
@@ -48,7 +49,7 @@ export const StudentsView = () => {
       }).sort((a, b) => (b.lastName < a.lastName ? 1 : -1));
       setStudentsData(searchedClasses);
     }
-  }, [state.schoolData?.students, searchQuery]);
+  }, [schoolData?.students, searchQuery]);
   return (
     <>
       <RemoveStudentModal

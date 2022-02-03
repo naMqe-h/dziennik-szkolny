@@ -34,16 +34,10 @@ export const Subjects: React.FC<SubjectsProps> = ({
   setIsOpen,
 }) => {
   const { setDocument } = useSetDocument();
-
-  const allSubjects = useSelector(
-    (state: RootState) => state.principal.schoolData?.subjects
-  );
-  const allTeachers = useSelector(
-    (state: RootState) => state.principal.schoolData?.teachers
-  );
-  const domain = useSelector(
-    (state: RootState) => state.principal.schoolData?.information.domain
-  );
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData);
+  const allSubjects = schoolData?.subjects
+  const allTeachers = schoolData?.teachers
+  const domain = schoolData?.information.domain
 
   const [newSubjects, setNewSubjects] = useState<SubjectDataWithKey[]>();
   const [availableTeachers, setAvailableTeachers] =

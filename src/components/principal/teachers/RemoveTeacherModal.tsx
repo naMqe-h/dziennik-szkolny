@@ -16,20 +16,22 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
   ModalOptions,
   setModalOptions,
 }) => {
-  const state = useSelector((state: RootState) => state.principal);
+  const principal = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   async function RemoveTeacher(
     removedTeacher: Omit<SingleTeacherData, "password">
   ) {
-    if (state.data?.schoolInformation.domain) {
-      const { domain } = state.data?.schoolInformation;
+    if (principal.data?.schoolInformation.domain) {
+      const { domain } = principal.data?.schoolInformation;
       const email = removedTeacher.email as string;
       try {
         nProgress.start();
-        if (state.schoolData) {
-          let allClasses = { ...state.schoolData.classes };
-          const keys = Object.keys(state.schoolData.classes).filter((x) => {
+        if (schoolData) {
+          let allClasses = { ...schoolData.classes };
+          const keys = Object.keys(schoolData.classes).filter((x) => {
             return removedTeacher.teachedClasses.some((y) => y === x);
           });
           Object.entries(allClasses).forEach((item) => {

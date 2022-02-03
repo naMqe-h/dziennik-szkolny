@@ -2,10 +2,7 @@ import { AiFillInfoCircle } from "react-icons/ai";
 import { RiBookMarkFill } from "react-icons/ri";
 import { GiTeacher } from "react-icons/gi";
 import { AiFillCalendar } from "react-icons/ai";
-import {
-  CombinedPrincipalData,
-  CombinedSchoolDataFromFirebase,
-} from "../../../utils/interfaces";
+import { CombinedPrincipalData, CombinedSchoolDataFromFirebase } from "../../../utils/interfaces";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Link } from "react-router-dom";
@@ -15,9 +12,7 @@ export const Stats: React.FC = () => {
     (state: RootState) => state.principal.data
   ) as CombinedPrincipalData;
 
-  const schoolData = useSelector(
-    (state: RootState) => state.principal.schoolData
-  ) as CombinedSchoolDataFromFirebase;
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData as CombinedSchoolDataFromFirebase)
 
   const { firstName } = userData;
   const {

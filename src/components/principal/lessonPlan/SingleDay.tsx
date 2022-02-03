@@ -21,7 +21,7 @@ export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
 
     useEffect(() => {
         let temp = []
-        for(let i = 0; i < 8; i++) {
+        for(let i = 0; i < 11; i++) {
             temp.push(<SingleHour key={i} isEmpty={!sortedLessons[i]} lesson={sortedLessons[i]} />)
         }
         setJsx(temp)

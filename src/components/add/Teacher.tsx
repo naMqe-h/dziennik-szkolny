@@ -28,7 +28,7 @@ export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
   const { setDocument } = useSetDocument();
-  const user = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
     firstName: "",
@@ -71,8 +71,8 @@ export const Teacher = () => {
 
 
   useEffect(() => {
-    if (user.schoolData?.subjects) {
-      const temp: string[] = Object.values(user.schoolData.subjects).map(
+    if (schoolData?.subjects) {
+      const temp: string[] = Object.values(schoolData.subjects).map(
         (x) => x.name
       );
       setSubjects(temp);
@@ -80,7 +80,7 @@ export const Teacher = () => {
         return { ...prev, subject: temp[0] };
       });
     }
-  }, [user.schoolData?.subjects]);
+  }, [schoolData?.subjects]);
 
 
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {
@@ -89,7 +89,7 @@ export const Teacher = () => {
     const newEmail = generateEmail(
       teacher.firstName,
       teacher.lastName,
-      user.schoolData?.information.domain as string
+      schoolData?.information.domain as string
     );
     setTeacher((prev) => {
       return { ...prev, email: newEmail, password: newPassword };
@@ -140,26 +140,26 @@ export const Teacher = () => {
     
     //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
     // const newObj:single
-    if (user.schoolData) {
+    if (schoolData) {
       setIsAdding(true);
       const objWrapper: TeachersDataFromFirebase = {
         [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [], workingHours: [] },
       };
       setDocument(
-        user.schoolData?.information.domain as string,
+        schoolData?.information.domain as string,
         "teachers",
         objWrapper
       );
       updateCounter(
-        user.schoolData.information.domain,
+        schoolData.information.domain,
         "teachersCount",
         "increment"
       );
       //Dodaje tutaj nauczyciela do przedmiotu
-      const domain = user.schoolData.information.domain;
+      const domain = schoolData.information.domain;
       const { subject, email } = teacher;
       const previousTeachers =
-        user.schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
+        schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
           .teachers;
           setDocument(domain as string, "subjects", {
         [subject.replaceAll(/\s/g, "")]: {

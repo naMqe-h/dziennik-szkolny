@@ -5,12 +5,13 @@ import { RootState } from "../../redux/store";
 
 export const SingleTeacherView = () => {
   const { email } = useParams();
-  const state = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   useEffect(() => {
-    const domain = state.schoolData?.information.domain;
+    const domain = schoolData?.information.domain; 
+    //! z user auth
     const queryEmail = `${email}@${domain}`;
-    //!State Nauczyciela
-    console.log(state.schoolData?.teachers[queryEmail]);
-  }, [email, state.schoolData?.information.domain, state.schoolData?.teachers]);
+  //   //!State Nauczyciela
+    console.log(schoolData?.teachers[queryEmail]);
+  }, [email, schoolData?.information.domain, schoolData?.teachers]);
   return <div></div>;
 };
