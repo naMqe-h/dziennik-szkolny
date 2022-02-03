@@ -34,7 +34,7 @@ export const Stats: React.FC = () => {
             <AiFillInfoCircle size={35} className="text-primary" />
             </div>
             <div className="stat-title">Wychowawca klasy</div>
-            <div className="stat-value">{userData.classTeacher.length > 0 ? userData.classTeacher : "brak wychowawstwa"}</div>
+            <div className="stat-value">{userData.classTeacher.length > 0 ? userData.classTeacher : "Nie dotyczy"}</div>
         </div>
 
         <div className="stat bg-base-200">
@@ -44,7 +44,7 @@ export const Stats: React.FC = () => {
             <div className="stat-title">Uczony przedmiot</div>
             <div className="stat-value">{userData.subject.split(' ').map((word, i) => {
                 if(i !== 0){
-                    return <span><br/>{word}</span>
+                    return <span key={word+i}><br/>{word}</span>
                 }
                 return word
             })}</div>
