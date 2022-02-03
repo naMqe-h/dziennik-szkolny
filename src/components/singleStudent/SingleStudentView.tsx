@@ -4,22 +4,25 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Loader } from "../../loader/Loader";
 import { RootState } from "../../redux/store";
-import { genderType, SingleStudentDataFromFirebase, StudentsDataFromFirebase } from "../../utils/interfaces";
+import {
+  genderType,
+  SingleClassData,
+  SingleStudentDataFromFirebase,
+  StudentsDataFromFirebase,
+} from "../../utils/interfaces";
 import { validatePesel } from "../../utils/utils";
 
 // react icons
 import { HiOutlineMail } from "react-icons/hi";
-import {CgGenderMale, CgGenderFemale} from 'react-icons/cg';
-import {FaBirthdayCake} from 'react-icons/fa'
-import {AiFillInfoCircle} from 'react-icons/ai'
+import { CgGenderMale, CgGenderFemale } from "react-icons/cg";
+import { FaBirthdayCake } from "react-icons/fa";
+import { AiFillInfoCircle } from "react-icons/ai";
 import { useSetDocument } from "../../hooks/useSetDocument";
 
 export const SingleStudentView = () => {
   const { email } = useParams();
-  const userType = useSelector((state: RootState) => state.userType.userType)
+  const userType = useSelector((state: RootState) => state.userType.userType);
   const { setDocument } = useSetDocument();
-
-
 
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
   const [student, setStudent] = useState<
@@ -30,11 +33,11 @@ export const SingleStudentView = () => {
 
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
   const userAuth = useSelector((state: RootState) => state.principal.user);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
-  
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
-
 
   useEffect(() => {
     const domain = schoolData?.information.domain;
@@ -45,32 +48,32 @@ export const SingleStudentView = () => {
   }, [email, schoolData?.information.domain, schoolData?.students]);
 
   useEffect(() => {
-    if(student){
-      setFormData(student)
+    if (student) {
+      setFormData(student);
     }
   }, [student]);
 
-
+  console.log(formData);
   const handleChange = (name: string, value: string) => {
-    if(student){
+    if (student) {
       if (name === "pesel") {
         setFormData((prev: any) => {
           return { ...prev, [name]: String(value) };
-    });} else {
-      setFormData((prev: any) => {
-        return {
-          ...prev,
-          [name]: value,
-        };
-      });
-    }
+        });
+      } else {
+        setFormData((prev: any) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      }
     }
   };
 
-  // TODO 
-  // ? 1. Dodać opcje zmiany klasy ucznia 
+  // TODO
+  // ? 1. Dodać opcje zmiany klasy ucznia
   // ? 2. error handeling (red inputs)
-
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -80,44 +83,67 @@ export const SingleStudentView = () => {
       });
     }
 
-    if (formData === student) return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
-    if(formData && student){
+    if (formData === student)
+      return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
+    if (formData && student) {
       if (formData.firstName.length === 0 || formData.lastName.length === 0)
-      return toast.error("Podaj Imię i Nazwisko", { autoClose: 2000 });
+        return toast.error("Podaj Imię i Nazwisko", { autoClose: 2000 });
 
-    if (!validatePesel(formData.pesel))
+      if (!validatePesel(formData.pesel))
         return toast.error("Podaj poprawny Pesel", { autoClose: 2000 });
 
-    if (formData.pesel.length !== 11)
+      if (formData.pesel.length !== 11)
         return toast.error("Podaj poprawny pesel", { autoClose: 2000 });
 
-    const domain = userAuth.displayName?.split("~")[0];
+      const domain = userAuth.displayName?.split("~")[0];
 
-    let tempData: StudentsDataFromFirebase = {[student.email] :{...student as SingleStudentDataFromFirebase, ...formData}}
-      
-    setDocument(domain as string, 'students', tempData)
-    setEdit(!edit);
-    return toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
-    
-    // TODO 1.
-    // Dodać możliwość zmiany klasy dla ucznia 
-    // if(student?.class !== formData?.class){
-
-    // }
-
+      // TODO 1.
+      if (student?.class !== formData?.class) {
+        if (schoolData?.classes) {
+          const oldClassDataStudents =
+            schoolData?.classes[student.class].students;
+          const newOldClassStudents = oldClassDataStudents?.filter(
+            (x) => x !== student.email
+          );
+          const oldClassObject: SingleClassData = {
+            ...schoolData?.classes[student.class],
+            students: newOldClassStudents as string[],
+          };
+          const oldNewClassDataStudents = [
+            ...schoolData.classes[formData.class].students,
+          ];
+          oldNewClassDataStudents.push(student.email);
+          const newClassObject: SingleClassData = {
+            ...schoolData.classes[formData.class],
+            students: oldNewClassDataStudents as string[],
+          };
+          setDocument(domain as string, "classes", {
+            [student.class]: oldClassObject,
+          });
+          setDocument(domain as string, "classes", {
+            [formData.class]: newClassObject,
+          });
+        }
+      }
+      let tempData: StudentsDataFromFirebase = {
+        [student.email]: {
+          ...(student as SingleStudentDataFromFirebase),
+          ...formData,
+        },
+      };
+      setDocument(domain as string, "students", tempData);
+      setEdit(!edit);
+      return toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
     }
-   
-    console.log(formData);
-  }
+  };
 
-  if(!student) return <div>Nie znaleziono ucznia</div>
-  if(!formData) return <Loader />
+  if (!student) return <div>Nie znaleziono ucznia</div>;
+  if (!formData) return <Loader />;
   return (
     <div className="h-full m-4">
       <div className="flex justify-center">
         <div className="max-w-screen-2xl w-full rounded-box md:border bg-base-200">
           <div className="flex flex-col justify-center items-center p-10">
-            
             <div className="avatar placeholder flex flex-col justify-center items-center">
               {/* With placeholder */}
               <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
@@ -145,154 +171,168 @@ export const SingleStudentView = () => {
               </div>
               <div className="pt-5">
                 <button className="btn btn-info m-2" onClick={() => undefined}>
-                    Wiadomość
+                  Wiadomość
                 </button>
-                {userType && 
-                <button className={`btn ${!edit ? 'btn-warning' : 'btn-error'} m-2 transition duration-200`} onClick={() => setEdit(!edit)}>
+                {userType && (
+                  <button
+                    className={`btn ${
+                      !edit ? "btn-warning" : "btn-error"
+                    } m-2 transition duration-200`}
+                    onClick={() => setEdit(!edit)}
+                  >
                     {!edit ? "Edytuj" : "Anuluj"}
-                </button>
-                }
-                
+                  </button>
+                )}
               </div>
-              
             </div>
-            
           </div>
 
           <div className="bg-base-300 rounded-b-2xl">
             {!edit ? (
-            <div className="p-10 flex flex-col h-full items-center justify-evenly">
+              <div className="p-10 flex flex-col h-full items-center justify-evenly">
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="flex items-center text-xl p-5">
-                    <HiOutlineMail className="mr-2" />{student?.email}                    
+                    <HiOutlineMail className="mr-2" />
+                    {student?.email}
                   </div>
                   <div className="flex items-center text-xl p-5">
-                    <FaBirthdayCake className="mr-2" /> 
-                    {student?.birth}                    
-                  </div >
+                    <FaBirthdayCake className="mr-2" />
+                    {student?.birth}
+                  </div>
                   <div className="flex items-center text-xl p-5">
-                    {student?.gender !== "Kobieta" ?
-                    <CgGenderMale className="mr-2" /> :
-                    <CgGenderFemale className="mr-2" />
-                  }
-                    {student?.gender}                    
-                  </div >
+                    {student?.gender !== "Kobieta" ? (
+                      <CgGenderMale className="mr-2" />
+                    ) : (
+                      <CgGenderFemale className="mr-2" />
+                    )}
+                    {student?.gender}
+                  </div>
                   <div className="flex items-center text-xl p-5">
                     <AiFillInfoCircle className="mr-2" />
-                      {student?.pesel}                    
+                    {student?.pesel}
                   </div>
-
                 </div>
-            </div> 
-            ):(
-            <form className="form-control p-10">
-             <span className="card-title">Edycja Ucznia</span>
-             <div className="divider" />
-             <div className="form-control grid grid-cols-1 md:grid-cols-2">
-               <label className="label w-full">
-                 <span className="label-text w-full">Imię</span>
-               </label>
-               <input
-                 type="text"
-                 name="firstName"
-                 value={formData.firstName}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                 className="input max-w-96"
-                 placeholder="Imię"
-               />
+              </div>
+            ) : (
+              <form className="form-control p-10">
+                <span className="card-title">Edycja Ucznia</span>
+                <div className="divider" />
+                <div className="form-control grid grid-cols-1 md:grid-cols-2">
+                  <label className="label w-full">
+                    <span className="label-text w-full">Imię</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                    className="input max-w-96"
+                    placeholder="Imię"
+                  />
 
-               <div className="divider md:col-span-2" />
+                  <div className="divider md:col-span-2" />
 
-               <label className="label w-full">
-                 <span className="label-text w-full">Nazwisko</span>
-               </label>
-               <input
-                 type="text"
-                 name="firstName"
-                 value={formData.lastName}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                 className="input max-w-96"
-                 placeholder="Nazwisko"
-               />
+                  <label className="label w-full">
+                    <span className="label-text w-full">Nazwisko</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                    className="input max-w-96"
+                    placeholder="Nazwisko"
+                  />
 
-               <div className="divider md:col-span-2" />
+                  <div className="divider md:col-span-2" />
 
-               <label className="label">
-                 <span className="label-text">Klasa</span>
-               </label>
-               <select
-                 className="select select-bordered w-full max-w-xs"
-                 name="class"
-                 value={formData.class}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-               >
-                 {schoolData && Object.keys(schoolData.classes).map((sClass) => (
-                   <option key={sClass} value={sClass}>
-                     {sClass}
-                   </option>
-                 )) }
-               </select>
+                  <label className="label">
+                    <span className="label-text">Klasa</span>
+                  </label>
+                  <select
+                    className="select select-bordered w-full max-w-xs"
+                    name="class"
+                    value={formData.class}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                  >
+                    {schoolData &&
+                      Object.keys(schoolData.classes).map((sClass) => (
+                        <option key={sClass} value={sClass}>
+                          {sClass}
+                        </option>
+                      ))}
+                  </select>
 
-               <div className="divider md:col-span-2" />
+                  <div className="divider md:col-span-2" />
 
-               <label className="label">
-                 <span className="label-text">Płeć</span>
-               </label>
-               <select
-                 className="select select-bordered w-full max-w-xs"
-                 name="gender"
-                 value={formData.gender}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-               >
-                 {genders.map((gender) => (
-                   <option key={gender} value={gender}>
-                     {gender}
-                   </option>
-                 ))}
-               </select>
+                  <label className="label">
+                    <span className="label-text">Płeć</span>
+                  </label>
+                  <select
+                    className="select select-bordered w-full max-w-xs"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                  >
+                    {genders.map((gender) => (
+                      <option key={gender} value={gender}>
+                        {gender}
+                      </option>
+                    ))}
+                  </select>
 
-               <div className="divider md:col-span-2" />
+                  <div className="divider md:col-span-2" />
 
-               <label className="label">
-                 <span className="label-text">Pesel</span>
-               </label>
-               <input
-                 type="number"
-                 name="pesel"
-                 value={formData.pesel}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                 className="input "
-                 placeholder="Pesel"
-               />
+                  <label className="label">
+                    <span className="label-text">Pesel</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="pesel"
+                    value={formData.pesel}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                    className="input "
+                    placeholder="Pesel"
+                  />
 
-               <div className="divider md:col-span-2" />
+                  <div className="divider md:col-span-2" />
 
-               <label className="label">
-                 <span className="label-text">Data Urodzenia</span>
-               </label>
-               <input
-                 type="date"
-                 name="birth"
-                 value={formData.birth}
-                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                 max={new Date().toISOString().split("T")[0]}
-                 className="input"
-                 placeholder={new Date().toLocaleDateString()}
-               />
+                  <label className="label">
+                    <span className="label-text">Data Urodzenia</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="birth"
+                    value={formData.birth}
+                    onChange={(e) =>
+                      handleChange(e.target.name, e.target.value)
+                    }
+                    max={new Date().toISOString().split("T")[0]}
+                    className="input"
+                    placeholder={new Date().toLocaleDateString()}
+                  />
 
-               <div className="md:col-span-2 flex items-center justify-center mt-10">
-                 <button
-                   className="btn-primary btn mt-4 self-end"
-                   onClick={(e) => handleSubmit(e)}
-                 >
-                   Zapisz
-                 </button>
-               </div>
-             </div>
-            </form>
+                  <div className="md:col-span-2 flex items-center justify-center mt-10">
+                    <button
+                      className="btn-primary btn mt-4 self-end"
+                      onClick={(e) => handleSubmit(e)}
+                    >
+                      Zapisz
+                    </button>
+                  </div>
+                </div>
+              </form>
             )}
-               
-
           </div>
         </div>
       </div>
