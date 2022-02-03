@@ -4,8 +4,6 @@ import { useLogout } from "../hooks/useLogout";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
-// @ts-ignore
-import { themeChange } from "theme-change";
 import useMediaQuery from "../hooks/useMediaQuery";
 export const Navbar = () => {
   const principal = useSelector((state: RootState) => state.principal);
