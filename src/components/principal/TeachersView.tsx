@@ -24,11 +24,12 @@ export const TeachersView: React.FC = () => {
   });
   const isMobile = useMediaQuery("(max-width:768px)");
   const [searchQuery, setsearchQuery] = useState<string>("");
-  const state = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
   useEffect(() => {
-    if (state.schoolData?.teachers) {
+    if (schoolData?.teachers) {
       const TeachersDataWithoutPassword = Object.values(
-        state.schoolData.teachers
+        schoolData.teachers
       ).map((x) => {
         let newX;
         if (x.classTeacher === "") {
@@ -44,7 +45,7 @@ export const TeachersView: React.FC = () => {
       }).sort((a, b) => (b.lastName < a.lastName ? 1 : -1));
       setTeachersData(searchedClasses);
     }
-  }, [state.schoolData?.teachers, searchQuery]);
+  }, [schoolData?.teachers, searchQuery]);
   return (
     <>
       <RemoveTeacherModal

@@ -41,9 +41,7 @@ export const Settings = () => {
       return state.teacher.user
     }
   });
-  const schoolData = useSelector(
-    (state: RootState) => state.principal.schoolData?.information
-  );
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const { type } = useParams();
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();
@@ -216,13 +214,13 @@ export const Settings = () => {
             )}
             {type === "school" && (
               <School
-                schoolData={schoolData as CombinedSchoolInformationFromFirebase}
+                schoolData={schoolData?.information as CombinedSchoolInformationFromFirebase}
                 save={handleSchoolSubmit}
               />
             )}
             {type === "plan" && (
               <Plan
-                currentPlanType={schoolData?.planType as PlanTypes}
+                currentPlanType={schoolData?.information.planType as PlanTypes}
                 planChange={handlePlanChange}
               />
             )}

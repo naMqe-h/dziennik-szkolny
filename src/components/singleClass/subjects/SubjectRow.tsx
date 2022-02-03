@@ -10,8 +10,9 @@ interface SubjectRowProps {
 }
 
 export const SubjectRow: React.FC<SubjectRowProps> = ({ subject, number }) => {
-    const allSubjects = useSelector((state: RootState) => state.principal.schoolData?.subjects)
-    const allTeachers = useSelector((state: RootState) => state.principal.schoolData?.teachers)
+    const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+    const allSubjects = schoolData?.subjects
+    const allTeachers = schoolData?.teachers
     const [subjectInfo, setSubjectInfo] = useState<SubjectData>()
     const [teacher, setTeacher] = useState<string>()
 

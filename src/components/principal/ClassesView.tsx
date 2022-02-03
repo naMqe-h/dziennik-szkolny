@@ -22,7 +22,7 @@ interface ModalOptions {
 export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const state = useSelector((state: RootState) => state.principal);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const classesDataWithoutConverting = useRef<null | SingleClassData[]>(null);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -32,7 +32,7 @@ export const ClassesView: React.FC = () => {
   });
   const isMobile = useMediaQuery("(max-width:768px)");
   function findClassTeacherName(email: string): string {
-    const allTeachers = state.schoolData?.teachers as TeachersDataFromFirebase;
+    const allTeachers = schoolData?.teachers as TeachersDataFromFirebase;
     const match = Object.keys(allTeachers).find((x) => x === email);
     if (match) {
       const foundedTeacher = allTeachers[match];
@@ -45,15 +45,15 @@ export const ClassesView: React.FC = () => {
     removedClassData: SingleClassData,
     wasAccepted?: boolean
   ) {
-    if (state.schoolData?.classes) {
+    if (schoolData?.classes) {
       if (!wasAccepted) {
         return setModalOptions((prev) => {
           return { ...prev, isOpen: true, removedClass: removedClassData };
         });
       } else {
-        const { domain } = state.schoolData.information;
+        const { domain } = schoolData.information;
         const RemovedTeacherObject = Object.values(
-          state.schoolData.teachers
+          schoolData.teachers
         ).find((x) => {
           const Name = `${x.firstName} ${x.lastName}`;
           return Name === removedClassData.classTeacher;
@@ -79,12 +79,12 @@ export const ClassesView: React.FC = () => {
     }
   }
   useEffect(() => {
-    if (state.schoolData?.classes) {
+    if (schoolData?.classes) {
       //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
       classesDataWithoutConverting.current = Object.values(
-        state.schoolData.classes
+        schoolData.classes
       );
-      const allClasses = Object.values(state.schoolData.classes).map((x) => {
+      const allClasses = Object.values(schoolData.classes).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
@@ -98,7 +98,7 @@ export const ClassesView: React.FC = () => {
       setClassesData(searchedClasses);
     }
     // eslint-disable-next-line
-  }, [state.schoolData?.classes, searchQuery]);
+  }, [schoolData?.classes, searchQuery]);
   return (
     <>
       <div className={`modal ${ModalOptions.isOpen ? "modal-open" : ""}`}>

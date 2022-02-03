@@ -6,12 +6,13 @@ interface SingUpProps {
   loading: boolean;
 }
 export const Signup: React.FC<SingUpProps> = ({ loading }) => {
-  const state = useSelector((state: RootState) => state.principal);
+  const principal = useSelector((state: RootState) => state.principal);
   const { userType } = useSelector((state: RootState) => state.userType)
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
 
 
   if (!loading) {
-    return state.user && state.data && state.schoolData && userType ? (
+    return principal.user && principal.data && schoolData && userType ? (
       <Navigate to="/" />
     ) : (
       <div>{<SignupPrincipalView />}</div>

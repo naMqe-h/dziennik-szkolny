@@ -22,7 +22,6 @@ export const SingleStudentView = () => {
 
 
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
-  const state = useSelector((state: RootState) => state.principal);
   const [student, setStudent] = useState<
     SingleStudentDataFromFirebase | undefined
   >(undefined);
@@ -31,17 +30,19 @@ export const SingleStudentView = () => {
 
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
   const userAuth = useSelector((state: RootState) => state.principal.user);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  
 
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
 
 
   useEffect(() => {
-    const domain = state.schoolData?.information.domain;
+    const domain = schoolData?.information.domain;
     const queryEmail = `${email}@${domain}`;
 
     //!State Ucznia
-    setStudent(state.schoolData?.students[queryEmail]);
-  }, [email, state.schoolData?.information.domain, state.schoolData?.students]);
+    setStudent(schoolData?.students[queryEmail]);
+  }, [email, schoolData?.information.domain, schoolData?.students]);
 
   useEffect(() => {
     if(student){
@@ -100,9 +101,9 @@ export const SingleStudentView = () => {
     
     // TODO 1.
     // Dodać możliwość zmiany klasy dla ucznia 
-    if(student?.class !== formData?.class){
+    // if(student?.class !== formData?.class){
 
-    }
+    // }
 
     }
    
@@ -225,7 +226,7 @@ export const SingleStudentView = () => {
                  value={formData.class}
                  onChange={(e) => handleChange(e.target.name, e.target.value)}
                >
-                 {state.schoolData && Object.keys(state.schoolData.classes).map((sClass) => (
+                 {schoolData && Object.keys(schoolData.classes).map((sClass) => (
                    <option key={sClass} value={sClass}>
                      {sClass}
                    </option>

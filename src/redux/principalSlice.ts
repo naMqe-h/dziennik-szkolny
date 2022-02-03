@@ -1,17 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "firebase/auth";
-import { CombinedPrincipalData, CombinedSchoolDataFromFirebase } from "../utils/interfaces";
+import { CombinedPrincipalData } from "../utils/interfaces";
 import type { RootState } from "./store";
 interface PrincipalState {
   user: User | null;
   data: null | CombinedPrincipalData ;
-  schoolData: CombinedSchoolDataFromFirebase | null;
 }
 
 const initialState: PrincipalState = {
   user: null,
   data: null,
-  schoolData: null,
 };
 export const principalSlice = createSlice({
   name: "principal",
@@ -26,12 +24,6 @@ export const principalSlice = createSlice({
     ) => {
       state.data = action.payload;
     },
-    setSchoolData: (
-      state,
-      action: PayloadAction<CombinedSchoolDataFromFirebase>
-    ) => {
-      state.schoolData = action.payload;
-    },
     logout: () => initialState,
   },
 });
@@ -39,7 +31,6 @@ export const principalSlice = createSlice({
 export const {
   setPrincipalAuth,
   setPrincipalData,
-  setSchoolData,
   logout,
 } = principalSlice.actions;
 export const selectUser = (state: RootState) => state;

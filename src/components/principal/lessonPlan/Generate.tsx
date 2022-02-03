@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/store"
 import { SingleDay } from "./SingleDay"
-import { SingleClassData, SubjectData, singleClassLessonPlan, singleHoursFromLessonPlan } from '../../../utils/interfaces'
+import { SingleClassData, SubjectData, singleClassLessonPlan } from '../../../utils/interfaces'
 import { useGeneratePlanFunc } from './useGeneratePlanFunc'
 
 interface SubjectDataWithShortName extends SubjectData {
@@ -32,8 +32,8 @@ export const Generate = () => {
     const [subejctsInputsValues, setSubejctsInputsValues] = useState<SubejctsInputsValues>({})
 
     // redux
-    const schoolData = useSelector((state: RootState) => state.principal.schoolData)
-    
+    const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+
     useEffect(() => {
         let tempArray = []
         if(schoolData?.classes) {
@@ -150,7 +150,10 @@ export const Generate = () => {
                             <th className="text-lg">11<sup>40</sup>-12<sup>25</sup></th> 
                             <th className="text-lg">12<sup>35</sup>-13<sup>20</sup></th> 
                             <th className="text-lg">13<sup>30</sup>-14<sup>15</sup></th> 
-                            <th className="text-lg">14<sup>20</sup>-15<sup>05</sup></th> 
+                            <th className="text-lg">14<sup>20</sup>-15<sup>05</sup></th>
+                            <th className="text-lg">15<sup>10</sup>-15<sup>55</sup></th>
+                            <th className="text-lg">16<sup>00</sup>-16<sup>45</sup></th>
+                            <th className="text-lg">16<sup>50</sup>-17<sup>35</sup></th>
                         </tr>
                     </thead> 
                     <tbody>

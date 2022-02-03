@@ -30,7 +30,7 @@ const defaultErrorState:SubjectCredentialsErrors = {
 export const Subject: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const schoolData = useSelector((state: RootState) => state.principal.schoolData);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
   const [fieldErrors, setFieldErrors] = useState<SubjectCredentialsErrors>(defaultErrorState);

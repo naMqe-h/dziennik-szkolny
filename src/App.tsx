@@ -39,10 +39,10 @@ import { RootState } from "./redux/store";
 import {
   setPrincipalData,
   setPrincipalAuth,
-  setSchoolData,
 } from "./redux/principalSlice";
 import { setUserType } from "./redux/userTypeSlice";
 import { setStudentAuth, setStudentData } from "./redux/studentSlice";
+import { setSchoolData } from './redux/schoolDataSlice'
 
 // utils
 import {
@@ -69,6 +69,7 @@ function App() {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const userType = useSelector((state: RootState) => state.userType.userType);
 
   // states
@@ -77,9 +78,9 @@ function App() {
   const [type, setType] = useState<string>("");
 
   useEffect(() => {
-    dispatch(
-      setSchoolData(realTimeDocuments as CombinedSchoolDataFromFirebase)
-    );
+    if(userType !== 'students') {
+      dispatch(setSchoolData(realTimeDocuments as CombinedSchoolDataFromFirebase));
+    }
     // eslint-disable-next-line
   }, [realTimeDocuments]);
 
@@ -117,32 +118,33 @@ function App() {
   // sprawdzanie czy juz cały user się zapisał i wtedy kończy ładowanie
   useEffect(() => {
     if (
-      (principal.data && principal.schoolData) ||
+      (principal.data && schoolData) ||
       teacher.data ||
       student.data
     ) {
       setLoading(false);
       nProgress.done();
     }
-  }, [principal.data, principal.schoolData, teacher.data, student.data]);
+  }, [principal.data, schoolData, teacher.data, student.data]);
 
   // wyświetla aktualny stan store
   useEffect(() => {
     if (userType === "principals") {
       console.log(principal);
+      console.log(schoolData);
     }
-  }, [principal, userType]);
-
+  }, [principal, userType, schoolData]);
+  
   useEffect(() => {
     if (userType === "teachers") {
       console.log(teacher);
+      console.log(schoolData);
     }
-  }, [teacher, userType]);
+  }, [teacher, userType, schoolData]);
 
   useEffect(() => {
     if (userType === "students") {
       console.log(student);
-      console.log(userType);
     }
   }, [student, userType]);
   ///
@@ -150,9 +152,9 @@ function App() {
   // sprawdzanie czy uzytkownik juz jest zapisany w store
   useEffect(() => {
     if (
-      (principal.user && principal.data && principal.schoolData && userType) ||
+      (principal.user && principal.data && schoolData && userType) ||
       (student.data && student.user && userType) ||
-      (teacher.data && userType)
+      (teacher.data && userType && schoolData)
     ) {
       setLoading(false);
       nProgress.done();
@@ -160,7 +162,7 @@ function App() {
   }, [
     principal.data,
     userType,
-    principal.schoolData,
+    schoolData,
     principal.user,
     student.user,
     student.data,
@@ -172,9 +174,9 @@ function App() {
     setLoading(true);
     nProgress.start();
     if (
-      (principal.user && principal.data && principal.schoolData && userType) ||
+      (principal.user && principal.data && schoolData && userType) ||
       (student.data && student.user && userType) ||
-      (teacher.data && userType)
+      (teacher.data && userType && schoolData)
     ) {
       setLoading(false);
       nProgress.done();

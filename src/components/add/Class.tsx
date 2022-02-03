@@ -34,9 +34,7 @@ export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector(
-    (state: RootState) => state.principal?.schoolData
-  );
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
 
   const [fieldErrors, setFieldErrors] =
