@@ -53,7 +53,6 @@ export const SingleStudentView = () => {
     }
   }, [student]);
 
-  console.log(formData);
   const handleChange = (name: string, value: string) => {
     if (student) {
       if (name === "pesel") {
@@ -190,23 +189,23 @@ export const SingleStudentView = () => {
               <div className="p-10 flex flex-col h-full items-center justify-evenly">
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="flex items-center text-xl p-5">
-                    <HiOutlineMail className="mr-2" />
+                    <HiOutlineMail className="mr-2 text-primary" />
                     {student?.email}
                   </div>
                   <div className="flex items-center text-xl p-5">
-                    <FaBirthdayCake className="mr-2" />
+                    <FaBirthdayCake className="mr-2 text-primary" />
                     {student?.birth}
                   </div>
                   <div className="flex items-center text-xl p-5">
                     {student?.gender !== "Kobieta" ? (
-                      <CgGenderMale className="mr-2" />
+                      <CgGenderMale className="mr-2 text-primary" />
                     ) : (
-                      <CgGenderFemale className="mr-2" />
+                      <CgGenderFemale className="mr-2 text-primary" />
                     )}
                     {student?.gender}
                   </div>
                   <div className="flex items-center text-xl p-5">
-                    <AiFillInfoCircle className="mr-2" />
+                    <AiFillInfoCircle className="mr-2 text-primary" />
                     {student?.pesel}
                   </div>
                 </div>
