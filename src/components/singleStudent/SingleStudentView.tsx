@@ -38,14 +38,14 @@ export const SingleStudentView = () => {
   );
 
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
+  const domain = userAuth?.displayName?.split('~')[0];
 
   useEffect(() => {
-    const domain = schoolData?.information.domain;
     const queryEmail = `${email}@${domain}`;
 
     //!State Ucznia
     setStudent(schoolData?.students[queryEmail]);
-  }, [email, schoolData?.information.domain, schoolData?.students]);
+  }, [email, schoolData?.students]);
 
   useEffect(() => {
     if (student) {
@@ -94,8 +94,6 @@ export const SingleStudentView = () => {
 
       if (formData.pesel.length !== 11)
         return toast.error("Podaj poprawny pesel", { autoClose: 2000 });
-
-      const domain = userAuth.displayName?.split("~")[0];
 
       // TODO 1.
       if (student?.class !== formData?.class) {
@@ -173,7 +171,7 @@ export const SingleStudentView = () => {
                 <button className="btn btn-info m-2" onClick={() => undefined}>
                   Wiadomość
                 </button>
-                {userType && (
+                {userType === "principals" && (
                   <button
                     className={`btn ${
                       !edit ? "btn-warning" : "btn-error"
