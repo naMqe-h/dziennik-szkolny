@@ -1,5 +1,6 @@
 import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { SingleStudentDataFromFirebase } from "../../utils/interfaces";
 interface SingleClassTableRowProps {
   student: SingleStudentDataFromFirebase;
@@ -26,9 +27,11 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
       <td>{student.pesel}</td>
       <td>4 dni temu</td>
       <td className="w-1">
-        <button className="btn btn-square btn-warning btn-sm">
-          <FaUserEdit size={20} />
-        </button>
+        <Link to={`/students/${student.email.split("@")[0]}`}>
+          <button className="btn btn-square btn-warning btn-sm">
+            <FaUserEdit size={20} />
+          </button>
+        </Link>
         <button className="btn btn-square btn-error btn-sm ml-2">
           <AiFillDelete size={20} />
         </button>
@@ -41,9 +44,11 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
       <td>{student.firstName}</td>
       {!isExtraSmallDevice && <td>{student.email}</td>}
       <td className="w-1">
-        <button className="btn btn-square btn-warning btn-sm">
-          <FaUserEdit size={20} />
-        </button>
+        <Link to={`/students/${student.email.split("@")[0]}`}>
+          <button className="btn btn-square btn-warning btn-sm">
+            <FaUserEdit size={20} />
+          </button>
+        </Link>
         {!showDelete && (
           <button className="btn btn-square btn-error btn-sm ml-2">
             <AiFillDelete size={20} />
