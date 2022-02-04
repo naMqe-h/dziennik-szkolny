@@ -1,6 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+  .lessonPlanScrollbar::-webkit-scrollbar {
+    @apply shadow-lg;
+    @apply w-3;
+    @apply bg-base-200;
+    @apply rounded-lg;
+  }
+  .lessonPlanScrollbar::-webkit-scrollbar-thumb {
+    background: theme("colors.primary");
+    @apply h-1/4;
+    @apply rounded-lg;
+  }
+}
 * {
   box-sizing: border-box;
 }

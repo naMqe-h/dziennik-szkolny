@@ -22,7 +22,9 @@ interface ModalOptions {
 export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const classesDataWithoutConverting = useRef<null | SingleClassData[]>(null);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -52,12 +54,12 @@ export const ClassesView: React.FC = () => {
         });
       } else {
         const { domain } = schoolData.information;
-        const RemovedTeacherObject = Object.values(
-          schoolData.teachers
-        ).find((x) => {
-          const Name = `${x.firstName} ${x.lastName}`;
-          return Name === removedClassData.classTeacher;
-        });
+        const RemovedTeacherObject = Object.values(schoolData.teachers).find(
+          (x) => {
+            const Name = `${x.firstName} ${x.lastName}`;
+            return Name === removedClassData.classTeacher;
+          }
+        );
         const teacherEmail = RemovedTeacherObject?.email;
         await updateDoc(doc(db, domain, "classes"), {
           [removedClassData.name]: deleteField(),
@@ -81,20 +83,20 @@ export const ClassesView: React.FC = () => {
   useEffect(() => {
     if (schoolData?.classes) {
       //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
-      classesDataWithoutConverting.current = Object.values(
-        schoolData.classes
-      );
+      classesDataWithoutConverting.current = Object.values(schoolData.classes);
       const allClasses = Object.values(schoolData.classes).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
       //Then we implement Search by matching every string field on classes to our searchQuery
-      const searchedClasses = allClasses.filter((x) => {
-        const keyed = Object.values(x).filter((x) => typeof x === "string");
-        return keyed.some((v) =>
-          v.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      });
+      const searchedClasses = allClasses
+        .filter((x) => {
+          const keyed = Object.values(x).filter((x) => typeof x === "string");
+          return keyed.some((v) =>
+            v.toString().toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+        .sort((a, b) => (a.name > b.name ? 1 : -1));
       setClassesData(searchedClasses);
     }
     // eslint-disable-next-line

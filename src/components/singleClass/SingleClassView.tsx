@@ -36,12 +36,14 @@ export const SingleClassView = () => {
   const [studentsInfo, setStudentsInfo] = useState({});
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
-  const classes = schoolData?.classes
-  const teachers = schoolData?.teachers
-  const allStudents = schoolData?.students
-  const domain = schoolData?.information.domain
+  const classes = schoolData?.classes;
+  const teachers = schoolData?.teachers;
+  const allStudents = schoolData?.students;
+  const domain = schoolData?.information.domain;
 
   const isTablet = useMediaQuery("(max-width:700px)");
   const isMobile = useMediaQuery("(max-width:480px)");
