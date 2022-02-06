@@ -24,7 +24,9 @@ import { SingleTeacher } from "./pages/SingleTeacher";
 
 // wrappers
 import { LayoutWrapper } from "./components/wrappers/LayoutWrapper";
-import { ProtectedRoute } from "./components/wrappers/ProtectedRoute";
+import { PrincipalRoute } from "./components/wrappers/PrincipalRoute";
+import { TeacherRoute } from "./components/wrappers/TeacherRoute";
+import { StudentRoute } from "./components/wrappers/StudentRoute";
 
 // firebase
 import { onAuthStateChanged } from "firebase/auth";
@@ -92,9 +94,7 @@ function App() {
     }
     if (type === "students") {
       if (document) {
-        for (const [key, value] of Object.entries(
-          document as StudentsDataFromFirebase
-        )) {
+        for (const [key, value] of Object.entries( document as StudentsDataFromFirebase )) {
           if (key === student.user?.email) {
             dispatch(setStudentData(value as SingleStudentDataFromFirebase));
           }
@@ -103,9 +103,7 @@ function App() {
     }
     if (type === "teachers") {
       if (document) {
-        for (const [key, value] of Object.entries(
-          document as TeachersDataFromFirebase
-        )) {
+        for (const [key, value] of Object.entries( document as TeachersDataFromFirebase )) {
           if (key === teacher.user?.email) {
             dispatch(setTeacherData(value as SingleTeacherData));
           }
@@ -117,11 +115,7 @@ function App() {
 
   // sprawdzanie czy juz cały user się zapisał i wtedy kończy ładowanie
   useEffect(() => {
-    if (
-      (principal.data && schoolData) ||
-      teacher.data ||
-      student.data
-    ) {
+    if ( (principal.data && schoolData) || ( teacher.data && schoolData ) || student.data ) {
       setLoading(false);
       nProgress.done();
     }
@@ -141,33 +135,14 @@ function App() {
       console.log(schoolData);
     }
   }, [teacher, userType, schoolData]);
-
+  
   useEffect(() => {
     if (userType === "students") {
       console.log(student);
     }
-  }, [student, userType]);
+  }, [student, userType, schoolData]);
   ///
 
-  // sprawdzanie czy uzytkownik juz jest zapisany w store
-  useEffect(() => {
-    if (
-      (principal.user && principal.data && schoolData && userType) ||
-      (student.data && student.user && userType) ||
-      (teacher.data && userType && schoolData)
-    ) {
-      setLoading(false);
-      nProgress.done();
-    }
-  }, [
-    principal.data,
-    userType,
-    schoolData,
-    principal.user,
-    student.user,
-    student.data,
-    teacher.data,
-  ]);
 
   // sprawdzanie stanu auth,
   useEffect(() => {
@@ -226,97 +201,97 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <StudentRoute loading={loading}>
                     <Dashboard />
-                  </ProtectedRoute>
+                  </StudentRoute>
                 }
               />
               <Route
                 path="/add/:type"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <Add />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/profile"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <p>Profile</p>
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/settings/:type"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <TeacherRoute loading={loading}>
                     <Settings />
-                  </ProtectedRoute>
+                  </TeacherRoute>
                 }
               />
               <Route
                 path="/classes"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <Classes />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/teachers"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <Teachers />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/teachers/:email"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <SingleTeacher />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/students"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <Students />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/students/:email"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <SingleStudent />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/class/:id/:subpage"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <SingleClass />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="/lesson-plan/generate"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <PrincipalRoute loading={loading}>
                     <Generate />
-                  </ProtectedRoute>
+                  </PrincipalRoute>
                 }
               />
               <Route
                 path="*"
                 element={
-                  <ProtectedRoute loading={loading}>
+                  <StudentRoute loading={loading}>
                     <Navigate to="/" />
-                  </ProtectedRoute>
+                  </StudentRoute>
                 }
               />
               <Route path="/login" element={<Login loading={loading} />} />

@@ -45,6 +45,7 @@ export const SingleStudentView = () => {
 
     //!State Ucznia
     setStudent(schoolData?.students[queryEmail]);
+    // eslint-disable-next-line
   }, [email, schoolData?.students]);
 
   useEffect(() => {
