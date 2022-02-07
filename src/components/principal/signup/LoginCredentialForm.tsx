@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import {
   currentStepType,
-  LoginCredentialsErrors,
+  errorsInterface,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
 
@@ -11,7 +11,7 @@ interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
   setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: PrincipalLoginCredentials;
-  fieldErrors: LoginCredentialsErrors;
+  fieldErrors: errorsInterface;
 }
 
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
@@ -28,12 +28,6 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
     });
   }
   
-
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors]);
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();

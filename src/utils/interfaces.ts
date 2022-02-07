@@ -213,33 +213,25 @@ export interface updateClassStudents {
 export interface updatePrincipalPlanType {
   [key: string]: PlanTypes;
 }
-export type AddressErrors = {
-  city: ErrorObj;
-  houseNumber: ErrorObj;
-  postCode: ErrorObj;
-  street: ErrorObj;
-};
 
 //? Walidacja SignUp
 export type ErrorObj = { error: boolean; text: string };
 
-export type LoginCredentialsErrors = {
-  email: ErrorObj;
-  password: ErrorObj;
-  repeatedPassword: ErrorObj;
-};
-
-export type PersonalInfoCredentialsErrors = {
-  firstName: ErrorObj;
-  lastName: ErrorObj;
-  birth: ErrorObj;
-  pesel: ErrorObj;
-};
-
-export type SchoolCredentialsErrors = {
-  name: ErrorObj;
-  domain: ErrorObj;
-};
+export interface errorsInterface {
+  firstName: ErrorObj,
+  lastName: ErrorObj,
+  birth: ErrorObj,
+  pesel: ErrorObj,
+  email: ErrorObj,
+  password: ErrorObj,
+  repeatedPassword: ErrorObj,
+  name: ErrorObj,
+  domain: ErrorObj,
+  city: ErrorObj,
+  houseNumber: ErrorObj,
+  postCode: ErrorObj,
+  street: ErrorObj,
+}
 
 //? Interfejsy związane z planem lekcji
 
