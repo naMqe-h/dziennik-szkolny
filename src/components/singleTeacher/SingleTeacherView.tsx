@@ -46,7 +46,7 @@ export const SingleTeacherView = () => {
     }
     //!State Ucznia
     setTeacher(schoolData?.teachers[queryEmail]);
-
+    // eslint-disable-next-line
   }, [email, schoolData?.classes, schoolData?.teachers]);
 
   useEffect(() => {
