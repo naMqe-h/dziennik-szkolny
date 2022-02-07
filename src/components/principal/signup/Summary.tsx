@@ -25,7 +25,6 @@ export const Summary: React.FC<summaryProps> = ({
   const { firstName, birth, lastName, address, gender, pesel } =
     PrincipalPersonalInformation;
   const { signupPrincipal } = useSignup();
-  console.log("render");
   const data: CombinedPrincipalData = {
     planType: chosenPlan,
     address,
@@ -57,8 +56,6 @@ export const Summary: React.FC<summaryProps> = ({
 
   const handleSignup = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(data);
-    console.log(schoolData);
     signupPrincipal(email, password, data, schoolData);
   };
 
