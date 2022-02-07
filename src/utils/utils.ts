@@ -1,5 +1,6 @@
 import { AuthError } from "firebase/auth";
 import { toast } from "react-toastify";
+import { SortingOfClasses } from "../components/principal/ClassesView";
 
 export const validateEmail = (email: string) => {
   return email
@@ -21,12 +22,20 @@ export const validatePesel = (pesel: string): boolean => {
   total = total % 10;
   return 10 - total === controlSum;
 };
-export const generateEmail = (firstName:string, lastName:string, domain:string):string => {
-  const login = (firstName.slice(0,3) + lastName.slice(0, 3) + Math.floor(Math.random() * 1000)).toLowerCase()
-  const email = `${login.toLowerCase()}@${domain}`
-  return email
-}
-export const generatePassword = ():string => {
+export const generateEmail = (
+  firstName: string,
+  lastName: string,
+  domain: string
+): string => {
+  const login = (
+    firstName.slice(0, 3) +
+    lastName.slice(0, 3) +
+    Math.floor(Math.random() * 1000)
+  ).toLowerCase();
+  const email = `${login.toLowerCase()}@${domain}`;
+  return email;
+};
+export const generatePassword = (): string => {
   const characters =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_-+=";
   let password = "",
@@ -36,7 +45,7 @@ export const generatePassword = ():string => {
     temp = Math.floor(Math.random() * characters.length);
     password += characters.charAt(temp);
   }
-  return password
+  return password;
 };
 export const showToastError = (error: AuthError) => {
   switch (error.code) {

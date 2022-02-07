@@ -3,8 +3,17 @@ import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SingleClassData } from "../../../utils/interfaces";
+import { defaultSortingState, SortingOfClasses } from "../ClassesView";
+type SortTableParameters =
+  | "lp"
+  | "name"
+  | "classTeacher"
+  | "profile"
+  | "studentCount";
 interface ClassTableProps {
   classesData: SingleClassData[];
+  setSorting: React.Dispatch<React.SetStateAction<SortingOfClasses>>;
+  sorting: SortingOfClasses;
   removeClass: (
     removedClassData: SingleClassData,
     wasAccepted?: boolean
@@ -13,26 +22,97 @@ interface ClassTableProps {
 export const ClassTable: React.FC<ClassTableProps> = ({
   classesData,
   removeClass,
+  setSorting,
+  sorting,
 }) => {
+  function sortTable(type: SortTableParameters) {
+    if (sorting[type] === "Descending") {
+      setSorting(() => {
+        return { ...defaultSortingState, [type]: "Ascending" };
+      });
+    } else if (sorting[type] === "Ascending") {
+      setSorting(defaultSortingState);
+    } else {
+      setSorting(() => {
+        return { ...defaultSortingState, [type]: "Descending" };
+      });
+    }
+  }
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:750px)");
   return (
-    <table className="table table-zebra w-full text-center ">
+    <table className="table table-zebra w-full text-center mt-4">
       <thead>
-        <tr>
+        <tr className="first:cursor-pointer">
           {isMobile ? (
             <>
-              <th>LP</th>
-              <th>Nazwa</th>
-              <th>Wychowawca</th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.lp !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("lp")}
+              >
+                LP
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.name !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("name")}
+              >
+                Nazwa
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.classTeacher !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("classTeacher")}
+              >
+                Wychowawca
+              </th>
             </>
           ) : (
             <>
-              <th>LP</th>
-              <th>Nazwa</th>
-              <th>Wychowawca</th>
-              <th>Profil</th>
-              <th>Ilośc uczniów</th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.lp !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("lp")}
+              >
+                LP
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.name !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("name")}
+              >
+                Nazwa
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.classTeacher !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("classTeacher")}
+              >
+                Wychowawca
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.profile !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("profile")}
+              >
+                Profil
+              </th>
+              <th
+                className={`hover:brightness-125 rounded-xl ${
+                  sorting.studentCount !== "Default" && "brightness-150"
+                }`}
+                onClick={() => sortTable("studentCount")}
+              >
+                Ilośc uczniów
+              </th>
               <th>Edytuj</th>
             </>
           )}
@@ -47,7 +127,13 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   key={item.classTeacher}
                   onClick={() => navigate(`/class/${item.name}/info`)}
                 >
-                  <td>{index + 1}</td>
+                  <td>
+                    {sorting.lp === "Default"
+                      ? index + 1
+                      : sorting.lp === "Descending"
+                      ? classesData.length - index
+                      : index + 1}
+                  </td>
                   <td>{item.name}</td>
                   <td>{item.classTeacher}</td>
                 </tr>
@@ -59,7 +145,13 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   className="hover:brightness-125 cursor-pointer"
                   key={item.classTeacher}
                 >
-                  <td>{index + 1}</td>
+                  <td>
+                    {sorting.lp === "Default"
+                      ? index + 1
+                      : sorting.lp === "Descending"
+                      ? classesData.length - index
+                      : index + 1}
+                  </td>
                   <td>{item.name}</td>
                   <td>{item.classTeacher}</td>
                   <td>{item.profile}</td>
