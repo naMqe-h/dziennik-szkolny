@@ -246,13 +246,17 @@ export type SchoolCredentialsErrors = {
 export interface LessonPlansDataFromFirebase {
   [key: string]: singleClassLessonPlan;
 }
+// export interface singleClassLessonPlan {
+//   monday: singleHoursFromLessonPlan[];
+//   tuesday: singleHoursFromLessonPlan[];
+//   wednesday: singleHoursFromLessonPlan[];
+//   thursday: singleHoursFromLessonPlan[];
+//   friday: singleHoursFromLessonPlan[];
+// }
 export interface singleClassLessonPlan {
-  monday: singleHoursFromLessonPlan[];
-  tuesday: singleHoursFromLessonPlan[];
-  wednesday: singleHoursFromLessonPlan[];
-  thursday: singleHoursFromLessonPlan[];
-  friday: singleHoursFromLessonPlan[];
+  [key: string]: singleHoursFromLessonPlan[];
 }
+
 export type schoolHourType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export interface singleHoursFromLessonPlan {
   subject: string;

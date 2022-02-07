@@ -1,10 +1,11 @@
+import { deleteField } from "firebase/firestore"
 import { cloneDeep } from "lodash"
 import nProgress from "nprogress"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import { RootState } from "../redux/store"
-import { daysOfWeek, SingleClassData, singleClassLessonPlan, TeachersDataFromFirebase, teacherWorkingHours } from "../utils/interfaces"
+import { daysOfWeek, SingleClassData, singleClassLessonPlan, SingleTeacherData, TeachersDataFromFirebase, teacherWorkingHours } from "../utils/interfaces"
 import { useSetDocument } from "./useSetDocument"
 
 export const useGeneratePlan = () => {
@@ -14,6 +15,7 @@ export const useGeneratePlan = () => {
     const [newTeachersState, setNewTeachersState] = useState<TeachersDataFromFirebase | null>(null)
     const [newPlan, setNewPlan] = useState<singleClassLessonPlan | null>(null)
 
+    const domain = schoolData?.information.domain
     const teachers = schoolData?.teachers
 
     const getWorkingHourOfTeacher = (teacherEmail: string) => {
@@ -88,23 +90,69 @@ export const useGeneratePlan = () => {
                 }
             }
         }
+
+        const filledPlan: singleClassLessonPlan = cloneDeep(plan)
+        for (const [key, value] of Object.entries(filledPlan)) {
+            value.forEach((item, index) => {
+                if(item === undefined) {
+                    filledPlan[key][index] = {
+                        subject: '',
+                        hour: index + 1,
+                        teacher: ''
+                    }
+                }
+            })
+        }
         setNewTeachersState(newTeachers)
-        setNewPlan(plan)
-        return plan
+        setNewPlan(filledPlan)
+        return filledPlan
     }
 
-    const savePlan = (className: string) => {
-        const domain = schoolData?.information.domain
+    const savePlan = async (className: string, singleClassInfo: SingleClassData) => {
         nProgress.start()
+        await deletePlan(className, singleClassInfo)
         if(newPlan && newTeachersState) {
             //zapis całego planu
-            setDocument(domain as string, 'lessonPlans', { [className]: newPlan })
+            await setDocument(domain as string, 'lessonPlans', { [className]: newPlan })
             //zapis obiektu teachers
-            setDocument(domain as string, 'teachers', newTeachersState)
+            await setDocument(domain as string, 'teachers', newTeachersState)
             toast.success(`Udało się zapisać plan lekcji dla klasy ${className}`, { autoClose: 3000 })
         }
         nProgress.done()
     }
 
-    return { generatePlan, savePlan }
+    const deletePlan = async (className: string, singleClassInfo: SingleClassData) => {
+        const allClassSubjects = singleClassInfo.subjects
+        const classTeachersEmails: string[] = []
+        allClassSubjects.forEach(subject => {
+            classTeachersEmails.push(subject.teacher)
+        })
+        // przygotowanie tablicy tylko z nauczycielami uczącymi usuwaną klasę
+        let classTeachersInfo: {[key: string] : SingleTeacherData} = {}
+        for(const [key, value] of Object.entries(teachers as TeachersDataFromFirebase)) {
+            if(classTeachersEmails.includes(key)) {
+                classTeachersInfo = {
+                    ...classTeachersInfo,
+                    [key]: value
+                }
+            }
+        }
+        // usuwanie lekcji usuwanej klasy w workingHours w teachers
+        let newClassTeachersInfo: {[key: string] : SingleTeacherData} = cloneDeep(classTeachersInfo)
+        for(const [key, value] of Object.entries(classTeachersInfo)) {
+            let newWorkingHours: teacherWorkingHours[] = []
+            value.workingHours.forEach(item => {
+                if(item.className !== className) {
+                    newWorkingHours.push(item)
+                }
+            })
+            newClassTeachersInfo[key].workingHours = newWorkingHours
+        }
+        await setDocument(domain as string, 'lessonPlans', {
+            [className]: deleteField()
+        })
+        await setDocument(domain as string, 'teachers', newClassTeachersInfo)
+    }
+
+    return { generatePlan, savePlan, deletePlan }
 }
