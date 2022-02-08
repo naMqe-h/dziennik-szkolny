@@ -70,7 +70,7 @@ export const StudentsView = () => {
         return keyed.some((v) =>
           v.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
-      });
+      }).sort((a, b) => a.lastName.localeCompare(b.lastName));
       //! Implementacja sortowania taka sama jak w classesView
       const key = Object.keys(sorting).find((x) => {
         return sorting[x as keyof SortingOfStudents] !== "Default";
