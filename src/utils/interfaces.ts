@@ -1,4 +1,5 @@
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
+export type SortingOptions = "Ascending" | "Descending" | "Default";
 export type userType = "principals" | "teachers" | "students";
 export interface FormData {
   email: string;
@@ -156,7 +157,12 @@ export interface teacherWorkingHours {
   className: string;
 }
 //? Interface dni tygodnia
-export type daysOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday'
+export type daysOfWeek =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday";
 
 //? Interfejs Danych z firebasa o pojedynczym nauczycielu
 export interface SingleTeacherData extends TeacherData {

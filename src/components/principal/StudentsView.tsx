@@ -5,7 +5,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { RootState } from "../../redux/store";
-import { SingleStudentDataFromFirebase } from "../../utils/interfaces";
+import {
+  SingleStudentDataFromFirebase,
+  SortingOptions,
+} from "../../utils/interfaces";
 import { SearchButton } from "../searchButton/SearchButton";
 import { RemoveStudentModal } from "./students/RemoveStudentModal";
 import { StudentsTable } from "./students/StudentsTable";
@@ -17,6 +20,22 @@ export interface ModalOptionsStudent {
   isOpen: boolean;
   removedStudent: Omit<SingleStudentDataFromFirebase, "password"> | null;
 }
+export interface SortingOfStudents {
+  lp: SortingOptions;
+  firstName: SortingOptions;
+  lastName: SortingOptions;
+  class: SortingOptions;
+  gender: SortingOptions;
+  email: SortingOptions;
+}
+export const defaultSortingStateOfStudents: SortingOfStudents = {
+  lp: "Default",
+  firstName: "Default",
+  lastName: "Default",
+  class: "Default",
+  email: "Default",
+  gender: "Default",
+};
 export const StudentsView = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [studentsData, setStudentsData] = useState<StudentsDataWithoutPassword>(
@@ -26,9 +45,14 @@ export const StudentsView = () => {
     isOpen: false,
     removedStudent: null,
   });
+  const [sorting, setSorting] = useState<SortingOfStudents>(
+    defaultSortingStateOfStudents
+  );
   const isMobile = useMediaQuery("(max-width:768px)");
 
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
   useEffect(() => {
     if (schoolData?.students) {
@@ -41,15 +65,55 @@ export const StudentsView = () => {
         }
         return omit(newX ? newX : x, ["password"]);
       });
-      const searchedClasses = StudentsDataWithoutPassword.filter((x) => {
+      const searchedStudents = StudentsDataWithoutPassword.filter((x) => {
         const keyed = Object.values(x).filter((x) => typeof x === "string");
         return keyed.some((v) =>
           v.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
-      }).sort((a, b) => (b.lastName < a.lastName ? 1 : -1));
-      setStudentsData(searchedClasses);
+      }).sort((a, b) => a.lastName.localeCompare(b.lastName));
+      //! Implementacja sortowania taka sama jak w classesView
+      const key = Object.keys(sorting).find((x) => {
+        return sorting[x as keyof SortingOfStudents] !== "Default";
+      });
+      if (!key) return setStudentsData(searchedStudents);
+      const type = sorting[key as keyof SortingOfStudents];
+      if (key == "lp") {
+        if (type === "Descending") {
+          return setStudentsData(searchedStudents.reverse());
+        }
+      } else {
+        if (type === "Ascending") {
+          return setStudentsData(
+            searchedStudents.sort((b, a) =>
+              String(
+                a[key as keyof Omit<SingleStudentDataFromFirebase, "password">]
+              ).localeCompare(
+                String(
+                  b[
+                    key as keyof Omit<SingleStudentDataFromFirebase, "password">
+                  ]
+                )
+              )
+            )
+          );
+        } else {
+          return setStudentsData(
+            searchedStudents.sort((b, a) =>
+              String(
+                b[key as keyof Omit<SingleStudentDataFromFirebase, "password">]
+              ).localeCompare(
+                String(
+                  a[
+                    key as keyof Omit<SingleStudentDataFromFirebase, "password">
+                  ]
+                )
+              )
+            )
+          );
+        }
+      }
     }
-  }, [schoolData?.students, searchQuery]);
+  }, [schoolData?.students, searchQuery, sorting]);
   return (
     <>
       <RemoveStudentModal
@@ -73,6 +137,8 @@ export const StudentsView = () => {
         <StudentsTable
           studentsData={studentsData}
           setModalOptions={setModalOptions}
+          sorting={sorting}
+          setSorting={setSorting}
         />
       </section>
     </>
