@@ -149,17 +149,17 @@ export const ClassesView: React.FC = () => {
         if (type === "Ascending") {
           return setClassesData(
             searchedClasses.sort((b, a) =>
-              b[key as keyof SingleClassData] > a[key as keyof SingleClassData]
-                ? 1
-                : -1
+              String(a[key as keyof SingleClassData]).localeCompare(
+                String(b[key as keyof SingleClassData])
+              )
             )
           );
         } else {
           return setClassesData(
             searchedClasses.sort((b, a) =>
-              b[key as keyof SingleClassData] > a[key as keyof SingleClassData]
-                ? -1
-                : -1
+              String(b[key as keyof SingleClassData]).localeCompare(
+                String(a[key as keyof SingleClassData])
+              )
             )
           );
         }

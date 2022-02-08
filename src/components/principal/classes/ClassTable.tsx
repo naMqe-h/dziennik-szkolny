@@ -26,16 +26,26 @@ export const ClassTable: React.FC<ClassTableProps> = ({
   sorting,
 }) => {
   function sortTable(type: SortTableParameters) {
-    if (sorting[type] === "Descending") {
-      setSorting(() => {
-        return { ...defaultSortingState, [type]: "Ascending" };
-      });
-    } else if (sorting[type] === "Ascending") {
-      setSorting(defaultSortingState);
+    if (type === "lp") {
+      if (sorting[type] === "Default") {
+        setSorting(() => {
+          return { ...defaultSortingState, [type]: "Descending" };
+        });
+      } else {
+        setSorting(defaultSortingState);
+      }
     } else {
-      setSorting(() => {
-        return { ...defaultSortingState, [type]: "Descending" };
-      });
+      if (sorting[type] === "Descending") {
+        setSorting(() => {
+          return { ...defaultSortingState, [type]: "Ascending" };
+        });
+      } else if (sorting[type] === "Ascending") {
+        setSorting(defaultSortingState);
+      } else {
+        setSorting(() => {
+          return { ...defaultSortingState, [type]: "Descending" };
+        });
+      }
     }
   }
   const navigate = useNavigate();
