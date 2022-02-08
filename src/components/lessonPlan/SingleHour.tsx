@@ -1,4 +1,4 @@
-import { singleHoursFromLessonPlan } from "../../../utils/interfaces"
+import { singleHoursFromLessonPlan } from '../../utils/interfaces'
 
 interface SingleHourProps {
     isEmpty: boolean
