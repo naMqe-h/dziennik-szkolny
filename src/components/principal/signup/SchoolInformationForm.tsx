@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import {currentStepType, errorsInterface, SchoolInformation } from "../../../utils/interfaces";
 
 
@@ -24,12 +22,6 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   credentialsData,
   fieldErrors,
 }) => {
-
-  // useEffect(() => {
-  //   Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-  //     toast.error(field.text, { autoClose: 2000 })
-  //   ))
-  // }, [fieldErrors]);
 
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();

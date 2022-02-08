@@ -25,8 +25,10 @@ export const SignupPrincipalView: React.FC = () => {
   const [PrincipalLoginCredentials, setPrincipalLoginCredentials] =
     useState<PrincipalLoginCredentials>({
       email: "",
-      password: "",
-      repeatedPassword: "",
+      passwords:{
+        password: "",
+        repeatedPassword: "",
+      }
     });
   const [PrincipalPersonalInformation, setPrincipalPersonalInformation] =
     useState<PrincipalPersonalInformation>({
@@ -46,20 +48,19 @@ export const SignupPrincipalView: React.FC = () => {
     {
       name: "",
       type: "Technikum",
+      domain: "",
       address: {
         city: "",
         houseNumber: 0,
         postCode: "",
         street: "",
       },
-      domain: "",
     }
   );
   const [chosenPlan, setchosenPlan] = useState<PlanTypes>("Basic");
 
 
   const { validateData, inputErrors, errors } = useValidateInputs();
-  // const { getDocument, document: takenDomains } = useDocument();
 
   useEffect(() => {
     Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
@@ -101,13 +102,13 @@ export const SignupPrincipalView: React.FC = () => {
       if(!errors){
         if(changingStep.to){
           setCurrentStep(changingStep.to);
-          setChangingStep({
-            to: null,
-            current: null,
-            validated: false
-          })
         }
       }
+      setChangingStep({
+          to: null,
+          current: null,
+          validated: false
+        })
     }
   }, [changingStep.validated]);
   

@@ -7,8 +7,10 @@ export interface FormData {
 }
 export interface PrincipalLoginCredentials {
   email: string;
-  password: string;
-  repeatedPassword: string;
+  passwords: {
+    password: string;
+    repeatedPassword: string;
+  }
 }
 export type genderType = "Kobieta" | "Mężczyzna" | "Inna";
 type schoolType =

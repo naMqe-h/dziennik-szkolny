@@ -21,7 +21,8 @@ export const Summary: React.FC<summaryProps> = ({
   SchoolInformation,
   chosenPlan,
 }) => {
-  const { email, password } = PrincipalLoginCredentials;
+  const { email, passwords } = PrincipalLoginCredentials;
+  const password = passwords.password;
   const { firstName, birth, lastName, address, gender, pesel } =
     PrincipalPersonalInformation;
   const { signupPrincipal } = useSignup();

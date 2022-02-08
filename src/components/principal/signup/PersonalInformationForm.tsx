@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import {
   currentStepType,
   errorsInterface,
@@ -40,10 +38,11 @@ export const PersonalInformationForm: React.FC<
       set((prev) => {
         return { ...prev, address: newObj };
       });
+    } else {
+      set((prev) => {
+        return { ...prev, [name]: value };
+      });
     }
-    set((prev) => {
-      return { ...prev, [name]: value };
-    });
   }
 
   function validateData(e: React.SyntheticEvent) {
