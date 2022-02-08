@@ -19,7 +19,7 @@ interface SubejctsInputsValues {
 }
 
 export const Generate = () => {
-  const { generatePlan, savePlan } = useGeneratePlan();
+  const { generatePlan, savePlan, deletePlan } = useGeneratePlan();
 
   const [isPlanNew, setIsPlanNew] = useState<boolean>(false);
 
@@ -39,15 +39,11 @@ export const Generate = () => {
   const [allClassesArray, setAllClassesArray] = useState<SingleClassData[]>();
 
   // wartośći inputów od przedmiotów
-  const [subejctsInputsValues, setSubejctsInputsValues] =
-    useState<SubejctsInputsValues>({});
-  const [sumSubjectsInputsValues, setSumSubjectsInputsValues] =
-    useState<number>(0);
+  const [subejctsInputsValues, setSubejctsInputsValues] = useState<SubejctsInputsValues>({});
+  const [sumSubjectsInputsValues, setSumSubjectsInputsValues] = useState<number>(0);
 
   // redux
-  const schoolData = useSelector(
-    (state: RootState) => state.schoolData.schoolData
-  );
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData);
 
   useEffect(() => {
     let tempArray = [];
@@ -57,6 +53,7 @@ export const Generate = () => {
         tempArray.push(value);
       }
       setSelectClassValue(tempArray[0].name);
+      // setSelectClassValue('1b');
       setAllClassesArray(tempArray);
     }
   }, [schoolData]);
@@ -109,7 +106,7 @@ export const Generate = () => {
         tempState = {
           ...tempState,
           GodzinaWychowawcza: 1,
-          [item.shortName]: 0,
+          [item.shortName]: 3,
         };
       });
       setSubejctsInputsValues(tempState);
@@ -137,9 +134,17 @@ export const Generate = () => {
     }
   };
 
+  const handleDelete = () => {
+    setIsPlanNew(false)
+    setSingleClassLessonPlan(undefined)
+    if(singleClassInfo) {
+      deletePlan(singleClassInfo?.name, singleClassInfo)
+    }
+  }
+
   const handleSave = () => {
     setIsPlanNew(false);
-    savePlan(selectClassValue);
+    savePlan(selectClassValue, singleClassInfo as SingleClassData);
   };
 
   const handleAddSubjectValue = (
@@ -197,12 +202,15 @@ export const Generate = () => {
             </div>
           ))}
         </div>
-        <button
-          className="btn btn-outline btn-primary w-full mt-4"
-          onClick={handleGenerate}
-        >
-          Generuj plan
-        </button>
+        {!singleClassLessonPlan ? (
+          <button className="btn btn-outline btn-primary w-full mt-4" onClick={handleGenerate} >
+            Generuj plan
+          </button>
+        ) : (
+          <button className="btn btn-outline btn-error w-full mt-4" onClick={handleDelete}>
+            Usuń plan
+          </button>
+        )}
         {isPlanNew && (
           <button
             className="btn btn-success btn-outline w-full mt-4"

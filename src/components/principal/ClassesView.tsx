@@ -19,6 +19,21 @@ interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
+type SortingOptions = "Ascending" | "Descending" | "Default";
+export interface SortingOfClasses {
+  lp: SortingOptions;
+  name: SortingOptions;
+  classTeacher: SortingOptions;
+  profile: SortingOptions;
+  studentCount: SortingOptions;
+}
+export const defaultSortingState: SortingOfClasses = {
+  lp: "Default",
+  name: "Default",
+  classTeacher: "Default",
+  profile: "Default",
+  studentCount: "Default",
+};
 export const ClassesView: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
@@ -28,6 +43,7 @@ export const ClassesView: React.FC = () => {
   const classesDataWithoutConverting = useRef<null | SingleClassData[]>(null);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sorting, setSorting] = useState<SortingOfClasses>(defaultSortingState);
   const [ModalOptions, setModalOptions] = useState<ModalOptions>({
     isOpen: false,
     removedClass: null,
@@ -82,25 +98,75 @@ export const ClassesView: React.FC = () => {
   }
   useEffect(() => {
     if (schoolData?.classes) {
-      //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
+      //Na początku zmieniamy email wychowawcy na imię i nazwisko
       classesDataWithoutConverting.current = Object.values(schoolData.classes);
       const allClasses = Object.values(schoolData.classes).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
-      //Then we implement Search by matching every string field on classes to our searchQuery
-      const searchedClasses = allClasses
-        .filter((x) => {
-          const keyed = Object.values(x).filter((x) => typeof x === "string");
-          return keyed.some((v) =>
-            v.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      //Potem implementujemy searcha poprzez filtrowanie obiektu wszystkich klas i zostawianie tylko pól typu string
+      const searchedClasses = allClasses.filter((x) => {
+        const keyed = Object.values(x).filter((x) => typeof x === "string");
+        return keyed.some((v) =>
+          v.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      //!Implementacja algorytmu sortującego
+      //Tutaj szukamy która kolumna jest sortowana
+      const key = Object.keys(sorting).find((x) => {
+        return sorting[x as keyof SortingOfClasses] !== "Default";
+      });
+      //Jeśli żadna nie jest to zwracamy wyniki wyszukiwania
+      if (!key) return setClassesData(searchedClasses);
+      //Zmienna od typu sortowania np. Ascending | Descending
+      const type = sorting[key as keyof SortingOfClasses];
+      //lp to specialny przypadek ponieważ nie ma go normalnie w searchedClasses jeśli sortujemy bo od descending to poprostu odwracamy tablice, w innym przypadku zwracamy wyniki wyszukiwania
+      if (key == "lp") {
+        if (type === "Descending") {
+          return setClassesData(searchedClasses.reverse());
+        }
+        if (type === "Ascending") {
+          return setClassesData(searchedClasses);
+        }
+        //Tutaj mamy 2 specialny przypadek studentCount ponieważ jest on numerem więc sortujemy po ilości uczniów
+      } else if (key === "studentCount") {
+        if (type === "Descending") {
+          return setClassesData(
+            searchedClasses.sort((a, b) =>
+              b.students.length > a.students.length ? 1 : -1
+            )
           );
-        })
-        .sort((a, b) => (a.name > b.name ? 1 : -1));
-      setClassesData(searchedClasses);
+        }
+        if (type === "Ascending") {
+          return setClassesData(
+            searchedClasses.sort((a, b) =>
+              b.students.length > a.students.length ? -1 : 1
+            )
+          );
+        }
+        //Tutaj wykonujemy resztę logiki do pól typu string porównujemy i sortujemy je alfabetycznie.
+      } else {
+        if (type === "Ascending") {
+          return setClassesData(
+            searchedClasses.sort((b, a) =>
+              String(a[key as keyof SingleClassData]).localeCompare(
+                String(b[key as keyof SingleClassData])
+              )
+            )
+          );
+        } else {
+          return setClassesData(
+            searchedClasses.sort((b, a) =>
+              String(b[key as keyof SingleClassData]).localeCompare(
+                String(a[key as keyof SingleClassData])
+              )
+            )
+          );
+        }
+      }
     }
     // eslint-disable-next-line
-  }, [schoolData?.classes, searchQuery]);
+  }, [schoolData?.classes, searchQuery, sorting]);
   return (
     <>
       <div className={`modal ${ModalOptions.isOpen ? "modal-open" : ""}`}>
@@ -155,7 +221,12 @@ export const ClassesView: React.FC = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-        <ClassTable classesData={classesData} removeClass={removeClass} />
+        <ClassTable
+          classesData={classesData}
+          removeClass={removeClass}
+          setSorting={setSorting}
+          sorting={sorting}
+        />
       </div>
     </>
   );
