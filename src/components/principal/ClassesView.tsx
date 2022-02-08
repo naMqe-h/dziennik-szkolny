@@ -98,29 +98,29 @@ export const ClassesView: React.FC = () => {
   }
   useEffect(() => {
     if (schoolData?.classes) {
-      //First we change classTeacher email to his firstName and lastName by mapping the array of allClasses
+      //Na początku zmieniamy email wychowawcy na imię i nazwisko
       classesDataWithoutConverting.current = Object.values(schoolData.classes);
       const allClasses = Object.values(schoolData.classes).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
-      //Then we implement Search by matching every string field on classes to our searchQuery
+      //Potem implementujemy searcha poprzez filtrowanie obiektu wszystkich klas i zostawianie tylko pól typu string
       const searchedClasses = allClasses.filter((x) => {
         const keyed = Object.values(x).filter((x) => typeof x === "string");
         return keyed.some((v) =>
           v.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
       });
-      //!Here is the implementation of sorting algorithm
-      //Here we find what column is sorted for example lp
+      //!Implementacja algorytmu sortującego
+      //Tutaj szukamy która kolumna jest sortowana
       const key = Object.keys(sorting).find((x) => {
         return sorting[x as keyof SortingOfClasses] !== "Default";
       });
-      //If we aren't sorting we just return search results
+      //Jeśli żadna nie jest to zwracamy wyniki wyszukiwania
       if (!key) return setClassesData(searchedClasses);
-      //Here we check type of sorting
+      //Zmienna od typu sortowania np. Ascending | Descending
       const type = sorting[key as keyof SortingOfClasses];
-      //lp is special case because its not normally a field in searchedClasses so if we sort it by descending we neet to reverse the array
+      //lp to specialny przypadek ponieważ nie ma go normalnie w searchedClasses jeśli sortujemy bo od descending to poprostu odwracamy tablice, w innym przypadku zwracamy wyniki wyszukiwania
       if (key == "lp") {
         if (type === "Descending") {
           return setClassesData(searchedClasses.reverse());
@@ -128,7 +128,7 @@ export const ClassesView: React.FC = () => {
         if (type === "Ascending") {
           return setClassesData(searchedClasses);
         }
-        //Here we handle another special count whitch is studentCount because its a nubmer
+        //Tutaj mamy 2 specialny przypadek studentCount ponieważ jest on numerem więc sortujemy po ilości uczniów
       } else if (key === "studentCount") {
         if (type === "Descending") {
           return setClassesData(
@@ -144,7 +144,7 @@ export const ClassesView: React.FC = () => {
             )
           );
         }
-        //Here we handle rest of the logic
+        //Tutaj wykonujemy resztę logiki do pól typu string porównujemy i sortujemy je alfabetycznie.
       } else {
         if (type === "Ascending") {
           return setClassesData(
