@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { SingleDay } from "./SingleDay";
+import { SingleDay } from "../../lessonPlan/SingleDay";
 import {
   SingleClassData,
   SubjectData,

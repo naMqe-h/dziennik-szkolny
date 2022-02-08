@@ -17,6 +17,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import useFetch from "../../hooks/useFetch";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { LessonPlan } from "./lessonPlan/LessonPlan";
+import { Frequency } from "./frequency/Frequency";
 
 export const SingleClassView = () => {
   const { data: users, loading, getData, setData } = useFetch();
@@ -301,8 +303,8 @@ export const SingleClassView = () => {
             singleClass={singleClass}
           />
         )}
-        {subpage === "lesson-plan" && <p>Plan lekcji</p>}
-        {subpage === "frequency" && <p>frekwencja</p>}
+        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} /> }
+        {subpage === "frequency" && <Frequency /> }
         {subpage === "grades" && <Grades studentsInfo={studentsInfo} />}
       </div>
     </>

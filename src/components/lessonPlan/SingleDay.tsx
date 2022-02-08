@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { singleHoursFromLessonPlan } from "../../../utils/interfaces";
+import { singleHoursFromLessonPlan } from "../../utils/interfaces";
 import { SingleHour } from "./SingleHour";
 interface SingleDayProps {
   lessons: singleHoursFromLessonPlan[] | undefined;
