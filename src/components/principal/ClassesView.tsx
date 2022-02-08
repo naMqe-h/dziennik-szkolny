@@ -11,6 +11,7 @@ import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
 import {
   SingleClassData,
+  SortingOptions,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
 import { SearchButton } from "../searchButton/SearchButton";
@@ -19,7 +20,6 @@ interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
-type SortingOptions = "Ascending" | "Descending" | "Default";
 export interface SortingOfClasses {
   lp: SortingOptions;
   name: SortingOptions;
@@ -124,9 +124,6 @@ export const ClassesView: React.FC = () => {
       if (key == "lp") {
         if (type === "Descending") {
           return setClassesData(searchedClasses.reverse());
-        }
-        if (type === "Ascending") {
-          return setClassesData(searchedClasses);
         }
         //Tutaj mamy 2 specialny przypadek studentCount ponieważ jest on numerem więc sortujemy po ilości uczniów
       } else if (key === "studentCount") {

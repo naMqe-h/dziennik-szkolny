@@ -123,7 +123,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
               >
                 Ilośc uczniów
               </th>
-              <th>Edytuj</th>
+              <th className="cursor-default">Edytuj</th>
             </>
           )}
         </tr>
