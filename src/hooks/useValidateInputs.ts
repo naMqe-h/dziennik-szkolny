@@ -1,5 +1,6 @@
 import { objectTraps } from "immer/dist/internal";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {errorsInterface} from "../utils/interfaces";
 import { validateEmail, validatePesel } from "../utils/utils";
 import { useDocument } from "./useDocument";
@@ -7,6 +8,8 @@ import { useDocument } from "./useDocument";
 
 
 const errorsInitial:errorsInterface = {
+
+    // global
     firstName: {error:false, text: ''},
     lastName: {error:false, text: ''},
     birth: {error:false, text: ''},
@@ -20,6 +23,13 @@ const errorsInitial:errorsInterface = {
     houseNumber: {error:false, text: ''},
     postCode: {error:false, text: ''},
     street: {error:false, text: ''},
+
+    // ADD class
+    profile: {error:false, text: ''},
+    classTeacher: {error:false, text: ''},
+
+    // ADD student
+    class: {error:false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -46,15 +56,22 @@ export const useValidateInputs = () => {
       city: 'Miasto',
       houseNumber: 'Number domu',
       postCode: 'Kod pocztowy',
-      street: 'ulicę'
+      street: 'Ulicę',
+      profile: 'Profil',
+      classTeacher: 'Nauczyciela',
+      class: 'Klasę'
     }
-
+    
+    useEffect(() => {
+      Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
+        toast.error(field.text, { autoClose: 2000 })
+      ))
+    }, [inputErrors]);
 
 
     const validateData = (data: object) => {
         setInputErrors(errorsInitial);
         setErrors(false);
-        console.log(Object.entries(data));
         
         Object.entries(data).map((field) => {
           let fieldName = field[0];

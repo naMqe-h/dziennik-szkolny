@@ -239,6 +239,9 @@ export interface errorsInterface {
   houseNumber: ErrorObj,
   postCode: ErrorObj,
   street: ErrorObj,
+  profile: ErrorObj,
+  classTeacher: ErrorObj,
+  class: ErrorObj
 }
 
 //? Interfejsy związane z planem lekcji

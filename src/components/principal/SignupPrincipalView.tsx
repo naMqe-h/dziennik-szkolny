@@ -62,11 +62,7 @@ export const SignupPrincipalView: React.FC = () => {
 
   const { validateData, inputErrors, errors } = useValidateInputs();
 
-  useEffect(() => {
-    Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [inputErrors]);
+  
 
   interface changingStepsInterface {
     to: null | currentStepType;
@@ -120,11 +116,11 @@ export const SignupPrincipalView: React.FC = () => {
   }
   
 
-    useEffect(() => {
-      if(currentStep > maxStep){
+  useEffect(() => {
+    if(currentStep > maxStep){
         setMaxStep(currentStep);
-      }
-    }, [currentStep, maxStep]);
+    }
+  }, [currentStep, maxStep]);
 
     
 

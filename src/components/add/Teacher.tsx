@@ -3,7 +3,6 @@ import {
   genderType,
   TeachersDataFromFirebase,
   TeacherData as teacherInterface,
-  ErrorObj,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { generateEmail, generatePassword } from "../../utils/utils";
@@ -11,18 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
-
-type TeachersCredentialsErrors = {
-  firstName: ErrorObj;
-  lastName: ErrorObj;
-  emailAndPassword: ErrorObj;
-};
-const defaultErrorState:TeachersCredentialsErrors = {
-  firstName: {error:false, text: ''},
-  lastName: {error:false, text: ''},
-  emailAndPassword: {error:false, text: ''},
-};
-
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 
 export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
@@ -51,7 +39,10 @@ export const Teacher = () => {
 
   const [canBeGenerated, setCanBeGenerated] = useState<boolean>(false);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
-  const [fieldErrors, setFieldErrors] = useState<TeachersCredentialsErrors>(defaultErrorState);
+  const { validateData, inputErrors, errors } = useValidateInputs();
+  const [validated, setValidated] = useState<Boolean>(false);
+
+
 
 
   useEffect(() => {
@@ -62,12 +53,6 @@ export const Teacher = () => {
     }
   }, [teacher.firstName, teacher.lastName]);
 
-
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors]);
 
 
   useEffect(() => {
@@ -82,60 +67,10 @@ export const Teacher = () => {
     }
   }, [schoolData?.subjects]);
 
-
-  const generateEmailAndPassword = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    const newPassword = generatePassword();
-    const newEmail = generateEmail(
-      teacher.firstName,
-      teacher.lastName,
-      schoolData?.information.domain as string
-    );
-    setTeacher((prev) => {
-      return { ...prev, email: newEmail, password: newPassword };
-    });
-  };
-
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setTeacher((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      };
-    });
-  };
-
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    let errors = false;
-    if (teacher.firstName.length === 0) {
-      setFieldErrors((prev) => (
-            {...prev, firstName: {'error':true, 'text':"Podaj Imię"}}))
-        errors = true
-    }
-    if (teacher.lastName.length === 0) {
-      setFieldErrors((prev) => (
-            {...prev, lastName: {'error':true, 'text':"Podaj Nazwisko"}}))
-       errors = true
-    }
-    if (teacher.email.length === 0 || teacher.password.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, emailAndPassword: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
-      ))
-      errors = true;
-    }
-    
-    return errors
-  }
-
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (isAdding || validateInputs()) return;
+  
+  useEffect(() => {
+    if(validated){
+      if (isAdding || errors) return;
 
     
     //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
@@ -172,6 +107,43 @@ export const Teacher = () => {
     }
     clearForm();
     setIsAdding(false);
+    }
+  }, [validated, errors]);
+
+
+  const generateEmailAndPassword = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const newPassword = generatePassword();
+    const newEmail = generateEmail(
+      teacher.firstName,
+      teacher.lastName,
+      schoolData?.information.domain as string
+    );
+    setTeacher((prev) => {
+      return { ...prev, email: newEmail, password: newPassword };
+    });
+  };
+
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setTeacher((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+
+
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setValidated(false);
+    validateData(teacher);
+    setValidated(true);
   };
   return (
     <form className="form-control w-96 mt-12 p-10 card bg-base-200">
@@ -181,7 +153,7 @@ export const Teacher = () => {
             <span className="label-text">Imię</span>
           </label>
           <input
-            className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
+            className={`input ${inputErrors.firstName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Imię"
             name="firstName"
@@ -193,7 +165,7 @@ export const Teacher = () => {
             <span className="label-text">Naziwsko</span>
           </label>
           <input
-            className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
+            className={`input ${inputErrors.lastName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Naziwsko"
             name="lastName"
