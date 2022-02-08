@@ -11,6 +11,7 @@ import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
 import {
   SingleClassData,
+  SortingOptions,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
 import { SearchButton } from "../searchButton/SearchButton";
@@ -19,7 +20,6 @@ interface ModalOptions {
   isOpen: boolean;
   removedClass: SingleClassData | null;
 }
-type SortingOptions = "Ascending" | "Descending" | "Default";
 export interface SortingOfClasses {
   lp: SortingOptions;
   name: SortingOptions;
@@ -105,12 +105,14 @@ export const ClassesView: React.FC = () => {
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
       //Potem implementujemy searcha poprzez filtrowanie obiektu wszystkich klas i zostawianie tylko pól typu string
-      const searchedClasses = allClasses.filter((x) => {
-        const keyed = Object.values(x).filter((x) => typeof x === "string");
-        return keyed.some((v) =>
-          v.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      });
+      const searchedClasses = allClasses
+        .filter((x) => {
+          const keyed = Object.values(x).filter((x) => typeof x === "string");
+          return keyed.some((v) =>
+            v.toString().toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
       //!Implementacja algorytmu sortującego
       //Tutaj szukamy która kolumna jest sortowana
       const key = Object.keys(sorting).find((x) => {
@@ -124,9 +126,6 @@ export const ClassesView: React.FC = () => {
       if (key == "lp") {
         if (type === "Descending") {
           return setClassesData(searchedClasses.reverse());
-        }
-        if (type === "Ascending") {
-          return setClassesData(searchedClasses);
         }
         //Tutaj mamy 2 specialny przypadek studentCount ponieważ jest on numerem więc sortujemy po ilości uczniów
       } else if (key === "studentCount") {

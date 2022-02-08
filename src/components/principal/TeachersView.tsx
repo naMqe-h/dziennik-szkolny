@@ -3,7 +3,7 @@ import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
-import { SingleTeacherData } from "../../utils/interfaces";
+import { SingleTeacherData, SortingOptions } from "../../utils/interfaces";
 import { omit } from "lodash";
 import { TeachersTable } from "./teachers/TeachersTable";
 import { SearchButton } from "../searchButton/SearchButton";
@@ -14,6 +14,24 @@ export interface ModalOptionsTeachers {
   isOpen: boolean;
   removedTeacher: Omit<SingleTeacherData, "password"> | null;
 }
+export interface SortingOfTeachers {
+  lp: SortingOptions;
+  firstName: SortingOptions;
+  lastName: SortingOptions;
+  classTeacher: SortingOptions;
+  email: SortingOptions;
+  gender: SortingOptions;
+  subject: SortingOptions;
+}
+export const defaultSortingStateOfTeachers: SortingOfTeachers = {
+  lp: "Default",
+  firstName: "Default",
+  lastName: "Default",
+  classTeacher: "Default",
+  email: "Default",
+  gender: "Default",
+  subject: "Default",
+};
 export const TeachersView: React.FC = () => {
   const [teachersData, setTeachersData] = useState<TeachersDataWithoutPassword>(
     []
@@ -22,9 +40,14 @@ export const TeachersView: React.FC = () => {
     isOpen: false,
     removedTeacher: null,
   });
+  const [sorting, setSorting] = useState<SortingOfTeachers>(
+    defaultSortingStateOfTeachers
+  );
   const isMobile = useMediaQuery("(max-width:768px)");
   const [searchQuery, setsearchQuery] = useState<string>("");
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
   useEffect(() => {
     if (schoolData?.teachers) {
@@ -37,15 +60,47 @@ export const TeachersView: React.FC = () => {
         }
         return omit(newX ? newX : x, ["password"]);
       });
-      const searchedClasses = TeachersDataWithoutPassword.filter((x) => {
+      const saerchedTeachers = TeachersDataWithoutPassword.filter((x) => {
         const keyed = Object.values(x).filter((x) => typeof x === "string");
         return keyed.some((v) =>
           v.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
-      }).sort((a, b) => (b.lastName < a.lastName ? 1 : -1));
-      setTeachersData(searchedClasses);
+      }).sort((a, b) => a.lastName.localeCompare(b.lastName));
+      //! Implementacja sortowania taka sama jak w classesView
+      const key = Object.keys(sorting).find((x) => {
+        return sorting[x as keyof SortingOfTeachers] !== "Default";
+      });
+      if (!key) setTeachersData(saerchedTeachers);
+      const type = sorting[key as keyof SortingOfTeachers];
+      if (key == "lp") {
+        if (type === "Descending") {
+          return setTeachersData(saerchedTeachers.reverse());
+        }
+      } else {
+        if (type === "Ascending") {
+          return setTeachersData(
+            saerchedTeachers.sort((b, a) =>
+              String(
+                a[key as keyof Omit<SingleTeacherData, "password">]
+              ).localeCompare(
+                String(b[key as keyof Omit<SingleTeacherData, "password">])
+              )
+            )
+          );
+        } else {
+          return setTeachersData(
+            saerchedTeachers.sort((b, a) =>
+              String(
+                b[key as keyof Omit<SingleTeacherData, "password">]
+              ).localeCompare(
+                String(a[key as keyof Omit<SingleTeacherData, "password">])
+              )
+            )
+          );
+        }
+      }
     }
-  }, [schoolData?.teachers, searchQuery]);
+  }, [schoolData?.teachers, searchQuery, sorting]);
   return (
     <>
       <RemoveTeacherModal
@@ -71,6 +126,8 @@ export const TeachersView: React.FC = () => {
         <TeachersTable
           teachersData={teachersData}
           setModalOptions={setModalOptions}
+          setSorting={setSorting}
+          sorting={sorting}
         />
       </section>
     </>
