@@ -221,7 +221,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
           )}
           <div className="md:col-span-2 flex items-center justify-center mt-10">
             <button
-              className="btn-primary btn mt-4 self-end text-white"
+              className="btn-primary btn mt-4 self-end"
               onClick={(e) => handleSubmit(e)}
             >
               Zapisz
