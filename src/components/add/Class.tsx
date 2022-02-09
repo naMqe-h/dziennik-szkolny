@@ -4,46 +4,38 @@ import { RootState } from "../../redux/store";
 import {
   SingleTeacherData,
   ClassesDataFromFirebase,
-  ErrorObj,
 } from "../../utils/interfaces";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 
 type classCredentials = {
   name: string;
   profile: string;
   classTeacher: string;
 };
-type classCredentialsErrors = {
-  name: ErrorObj;
-  profile: ErrorObj;
-  classTeacher: ErrorObj;
-};
 const defaultState: classCredentials = {
   name: "",
   profile: "",
   classTeacher: "",
 };
-const defaultErrorState: classCredentialsErrors = {
-  name: { error: false, text: "" },
-  profile: { error: false, text: "" },
-  classTeacher: { error: false, text: "" },
-};
+
 export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
-
-  const [fieldErrors, setFieldErrors] =
-    useState<classCredentialsErrors>(defaultErrorState);
+  const [validated, setValidated] = useState<Boolean>(false);
 
   const domain = schoolData?.information?.domain;
 
   const [classCredential, setClassCredential] =
     useState<classCredentials>(defaultState);
+
+  const { validateData, inputErrors, errors } = useValidateInputs();
+  
 
   useEffect(() => {
     if (schoolData?.teachers) {
@@ -58,11 +50,8 @@ export const Class = () => {
     // eslint-disable-next-line
   }, [schoolData?.classes]);
 
-  useEffect(() => {
-    Object.values(fieldErrors)
-      .filter((f) => f.error === true)
-      .map((field) => toast.error(field.text, { autoClose: 2000 }));
-  }, [fieldErrors]);
+
+
 
   function clearForm() {
     setClassCredential(defaultState);
@@ -77,76 +66,46 @@ export const Class = () => {
     });
   };
 
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    let errors = false;
-    if (classCredential.name.length === 0) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        name: { error: true, text: "Podaj nazwę klasy" },
-      }));
-      errors = true;
-    }
-    if (schoolData?.classes) {
-      const classes = Object.keys(schoolData?.classes);
-      if (classes) {
-        if (classes.some((x) => x === classCredential.name)) {
-          setFieldErrors((prev) => ({
-            ...prev,
-            name: { error: true, text: "Podana klasa już istenije" },
-          }));
-          errors = true;
-        }
-      }
-    }
-    if (classCredential.profile.length === 0) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        profile: { error: true, text: "Podaj Profil" },
-      }));
-      errors = true;
-    }
-    if (classCredential.classTeacher.length === 0) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        classTeacher: { error: true, text: "Wybierz wychowawcę" },
-      }));
-      errors = true;
-    }
+  useEffect(() => {
+    if(validated){
+      if (isAdding || errors) return;
+      setIsAdding(true);
+      const { name, profile, classTeacher } = classCredential;
+      const fullName = name + " - " + profile;
 
-    return errors;
-  };
+      const objWrapper: ClassesDataFromFirebase = {
+        [name.replaceAll(/\s/g, "")]: {
+          ...classCredential,
+          name: classCredential.name.replaceAll(/\s/g, ""),
+          fullName,
+          subjects: [{ name: "GodzinaWychowawcza", teacher: classTeacher }],
+          students: [],
+        },
+      };
+      // update firebase
+      setDocument(domain as string, "classes", objWrapper);
+      setDocument(domain as string, "teachers", {
+        [classTeacher]: {
+          classTeacher: name,
+        },
+      });
+
+      updateCounter(domain as string, "classesCount", "increment");
+
+      // reset form
+      clearForm();
+      setIsAdding(false);
+      toast.success("Udało ci się dodać klasę 😀", { autoClose: 2000 });
+    }
+    setValidated(false);
+  }, [validated, errors]);
+  
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (isAdding || validateInputs()) return;
-    setIsAdding(true);
-    const { name, profile, classTeacher } = classCredential;
-    const fullName = name + " - " + profile;
-
-    const objWrapper: ClassesDataFromFirebase = {
-      [name.replaceAll(/\s/g, "")]: {
-        ...classCredential,
-        name: classCredential.name.replaceAll(/\s/g, ""),
-        fullName,
-        subjects: [{ name: "GodzinaWychowawcza", teacher: classTeacher }],
-        students: [],
-      },
-    };
-    // update firebase
-    setDocument(domain as string, "classes", objWrapper);
-    setDocument(domain as string, "teachers", {
-      [classTeacher]: {
-        classTeacher: name,
-      },
-    });
-
-    updateCounter(domain as string, "classesCount", "increment");
-
-    // reset form
-    clearForm();
-    setIsAdding(false);
-    return toast.success("Udało ci się dodać klasę 😀", { autoClose: 2000 });
+    setValidated(false);
+    validateData(classCredential);
+    setValidated(true);
   };
 
   return (
@@ -155,7 +114,7 @@ export const Class = () => {
         <span className="label-text">Nazwa klasy</span>
       </label>
       <input
-        className={`input ${fieldErrors.name.error ? "border-red-500" : ""}`}
+        className={`input ${inputErrors.name.error ? "border-red-500" : ""}`}
         type="text"
         placeholder="Nazwa klasy"
         name="name"
@@ -166,7 +125,7 @@ export const Class = () => {
         <span className="label-text">Profil</span>
       </label>
       <input
-        className={`input ${fieldErrors.profile.error ? "border-red-500" : ""}`}
+        className={`input ${inputErrors.profile.error ? "border-red-500" : ""}`}
         type="text"
         placeholder="Profil (Mat-fiz)"
         name="profile"
@@ -179,7 +138,7 @@ export const Class = () => {
       </label>
       <select
         className={`select select-bordered w-full max-w-xs ${
-          fieldErrors.classTeacher.error ? "border-red-500" : ""
+          inputErrors.classTeacher.error ? "border-red-500" : ""
         }`}
         name="classTeacher"
         onChange={(e) => handleChange(e.target.name, e.target.value)}

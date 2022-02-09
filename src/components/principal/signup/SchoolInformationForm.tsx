@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-import { AddressErrors, currentStepType, SchoolCredentialsErrors, SchoolInformation } from "../../../utils/interfaces";
+import {currentStepType, errorsInterface, SchoolInformation } from "../../../utils/interfaces";
 
 
 const schoolTypes = [
@@ -15,8 +13,7 @@ interface SchoolInformationFormProps {
   set: React.Dispatch<React.SetStateAction<SchoolInformation>>;
   setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: SchoolInformation;
-  fieldErrors: SchoolCredentialsErrors;
-  addressErrors: AddressErrors;
+  fieldErrors: errorsInterface;
 }
 
 export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
@@ -24,17 +21,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
   setStep,
   credentialsData,
   fieldErrors,
-  addressErrors
 }) => {
-
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-    Object.values(addressErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors, addressErrors]);
 
   const validateData = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -117,7 +104,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="city"
               value={credentialsData.address.city}
-              className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
+              className={`input ${fieldErrors.city.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Miasto"
             />
@@ -130,7 +117,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="postCode"
               value={credentialsData.address.postCode}
-              className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
+              className={`input ${fieldErrors.postCode.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="xx/xxx"
             />
@@ -143,7 +130,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="text"
               name="street"
               value={credentialsData.address.street}
-              className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
+              className={`input ${fieldErrors.street.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Ulica"
             />
@@ -156,7 +143,7 @@ export const SchoolInformationForm: React.FC<SchoolInformationFormProps> = ({
               type="number"
               name="houseNumber"
               value={credentialsData.address.houseNumber}
-              className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
+              className={`input ${fieldErrors.houseNumber.error ? "border-red-500" : ''}`}
               onChange={handleChange}
               placeholder="Numer Domu"
             />

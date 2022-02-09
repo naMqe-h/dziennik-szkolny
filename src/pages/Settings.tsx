@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { School } from "../components/settings/School";
 import { Plan } from "../components/settings/Plan";
+import { Password } from "../components/settings/Password";
+import { updatePassword } from "firebase/auth";
 
 export const Settings = () => {
   const { userType } = useSelector((state: RootState) => state.userType)
@@ -41,14 +43,14 @@ export const Settings = () => {
       return state.teacher.user
     }
   });
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData?.information)
   const { type } = useParams();
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();
 
   const [activeRoute, setActiveRoute] = useState(type);
 
-  const possibleRoutes = userType === 'principals' ? ["profile", "school", "plan"] : ["profile"];
+  const possibleRoutes = userType === 'principals' ? ["profile", "school", "plan", "password"] : ["profile", "password"];
 
   useEffect(() => {
     setActiveRoute(type);
@@ -82,6 +84,7 @@ export const Settings = () => {
       }
 
     }
+    return toast.success("Dane zapisane.", {autoClose: 2000});
   };
   const handlePlanChange = (plan: PlanTypes) => {
     if (!userAuth || !userType) {
@@ -106,6 +109,7 @@ export const Settings = () => {
       });
     } else {
       const uid = userAuth?.uid;
+      console.log(data);
       const dataForPrincipal = {
         ...userData,
         schoolInformation: data,
@@ -115,15 +119,30 @@ export const Settings = () => {
         ...data,
       };
       setDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
-
+      console.log(dataForSchool)
       setDocument(
         data.domain,
         "information",
         dataForSchool as CombinedSchoolInformationFromFirebase
       );
+      return toast.success("Dane zapisane.", {autoClose: 2000});
     }
   };
 
+  const handlePasswordChange = (password: string) => {
+    if (!userAuth || !userType) {
+      return toast.error("Brak obiektu auth lub typu użytkownika", {
+        autoClose: 2000,
+      });
+    }
+    updatePassword(userAuth, password).then(() => {
+      return toast.success('Hasło zmienione pomyślnie', {autoClose: 2000})
+    }).catch((error) => {
+      return toast.error(error, {
+        autoClose: 2000,
+      });
+    })
+  }
   return (
     <div className="h-full m-4">
       <div className="flex justify-center">
@@ -159,6 +178,13 @@ export const Settings = () => {
             ) : (
               ""
             )}
+            <li
+              className={`rounded-2xl ${
+                activeRoute === "password" ? "bg-primary" : ""
+              }`}
+            >
+              <Link to="/settings/password">Zmień hasło</Link>
+            </li>
             <li className={activeRoute === "" ? "" : ""}>
               <Link to="/">Prywatność</Link>
             </li>
@@ -197,6 +223,9 @@ export const Settings = () => {
                 ) : (
                   ""
                 )}
+                <li className={`rounded-2xl ${ activeRoute === "settings" ? "bg-primary" : ""}`}>
+                  <Link to="/settings/password">Zmień hasło</Link>
+                </li>
                 <li className={activeRoute === "" ? "" : ""}>
                   <Link to="/">Prywatność</Link>
                 </li>
@@ -214,15 +243,18 @@ export const Settings = () => {
             )}
             {type === "school" && (
               <School
-                schoolData={schoolData?.information as CombinedSchoolInformationFromFirebase}
+                schoolData={schoolData as CombinedSchoolInformationFromFirebase}
                 save={handleSchoolSubmit}
               />
             )}
             {type === "plan" && (
               <Plan
-                currentPlanType={schoolData?.information.planType as PlanTypes}
+                currentPlanType={schoolData?.planType as PlanTypes}
                 planChange={handlePlanChange}
               />
+            )}
+             {type === "password" && (
+              <Password save={handlePasswordChange} />
             )}
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  ErrorObj,
   genderType,
   StudentData,
   StudentsDataFromFirebase,
@@ -15,6 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 
 
 const defaultState: StudentData = {
@@ -28,22 +28,6 @@ const defaultState: StudentData = {
   email: "",
 };
 
-type StudentsCredentialsErrors = {
-  firstName: ErrorObj;
-  lastName: ErrorObj;
-  pesel: ErrorObj;
-  birth: ErrorObj;
-  class: ErrorObj;
-  emailAndPassword: ErrorObj;
-};
-const defaultErrorState:StudentsCredentialsErrors = {
-  firstName: {error:false, text: ''},
-  lastName: {error:false, text: ''},
-  pesel: {error:false, text: ''},
-  birth: {error:false, text: ''},
-  class: {error:false, text: ''},
-  emailAndPassword: {error:false, text: ''},
-};
 
 export const Student = () => {
   const { updateCounter } = useUpdateInfoCounter();
@@ -56,8 +40,12 @@ export const Student = () => {
   const { setDocument } = useSetDocument();
   const [student, setStudent] = useState<StudentData>(defaultState);
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
+  const [validated, setValidated] = useState<Boolean>(false);
 
-  const [fieldErrors, setFieldErrors] = useState<StudentsCredentialsErrors>(defaultErrorState);
+
+  const { validateData, inputErrors, errors } = useValidateInputs();
+
+
 
   useEffect(() => {
     if (student.firstName.length >= 3 && student.lastName.length >= 3) {
@@ -67,11 +55,31 @@ export const Student = () => {
     }
   }, [student.firstName, student.lastName]);
 
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors]);
+    useEffect(() => {
+      if(validated){
+        console.log('validated')
+        if (isAdding || errors ) return;
+      
+        setIsAdding(true);
+        const objWrapper: StudentsDataFromFirebase = {
+          [student.email]: { ...student, grades: {} },
+        };
+        if (schoolData) {
+          const previousStudents = schoolData.classes[student.class].students;
+          setDocument(domain as string, "students", objWrapper);
+          setDocument(domain as string, "classes", {
+            [student.class]: {
+              students: [...previousStudents, student.email],
+            },
+          });
+          updateCounter(domain as string, "studentsCount", 'increment');
+          clearForm();
+          setIsAdding(false);
+          toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
+        }
+      }
+    }, [validated, errors]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -90,70 +98,17 @@ export const Student = () => {
     setStudent(defaultState);
   }
 
-  const validateInputs = () => {
-    setFieldErrors(defaultErrorState);
-    let errors = false;
-    if (student.firstName.length === 0) {
-     setFieldErrors((prev) => (
-        {...prev, firstName: {'error':true, 'text':"Podaj Imię"}}
-      ))
-      errors = true;
-    }
-    if (student.lastName.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, lastName: {'error':true, 'text':"Podaj Nazwisko"}}
-      ))
-      errors = true;
-    }
-    if (student.birth.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, birth: {'error':true, 'text':"Podaj Datę urodzenia"}}
-      ))
-      errors = true;
-    }
-    if (student.pesel.length === 0 || !validatePesel(student.pesel)) {
-      setFieldErrors((prev) => (
-        {...prev, pesel: {'error':true, 'text':"Niepoprawny pesel"}}
-      ))
-      errors = true;
-    }
-    if (student.class.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, class: {'error':true, 'text':"Wybierz klasę"}}
-      ))
-      errors = true;
-    }
-    if (student.email.length === 0 || student.password.length === 0) {
-      setFieldErrors((prev) => (
-        {...prev, emailAndPassword: {'error':true, 'text':"Brak wygenerowanego emaila lub hasła"}}
-      ))
-      errors = true;
-    }
-    
-    return errors
-  }
+ 
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (isAdding || validateInputs() ) return;
+
+    setValidated(false);
+    validateData(student);
+    setValidated(true);
+
+
     
-    setIsAdding(true);
-    const objWrapper: StudentsDataFromFirebase = {
-      [student.email]: { ...student, grades: {} },
-    };
-    if (schoolData) {
-      const previousStudents = schoolData.classes[student.class].students;
-      await setDocument(domain as string, "students", objWrapper);
-      await setDocument(domain as string, "classes", {
-        [student.class]: {
-          students: [...previousStudents, student.email],
-        },
-      });
-      await updateCounter(domain as string, "studentsCount", 'increment');
-      clearForm();
-      setIsAdding(false);
-      return toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
-    }
   };
 
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {
@@ -177,7 +132,7 @@ export const Student = () => {
             <span className="label-text">Imię</span>
           </label>
           <input
-            className={`input ${fieldErrors.firstName.error ? "border-red-500" : ''}`}
+            className={`input ${inputErrors.firstName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Imię"
             name="firstName"
@@ -189,7 +144,7 @@ export const Student = () => {
             <span className="label-text">Naziwsko</span>
           </label>
           <input
-            className={`input ${fieldErrors.lastName.error ? "border-red-500" : ''}`}
+            className={`input ${inputErrors.lastName.error ? "border-red-500" : ''}`}
             type="text"
             placeholder="Naziwsko"
             name="lastName"
@@ -206,7 +161,7 @@ export const Student = () => {
           name="birth"
           value={student.birth}
           max={new Date().toISOString().split("T")[0]}
-          className={`input ${fieldErrors.birth.error ? "border-red-500" : ''}`}
+          className={`input ${inputErrors.birth.error ? "border-red-500" : ''}`}
           onChange={(e) => handleChange(e)}
           placeholder={new Date().toLocaleDateString()}
         />
@@ -216,7 +171,7 @@ export const Student = () => {
           <span className="label-text">Pesel</span>
         </label>
         <input
-          className={`input w-full ${fieldErrors.pesel.error ? "border-red-500" : ''}`}
+          className={`input w-full ${inputErrors.pesel.error ? "border-red-500" : ''}`}
           type="text"
           name="pesel"
           onChange={(e) => handleChange(e)}
@@ -245,7 +200,7 @@ export const Student = () => {
           <span className="label-text">Klasa</span>
         </label>
         <select
-          className={`select select-bordered w-full max-w-xs ${fieldErrors.class.error ? "border-red-500" : ''}`}
+          className={`select select-bordered w-full max-w-xs ${inputErrors.class.error ? "border-red-500" : ''}`}
           name="class"
           onChange={(e) => handleChange(e)}
           value={student.class}
@@ -259,7 +214,7 @@ export const Student = () => {
             ))}
         </select>
       </div>
-      <fieldset className={`border border-solid border-secondary rounded-md p-4 mt-4 ${fieldErrors.emailAndPassword.error ? "border-red-500" : ''}`}>
+      <fieldset className={`border border-solid border-secondary rounded-md p-4 mt-4 ${inputErrors.email.error || inputErrors.password ? "border-red-500" : ''}`}>
         <legend className="text-center font-bold">Generuj Email i Hasło</legend>
         <label className="form-control items-center ">
           <label className="label input-group">

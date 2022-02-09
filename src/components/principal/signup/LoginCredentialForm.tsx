@@ -1,8 +1,6 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import {
   currentStepType,
-  LoginCredentialsErrors,
+  errorsInterface,
   PrincipalLoginCredentials,
 } from "../../../utils/interfaces";
 
@@ -11,7 +9,7 @@ interface setLoginCredentials {
   set: React.Dispatch<React.SetStateAction<PrincipalLoginCredentials>>;
   setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: PrincipalLoginCredentials;
-  fieldErrors: LoginCredentialsErrors;
+  fieldErrors: errorsInterface;
 }
 
 export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
@@ -23,17 +21,19 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    set((prev) => {
-      return { ...prev, [name]: value };
-    });
+    if(name === 'password' || name === 'repeatedPassword'){
+      let pswObj = { ...credentialsData.passwords };
+      const newObj = { ...pswObj, [name]: value };
+      set((prev) => {
+        return { ...prev, passwords: newObj };
+      });
+    } else{
+      set((prev) => {
+        return { ...prev, [name]: value };
+      });
+    }
   }
   
-
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors]);
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -65,7 +65,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             autoComplete="new-password"
             onChange={handleChange}
             className={`input ${fieldErrors.password.error ? "border-red-500" : ''}`}
-            value={credentialsData.password}
+            value={credentialsData.passwords.password}
             placeholder="********"
           />
           <label className="label mt-3">
@@ -77,7 +77,7 @@ export const LoginCredentialForm: React.FC<setLoginCredentials> = ({
             autoComplete="repeat-password"
             onChange={handleChange}
             className={`input ${fieldErrors.repeatedPassword.error ? "border-red-500" : ''}`}
-            value={credentialsData.repeatedPassword}
+            value={credentialsData.passwords.repeatedPassword}
             placeholder="********"
           />
           <button

@@ -235,9 +235,9 @@ function App() {
               <Route
                 path="/settings/:type"
                 element={
-                  <TeacherRoute loading={loading}>
+                  <StudentRoute loading={loading}>
                     <Settings />
-                  </TeacherRoute>
+                  </StudentRoute>
                 }
               />
               <Route

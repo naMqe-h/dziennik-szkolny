@@ -16,6 +16,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { CgGenderMale, CgGenderFemale } from "react-icons/cg";
 import { GiTeacher } from "react-icons/gi";
 import { useSetDocument } from "../../hooks/useSetDocument";
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 
 export const SingleTeacherView = () => {
   const { email } = useParams();
@@ -26,6 +27,7 @@ export const SingleTeacherView = () => {
   const [edit, setEdit] = useState(false);
   const [formData, setFormData] = useState<SingleTeacherData>();
   const [freeClasses, setFreeClasses] = useState<SingleClassData[]>();
+  const [validated, setValidated] = useState<Boolean>(false);
 
   const userAuth = useSelector((state: RootState) => state.principal.user);
 
@@ -33,16 +35,19 @@ export const SingleTeacherView = () => {
     (state: RootState) => state.schoolData.schoolData
   );
 
-  const domain = userAuth?.displayName?.split('~')[0];
+  const domain = userAuth?.displayName?.split("~")[0];
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
-
-
+  const { validateData, inputErrors, errors } = useValidateInputs();
 
   useEffect(() => {
     const queryEmail = `${email}@${domain}`;
 
-    if(schoolData){
-      setFreeClasses(Object.values(schoolData?.classes).filter((cls) => cls.classTeacher.length === 0));
+    if (schoolData) {
+      setFreeClasses(
+        Object.values(schoolData?.classes).filter(
+          (cls) => cls.classTeacher.length === 0
+        )
+      );
     }
     //!State Ucznia
     setTeacher(schoolData?.teachers[queryEmail]);
@@ -66,8 +71,63 @@ export const SingleTeacherView = () => {
     }
   };
 
-  // TODO
-  // ? 2. error handeling (red inputs)
+  useEffect(() => {
+    if (validated) {
+      if (errors) return;
+      if (formData && teacher && schoolData && userAuth) {
+        const domain = userAuth.displayName?.split("~")[0];
+
+        if (formData.classTeacher !== teacher.classTeacher) {
+          if (formData.classTeacher.length === 0) {
+            let tempClassData = {
+              [teacher.classTeacher]: {
+                classTeacher: "",
+              },
+            };
+            setDocument(domain as string, "classes", tempClassData);
+          } else {
+            let tempClassData = {
+              [formData.classTeacher]: {
+                classTeacher: formData.email,
+              },
+            };
+            setDocument(domain as string, "classes", tempClassData);
+          }
+        }
+        if (formData.subject !== teacher.subject) {
+          const formSbjName = formData.subject.replaceAll(/\s+/g, "");
+          const teacherSbjName = teacher.subject.replaceAll(/\s+/g, "");
+          const formSbjTeachers = schoolData.subjects[formSbjName].teachers;
+          const teacherSbjTeachers =
+            schoolData.subjects[teacherSbjName].teachers;
+          const teacherSbjWithoutTeacher = teacherSbjTeachers.filter(
+            (tch) => tch !== formData.email
+          );
+
+          let tempSbjData = {
+            [teacherSbjName]: {
+              teachers: teacherSbjWithoutTeacher,
+            },
+            [formSbjName]: {
+              teachers: [...formSbjTeachers, formData.email],
+            },
+          };
+          setDocument(domain as string, "subjects", tempSbjData);
+        }
+        let tempData: TeachersDataFromFirebase = {
+          [teacher.email]: {
+            ...(teacher as SingleTeacherData),
+            ...formData,
+          },
+        };
+        console.log({ formData });
+        setDocument(domain as string, "teachers", tempData);
+        setEdit(!edit);
+        toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
+      }
+    }
+    setValidated(false);
+  }, [validated, errors]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -78,64 +138,16 @@ export const SingleTeacherView = () => {
     }
     if (formData === teacher)
       return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
-    if (formData && teacher && schoolData) {
-      
-      if (formData.firstName.length === 0 || formData.lastName.length === 0)
-        return toast.error("Podaj Imię i Nazwisko", { autoClose: 2000 });
 
-      
-      
-      const domain = userAuth.displayName?.split("~")[0];
-
-      if(formData.classTeacher !== teacher.classTeacher){
-        if(formData.classTeacher.length === 0){
-          let tempClassData = {
-            [teacher.classTeacher]:{
-              classTeacher: ''
-            }
-          }
-          setDocument(domain as string, "classes", tempClassData);
-         }else{
-          let tempClassData = {
-            [formData.classTeacher]:{
-              classTeacher: formData.email
-            }
-          }
-          setDocument(domain as string, "classes", tempClassData);
-         }
-      }
-      if(formData.subject !== teacher.subject){
-        const formSbjName = formData.subject.replaceAll(/\s+/g, "");
-        const teacherSbjName = teacher.subject.replaceAll(/\s+/g, "");
-        const formSbjTeachers = schoolData.subjects[formSbjName].teachers;
-        const teacherSbjTeachers = schoolData.subjects[teacherSbjName].teachers;
-        const teacherSbjWithoutTeacher = teacherSbjTeachers.filter((tch) => tch !== formData.email);
-        
-        let tempSbjData = {
-          [teacherSbjName]:{
-            teachers: teacherSbjWithoutTeacher
-          },
-          [formSbjName]: {
-            teachers: [...formSbjTeachers, formData.email]
-          }
-        }
-        setDocument(domain as string, "subjects", tempSbjData);
-
-      }
-      let tempData: TeachersDataFromFirebase = {
-        [teacher.email]: {
-          ...(teacher as SingleTeacherData),
-          ...formData,
-        },
-      };
-      console.log({formData});
-      setDocument(domain as string, "teachers", tempData);
-      setEdit(!edit);
-      return toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
+    if (formData) {
+      setValidated(false);
+      validateData(formData);
+      setValidated(true);
     }
   };
 
-  if (!teacher || !schoolData) return <div>Nie znaleziono nauczyciela lub brak danych o szkole</div>;
+  if (!teacher || !schoolData)
+    return <div>Nie znaleziono nauczyciela lub brak danych o szkole</div>;
   if (!formData) return <Loader />;
   return (
     <div className="h-full m-4">
@@ -163,7 +175,10 @@ export const SingleTeacherView = () => {
                 <span>
                   {teacher?.firstName + " "} {teacher?.lastName}
                 </span>
-                <Link to={`/class/${teacher?.classTeacher}/info`} className="mt-2">
+                <Link
+                  to={`/class/${teacher?.classTeacher}/info`}
+                  className="mt-2"
+                >
                   <span className="text-accent">{teacher?.classTeacher}</span>{" "}
                 </Link>
               </div>
@@ -171,15 +186,14 @@ export const SingleTeacherView = () => {
                 <button className="btn btn-info m-2" onClick={() => undefined}>
                   Wiadomość
                 </button>
-                  <button
-                    className={`btn ${
-                      !edit ? "btn-warning" : "btn-error"
-                    } m-2 transition duration-200`}
-                    onClick={() => setEdit(!edit)}
-                  >
-                    {!edit ? "Edytuj" : "Anuluj"}
-                  </button>
-
+                <button
+                  className={`btn ${
+                    !edit ? "btn-warning" : "btn-error"
+                  } m-2 transition duration-200`}
+                  onClick={() => setEdit(!edit)}
+                >
+                  {!edit ? "Edytuj" : "Anuluj"}
+                </button>
               </div>
             </div>
           </div>
@@ -221,7 +235,9 @@ export const SingleTeacherView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className="input max-w-96"
+                    className={`input max-w-96 ${
+                      inputErrors.firstName.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Imię"
                   />
 
@@ -232,53 +248,56 @@ export const SingleTeacherView = () => {
                   </label>
                   <input
                     type="text"
-                    name="firstName"
+                    name="lastName"
                     value={formData.lastName}
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className="input max-w-96"
+                    className={`input max-w-96 ${
+                      inputErrors.lastName.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Nazwisko"
                   />
 
                   <div className="divider md:col-span-2" />
-                  
+
                   <label className="label w-full">
                     <span className="label-text w-full">Wychowawca</span>
                   </label>
                   <select
-                    className="select select-bordered w-full max-w-xs"
+                    className={`select select-bordered w-full max-w-xs ${
+                      inputErrors.classTeacher.error ? "border-red-500" : ""
+                    }`}
                     name="classTeacher"
                     value={formData.classTeacher}
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
                   >
-                    {teacher.classTeacher.length !== 0 &&
+                    {teacher.classTeacher.length !== 0 && (
                       <option value={teacher.classTeacher}>
                         {teacher.classTeacher}
-                      </option>  
-                    }
-
-                    <option value="">
-                        brak
-                    </option>
-                    {freeClasses && 
-                    freeClasses.map((cls) => (
-                      <option key={cls.fullName} value={cls.name}>
-                        {cls.fullName}
                       </option>
-                    ))}
-                    
+                    )}
+
+                    <option value="">brak</option>
+                    {freeClasses &&
+                      freeClasses.map((cls) => (
+                        <option key={cls.fullName} value={cls.name}>
+                          {cls.fullName}
+                        </option>
+                      ))}
                   </select>
 
                   <div className="divider md:col-span-2" />
-                  
+
                   <label className="label w-full">
                     <span className="label-text w-full">Przedmiot</span>
                   </label>
                   <select
-                    className="select select-bordered w-full max-w-xs"
+                    className={`select select-bordered w-full max-w-xs ${
+                      inputErrors.subject.error ? "border-red-500" : ""
+                    }`}
                     name="subject"
                     value={formData.subject}
                     onChange={(e) =>
@@ -290,7 +309,6 @@ export const SingleTeacherView = () => {
                         {sbj.name}
                       </option>
                     ))}
-                    
                   </select>
 
                   <div className="divider md:col-span-2" />
@@ -299,7 +317,9 @@ export const SingleTeacherView = () => {
                     <span className="label-text">Płeć</span>
                   </label>
                   <select
-                    className="select select-bordered w-full max-w-xs"
+                    className={`select select-bordered w-full max-w-xs ${
+                      inputErrors.gender.error ? "border-red-500" : ""
+                    }`}
                     name="gender"
                     value={formData.gender}
                     onChange={(e) =>

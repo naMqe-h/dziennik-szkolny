@@ -1,9 +1,6 @@
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import {
-  AddressErrors,
   currentStepType,
-  PersonalInfoCredentialsErrors,
+  errorsInterface,
   PrincipalPersonalInformation,
 } from "../../../utils/interfaces";
 
@@ -11,23 +8,15 @@ interface PersonalInformationFormProps {
   set: React.Dispatch<React.SetStateAction<PrincipalPersonalInformation>>;
   setStep: (step: currentStepType, current: currentStepType) => void;
   credentialsData: PrincipalPersonalInformation;
-  fieldErrors: PersonalInfoCredentialsErrors;
-  addressErrors: AddressErrors
+  fieldErrors: errorsInterface;
 }
 
 export const PersonalInformationForm: React.FC<
   PersonalInformationFormProps
-> = ({ set, setStep, credentialsData, fieldErrors, addressErrors }) => {
+> = ({ set, setStep, credentialsData, fieldErrors}) => {
 
  
-  useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-    Object.values(addressErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
-  }, [fieldErrors, addressErrors]);
+
 
 
   function handleChange(
@@ -49,10 +38,11 @@ export const PersonalInformationForm: React.FC<
       set((prev) => {
         return { ...prev, address: newObj };
       });
+    } else {
+      set((prev) => {
+        return { ...prev, [name]: value };
+      });
     }
-    set((prev) => {
-      return { ...prev, [name]: value };
-    });
   }
 
   function validateData(e: React.SyntheticEvent) {
@@ -152,7 +142,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="city"
                 value={credentialsData.address.city}
-                className={`input ${addressErrors.city.error ? "border-red-500" : ''}`}
+                className={`input ${fieldErrors.city.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Miasto"
               />
@@ -165,7 +155,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="postCode"
                 value={credentialsData.address.postCode}
-                className={`input ${addressErrors.postCode.error ? "border-red-500" : ''}`}
+                className={`input ${fieldErrors.postCode.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="xx-xxx"
               />
@@ -178,7 +168,7 @@ export const PersonalInformationForm: React.FC<
                 type="text"
                 name="street"
                 value={credentialsData.address.street}
-                className={`input ${addressErrors.street.error ? "border-red-500" : ''}`}
+                className={`input ${fieldErrors.street.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Ulica"
               />
@@ -191,7 +181,7 @@ export const PersonalInformationForm: React.FC<
                 type="number"
                 name="houseNumber"
                 value={credentialsData.address.houseNumber}
-                className={`input ${addressErrors.houseNumber.error ? "border-red-500" : ''}`}
+                className={`input ${fieldErrors.houseNumber.error ? "border-red-500" : ''}`}
                 onChange={handleChange}
                 placeholder="Numer Domu"
               />
