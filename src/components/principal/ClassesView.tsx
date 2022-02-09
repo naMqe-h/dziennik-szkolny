@@ -10,6 +10,7 @@ import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../redux/store";
 import {
+  ClassesDataFromFirebase,
   SingleClassData,
   SortingOptions,
   TeachersDataFromFirebase,
@@ -39,6 +40,10 @@ export const ClassesView: React.FC = () => {
   const { updateCounter } = useUpdateInfoCounter();
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
+  );
+  const userType = useSelector((state: RootState) => state.userType.userType);
+  const dataAboutTeacher = useSelector(
+    (state: RootState) => state.teacher.data ?? null
   );
   const classesDataWithoutConverting = useRef<null | SingleClassData[]>(null);
   const [classesData, setClassesData] = useState<SingleClassData[]>([]);
@@ -99,8 +104,19 @@ export const ClassesView: React.FC = () => {
   useEffect(() => {
     if (schoolData?.classes) {
       //Na początku zmieniamy email wychowawcy na imię i nazwisko
-      classesDataWithoutConverting.current = Object.values(schoolData.classes);
-      const allClasses = Object.values(schoolData.classes).map((x) => {
+      let values: ClassesDataFromFirebase = {};
+      if (userType === "teachers") {
+        Object.keys(schoolData.classes).filter((x) => {
+          if (dataAboutTeacher?.teachedClasses.some((y) => x === y)) {
+            values[x] = schoolData.classes[x];
+          }
+        });
+      } else {
+        values = schoolData.classes;
+      }
+      // console.log(schoolData.classes);
+      classesDataWithoutConverting.current = Object.values(values);
+      const allClasses = Object.values(values).map((x) => {
         const newName = findClassTeacherName(x.classTeacher);
         return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
       });
@@ -214,7 +230,10 @@ export const ClassesView: React.FC = () => {
           <BsFillArrowLeftCircleFill
             className={`transition-all hover:-translate-x-1.5 duration-300 text-2xl`}
           />
-          {!isMobile && "Powrót do Panelu Dyrektora"}
+          {!isMobile &&
+            `Powrót do Panelu ${
+              userType === "principals" ? "Dyrektora" : "Nauczyciela"
+            }`}
         </Link>
         <SearchButton
           searchQuery={searchQuery}
