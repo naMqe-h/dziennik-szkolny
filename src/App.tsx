@@ -21,6 +21,7 @@ import { Teachers } from "./pages/Teachers";
 import { Students } from "./pages/Students";
 import { SingleStudent } from "./pages/SingleStudent";
 import { SingleTeacher } from "./pages/SingleTeacher";
+import { LessonPlan as LessonPlanView } from "./pages/LessonPlan";
 
 // wrappers
 import { LayoutWrapper } from "./components/wrappers/LayoutWrapper";
@@ -44,6 +45,7 @@ import {
 } from "./redux/principalSlice";
 import { setUserType } from "./redux/userTypeSlice";
 import { setStudentAuth, setStudentData } from "./redux/studentSlice";
+import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
 import { setSchoolData } from './redux/schoolDataSlice'
 
 // utils
@@ -59,8 +61,10 @@ import {
 
 //loader
 import { Loader } from "./loader/Loader";
-import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
+
+//do uporządkowania
 import { Generate } from "./components/principal/lessonPlan/Generate";
+
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
@@ -80,9 +84,7 @@ function App() {
   const [type, setType] = useState<string>("");
 
   useEffect(() => {
-    if(userType !== 'students') {
       dispatch(setSchoolData(realTimeDocuments as CombinedSchoolDataFromFirebase));
-    }
     // eslint-disable-next-line
   }, [realTimeDocuments]);
 
@@ -139,6 +141,7 @@ function App() {
   useEffect(() => {
     if (userType === "students") {
       console.log(student);
+      console.log(schoolData);
     }
   }, [student, userType, schoolData]);
   ///
@@ -284,6 +287,14 @@ function App() {
                   <PrincipalRoute loading={loading}>
                     <Generate />
                   </PrincipalRoute>
+                }
+              />
+              <Route
+                path="/lesson-plan"
+                element={
+                  <StudentRoute loading={loading}>
+                    <LessonPlanView />
+                  </StudentRoute>
                 }
               />
               <Route
