@@ -123,7 +123,7 @@ export const ClassesView: React.FC = () => {
       //Zmienna od typu sortowania np. Ascending | Descending
       const type = sorting[key as keyof SortingOfClasses];
       //lp to specialny przypadek ponieważ nie ma go normalnie w searchedClasses jeśli sortujemy bo od descending to poprostu odwracamy tablice, w innym przypadku zwracamy wyniki wyszukiwania
-      if (key == "lp") {
+      if (key === "lp") {
         if (type === "Descending") {
           return setClassesData(searchedClasses.reverse());
         }

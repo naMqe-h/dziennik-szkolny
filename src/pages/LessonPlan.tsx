@@ -42,7 +42,7 @@ export const LessonPlan = () => {
             }
         }
         
-    }, [teacherData])
+    }, [teacherData, allLessonPlans, studentData, userType])
 
     return (
         <div className="w-full overflow-x-auto lessonPlanScrollbar self-baseline px-12 pt-6">
