@@ -14,7 +14,7 @@ export const DashboardView = () => {
         <div className="md:row-span-4 p-5 bg-base-200 rounded-xl flex flex-col justify-center">
           <Stats />
         </div>
-        <Link to={"/"}>
+        <Link to={"/lesson-plan"}>
           <Card text="Plan lekcji">
             <RiNumbersLine size={70} />
           </Card>
