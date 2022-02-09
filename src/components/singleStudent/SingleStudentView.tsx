@@ -18,6 +18,7 @@ import { CgGenderMale, CgGenderFemale } from "react-icons/cg";
 import { FaBirthdayCake } from "react-icons/fa";
 import { AiFillInfoCircle } from "react-icons/ai";
 import { useSetDocument } from "../../hooks/useSetDocument";
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 
 export const SingleStudentView = () => {
   const { email } = useParams();
@@ -30,15 +31,62 @@ export const SingleStudentView = () => {
   >(undefined);
   const [edit, setEdit] = useState(false);
   const [formData, setFormData] = useState<SingleStudentDataFromFirebase>();
+  const [validated, setValidated] = useState<Boolean>(false);
+
 
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
   const userAuth = useSelector((state: RootState) => state.principal.user);
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
   );
+  const { validateData, inputErrors, errors } = useValidateInputs();
 
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
-  const domain = userAuth?.displayName?.split('~')[0];
+  const domain = userAuth?.displayName?.split("~")[0];
+
+  useEffect(() => {
+    if(validated){
+      if(errors) return;
+      if (formData && student) {
+        if (schoolData?.classes) {
+          const oldClassDataStudents =
+            schoolData?.classes[student.class].students;
+          const newOldClassStudents = oldClassDataStudents?.filter(
+            (x) => x !== student.email
+          );
+          const oldClassObject: SingleClassData = {
+            ...schoolData?.classes[student.class],
+            students: newOldClassStudents as string[],
+          };
+          const oldNewClassDataStudents = [
+            ...schoolData.classes[formData.class].students,
+          ];
+          oldNewClassDataStudents.push(student.email);
+          const newClassObject: SingleClassData = {
+            ...schoolData.classes[formData.class],
+            students: oldNewClassDataStudents as string[],
+          };
+          setDocument(domain as string, "classes", {
+            [student.class]: oldClassObject,
+          });
+          setDocument(domain as string, "classes", {
+            [formData.class]: newClassObject,
+          });
+        }
+
+        let tempData: StudentsDataFromFirebase = {
+          [student.email]: {
+            ...(student as SingleStudentDataFromFirebase),
+            ...formData,
+          },
+        };
+        setDocument(domain as string, "students", tempData);
+        setEdit(!edit);
+        toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
+      }
+    }
+    setValidated(false);
+  }, [validated, errors]);
 
   useEffect(() => {
     const queryEmail = `${email}@${domain}`;
@@ -71,10 +119,6 @@ export const SingleStudentView = () => {
     }
   };
 
-  // TODO
-  // ? 1. Dodać opcje zmiany klasy ucznia
-  // ? 2. error handeling (red inputs)
-
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!userAuth || !userType) {
@@ -82,56 +126,12 @@ export const SingleStudentView = () => {
         autoClose: 2000,
       });
     }
-
     if (formData === student)
       return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
-    if (formData && student) {
-      if (formData.firstName.length === 0 || formData.lastName.length === 0)
-        return toast.error("Podaj Imię i Nazwisko", { autoClose: 2000 });
-
-      if (!validatePesel(formData.pesel))
-        return toast.error("Podaj poprawny Pesel", { autoClose: 2000 });
-
-      if (formData.pesel.length !== 11)
-        return toast.error("Podaj poprawny pesel", { autoClose: 2000 });
-
-      // TODO 1.
-      if (student?.class !== formData?.class) {
-        if (schoolData?.classes) {
-          const oldClassDataStudents =
-            schoolData?.classes[student.class].students;
-          const newOldClassStudents = oldClassDataStudents?.filter(
-            (x) => x !== student.email
-          );
-          const oldClassObject: SingleClassData = {
-            ...schoolData?.classes[student.class],
-            students: newOldClassStudents as string[],
-          };
-          const oldNewClassDataStudents = [
-            ...schoolData.classes[formData.class].students,
-          ];
-          oldNewClassDataStudents.push(student.email);
-          const newClassObject: SingleClassData = {
-            ...schoolData.classes[formData.class],
-            students: oldNewClassDataStudents as string[],
-          };
-          setDocument(domain as string, "classes", {
-            [student.class]: oldClassObject,
-          });
-          setDocument(domain as string, "classes", {
-            [formData.class]: newClassObject,
-          });
-        }
-      }
-      let tempData: StudentsDataFromFirebase = {
-        [student.email]: {
-          ...(student as SingleStudentDataFromFirebase),
-          ...formData,
-        },
-      };
-      setDocument(domain as string, "students", tempData);
-      setEdit(!edit);
-      return toast.success("Dane zapisane poprawnie.", { autoClose: 2000 });
+    if(formData){
+      setValidated(false);
+      validateData(formData);
+      setValidated(true);
     }
   };
 
@@ -226,7 +226,7 @@ export const SingleStudentView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className="input max-w-96"
+                    className={`input max-w-96 ${inputErrors.firstName.error ? 'border-red-500' :''}`}
                     placeholder="Imię"
                   />
 
@@ -237,12 +237,12 @@ export const SingleStudentView = () => {
                   </label>
                   <input
                     type="text"
-                    name="firstName"
+                    name="lastName"
                     value={formData.lastName}
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className="input max-w-96"
+                    className={`input max-w-96 ${inputErrors.lastName.error ? 'border-red-500' :''}`}
                     placeholder="Nazwisko"
                   />
 
@@ -252,7 +252,7 @@ export const SingleStudentView = () => {
                     <span className="label-text">Klasa</span>
                   </label>
                   <select
-                    className="select select-bordered w-full max-w-xs"
+                    className={`select select-bordered w-full max-w-xs ${inputErrors.class.error ? 'border-red-500' :''}`}
                     name="class"
                     value={formData.class}
                     onChange={(e) =>
@@ -273,7 +273,7 @@ export const SingleStudentView = () => {
                     <span className="label-text">Płeć</span>
                   </label>
                   <select
-                    className="select select-bordered w-full max-w-xs"
+                    className={`select select-bordered w-full max-w-xs ${inputErrors.gender.error ? 'border-red-500' :''}`}
                     name="gender"
                     value={formData.gender}
                     onChange={(e) =>
@@ -299,7 +299,7 @@ export const SingleStudentView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className="input "
+                    className={`input ${inputErrors.pesel.error ? 'border-red-500' :''}`}
                     placeholder="Pesel"
                   />
 
@@ -316,7 +316,7 @@ export const SingleStudentView = () => {
                       handleChange(e.target.name, e.target.value)
                     }
                     max={new Date().toISOString().split("T")[0]}
-                    className="input"
+                    className={`input ${inputErrors.birth.error ? 'border-red-500' :''}`}
                     placeholder={new Date().toLocaleDateString()}
                   />
 

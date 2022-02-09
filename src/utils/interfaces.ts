@@ -241,7 +241,9 @@ export interface errorsInterface {
   street: ErrorObj,
   profile: ErrorObj,
   classTeacher: ErrorObj,
-  class: ErrorObj
+  class: ErrorObj,
+  gender: ErrorObj;
+  subject: ErrorObj;
 }
 
 //? Interfejsy związane z planem lekcji

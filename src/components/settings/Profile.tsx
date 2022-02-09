@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useValidateInputs } from "../../hooks/useValidateInputs";
 import {
   CombinedPrincipalData,
   genderType,
@@ -7,7 +8,6 @@ import {
   TeacherData,
   userType,
 } from "../../utils/interfaces";
-import { validatePesel } from "../../utils/utils";
 
 interface profileProps {
   userType: userType;
@@ -18,6 +18,18 @@ interface profileProps {
 export const Profile: React.FC<profileProps> = ({ userType, userData, save }) => {
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   const [formData, setFormData] = useState<any>(userData);
+  const [validated, setValidated] = useState<Boolean>(false);
+
+  const { validateData, inputErrors, errors } = useValidateInputs();
+
+
+  useEffect(() => {
+    if(validated){
+      if(errors) return;
+      save(formData);
+    }
+    setValidated(false);
+  }, [validated, errors]);
 
   // TODO zmiana zdjęcia profilowego 
 
@@ -48,38 +60,12 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
 
   function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-
     if (formData === userData) return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
 
-    if (formData.firstName.length === 0 || userData.lastName.length === 0)
-      return toast.error("Podaj Imię i Nazwisko", { autoClose: 2000 });
+    setValidated(false);
+    validateData(formData);
+    setValidated(true);
 
-    if (userType !== "teachers") {
-      if (!validatePesel(formData.pesel))
-        return toast.error("Podaj poprawny Pesel", { autoClose: 2000 });
-
-      if (formData.pesel.length !== 11)
-        return toast.error("Podaj poprawny pesel", { autoClose: 2000 });
-    }
-    if (userType === "principals") {
-      if (formData.address.city.length === 0)
-        return toast.error("Podaj Miasto", { autoClose: 2000 });
-
-      if (
-        formData.address.postCode.length !== 6 ||
-        formData.address.postCode[2] !== "-"
-      )
-        return toast.error("Podaj poprawny Kod Pocztowy", { autoClose: 2000 });
-
-      if (formData.address.street.length === 0)
-        return toast.error("Podaj Ulice na której mieszkasz", {
-          autoClose: 2000,
-        });
-
-      if (formData.address.houseNumber.length === 0)
-        return toast.error("Podaj poprawny Numer Domu", { autoClose: 2000 });
-    }
-    save(formData);
   }
 
   return (
@@ -96,7 +82,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
             name="firstName"
             value={formData.firstName}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-            className="input max-w-96"
+            className={`input max-w-96 ${inputErrors.firstName.error ? 'border-red-500' : ''}`}
             disabled={userType !== "principals" ? true : false}
             placeholder="Imię"
           />
@@ -108,10 +94,10 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
           </label>
           <input
             type="text"
-            name="firstName"
+            name="lastName"
             value={formData.lastName}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-            className="input max-w-96"
+            className={`input max-w-96 ${inputErrors.lastName.error ? 'border-red-500' : ''}`}
             disabled={userType !== "principals" ? true : false}
             placeholder="Nazwisko"
           />
@@ -146,7 +132,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 name="pesel"
                 value={formData.pesel}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                className="input "
+                className={`input ${inputErrors.pesel.error ? 'border-red-500' : ''}`}
                 placeholder="Pesel"
               />
 
@@ -161,7 +147,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 value={formData.birth}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
-                className="input"
+                className={`input ${inputErrors.birth.error ? 'border-red-500' : ''}`}
                 placeholder={new Date().toLocaleDateString()}
               />
             </>
@@ -183,7 +169,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="city"
                 value={formData.address.city}
-                className="input"
+                className={`input ${inputErrors.city.error ? 'border-red-500' : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Miasto"
               />
@@ -197,7 +183,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="postCode"
                 value={formData.address.postCode}
-                className="input"
+                className={`input ${inputErrors.postCode.error ? 'border-red-500' : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="xx-xxx"
               />
@@ -211,7 +197,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="street"
                 value={formData.address.street}
-                className="input"
+                className={`input ${inputErrors.street.error ? 'border-red-500' : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Ulica"
               />
@@ -225,7 +211,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="number"
                 name="houseNumber"
                 value={formData.address.houseNumber}
-                className="input"
+                className={`input ${inputErrors.houseNumber.error ? 'border-red-500' : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Numer Domu"
               />

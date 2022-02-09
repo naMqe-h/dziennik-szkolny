@@ -8,8 +8,6 @@ import { useDocument } from "./useDocument";
 
 
 const errorsInitial:errorsInterface = {
-
-    // global
     firstName: {error:false, text: ''},
     lastName: {error:false, text: ''},
     birth: {error:false, text: ''},
@@ -23,13 +21,11 @@ const errorsInitial:errorsInterface = {
     houseNumber: {error:false, text: ''},
     postCode: {error:false, text: ''},
     street: {error:false, text: ''},
-
-    // ADD class
     profile: {error:false, text: ''},
     classTeacher: {error:false, text: ''},
-
-    // ADD student
     class: {error:false, text: ''},
+    gender: {error:false, text: ''},
+    subject: {error:false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -46,6 +42,7 @@ export const useValidateInputs = () => {
     interface mappedNamesInterface{
       [key: string] : string;
     }
+
     const mappedNames: mappedNamesInterface = {
       firstName: 'Imię',
       lastName: 'Nazwisko',
@@ -61,6 +58,8 @@ export const useValidateInputs = () => {
       classTeacher: 'Nauczyciela',
       class: 'Klasę'
     }
+
+    const skipInputs:string[] = ['teachedClasses', 'workingHours'];
     
     useEffect(() => {
       Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
@@ -77,6 +76,8 @@ export const useValidateInputs = () => {
           let fieldName = field[0];
           let fieldVal = field[1];
 
+          if(skipInputs.includes(fieldName)) return;
+          
           if(fieldName !== 'address' && fieldName !== 'passwords'){
             if(fieldVal.length === 0){
               setInputErrors((prev) => (

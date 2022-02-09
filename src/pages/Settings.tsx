@@ -41,7 +41,7 @@ export const Settings = () => {
       return state.teacher.user
     }
   });
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData?.information)
   const { type } = useParams();
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();
@@ -82,6 +82,7 @@ export const Settings = () => {
       }
 
     }
+    return toast.success("Dane zapisane.", {autoClose: 2000});
   };
   const handlePlanChange = (plan: PlanTypes) => {
     if (!userAuth || !userType) {
@@ -106,6 +107,7 @@ export const Settings = () => {
       });
     } else {
       const uid = userAuth?.uid;
+      console.log(data);
       const dataForPrincipal = {
         ...userData,
         schoolInformation: data,
@@ -115,12 +117,13 @@ export const Settings = () => {
         ...data,
       };
       setDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
-
+      console.log(dataForSchool)
       setDocument(
         data.domain,
         "information",
         dataForSchool as CombinedSchoolInformationFromFirebase
       );
+      return toast.success("Dane zapisane.", {autoClose: 2000});
     }
   };
 
@@ -214,13 +217,13 @@ export const Settings = () => {
             )}
             {type === "school" && (
               <School
-                schoolData={schoolData?.information as CombinedSchoolInformationFromFirebase}
+                schoolData={schoolData as CombinedSchoolInformationFromFirebase}
                 save={handleSchoolSubmit}
               />
             )}
             {type === "plan" && (
               <Plan
-                currentPlanType={schoolData?.information.planType as PlanTypes}
+                currentPlanType={schoolData?.planType as PlanTypes}
                 planChange={handlePlanChange}
               />
             )}
