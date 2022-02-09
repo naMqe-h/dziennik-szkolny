@@ -1,7 +1,10 @@
+import { useSelector } from "react-redux";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { RootState } from "../../redux/store";
 import {
   SingleStudentDataFromFirebase,
   StudentsDataFromFirebase,
+  userType,
 } from "../../utils/interfaces";
 import { SingleClassTableRow } from "./SingleClassTableRow";
 
@@ -14,6 +17,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
   studentsInfo,
   showDelete,
 }) => {
+  const userType = useSelector((state: RootState) => state.userType.userType);
   const tempStudents: SingleStudentDataFromFirebase[] =
     Object.values(studentsInfo);
   const students = tempStudents.sort(
@@ -36,7 +40,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                 <th>Urodziny</th>
                 <th>Pesel</th>
                 <th>Ostatnie logowanie</th>
-                <th></th>
+                {userType === "principals" && <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -48,6 +52,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   isMobile={isMobile}
                   isExtraSmallDevice={isExtraSmallDevice}
                   showDelete={showDelete}
+                  userType={userType as userType}
                 />
               ))}
             </tbody>
@@ -60,7 +65,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                 <th>Nazwisko</th>
                 <th>Imię</th>
                 {!isExtraSmallDevice && <th>Email</th>}
-                <th></th>
+                {userType === "principals" && <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -72,6 +77,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   isMobile={isMobile}
                   isExtraSmallDevice={isExtraSmallDevice}
                   showDelete={showDelete}
+                  userType={userType as userType}
                 />
               ))}
             </tbody>
