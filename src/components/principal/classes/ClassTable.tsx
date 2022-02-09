@@ -1,7 +1,9 @@
 import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
+import { RootState } from "../../../redux/store";
 import { SingleClassData } from "../../../utils/interfaces";
 import { defaultSortingState, SortingOfClasses } from "../ClassesView";
 type SortTableParameters =
@@ -25,6 +27,7 @@ export const ClassTable: React.FC<ClassTableProps> = ({
   setSorting,
   sorting,
 }) => {
+  const userType = useSelector((state: RootState) => state.userType.userType);
   function sortTable(type: SortTableParameters) {
     if (type === "lp") {
       if (sorting[type] === "Default") {
@@ -173,14 +176,16 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                     >
                       <FaUserEdit size={20} />
                     </button>
-                    <button
-                      className="btn btn-square btn-error btn-sm ml-2"
-                      onClick={() => {
-                        removeClass(item, false);
-                      }}
-                    >
-                      <AiFillDelete size={20} />
-                    </button>
+                    {userType === "principals" && (
+                      <button
+                        className="btn btn-square btn-error btn-sm ml-2"
+                        onClick={() => {
+                          removeClass(item, false);
+                        }}
+                      >
+                        <AiFillDelete size={20} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               );

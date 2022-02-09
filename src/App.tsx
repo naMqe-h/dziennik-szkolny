@@ -39,14 +39,11 @@ import { useRealTimeCollection } from "./hooks/useRealTimeCollection";
 
 // redux
 import { RootState } from "./redux/store";
-import {
-  setPrincipalData,
-  setPrincipalAuth,
-} from "./redux/principalSlice";
+import { setPrincipalData, setPrincipalAuth } from "./redux/principalSlice";
 import { setUserType } from "./redux/userTypeSlice";
 import { setStudentAuth, setStudentData } from "./redux/studentSlice";
 import { setTeacherAuth, setTeacherData } from "./redux/teacherSlice";
-import { setSchoolData } from './redux/schoolDataSlice'
+import { setSchoolData } from "./redux/schoolDataSlice";
 
 // utils
 import {
@@ -65,7 +62,6 @@ import { Loader } from "./loader/Loader";
 //do uporządkowania
 import { Generate } from "./components/principal/lessonPlan/Generate";
 
-
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
   const { getDocument, document } = useDocument();
@@ -75,7 +71,9 @@ function App() {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const userType = useSelector((state: RootState) => state.userType.userType);
 
   // states
@@ -84,7 +82,9 @@ function App() {
   const [type, setType] = useState<string>("");
 
   useEffect(() => {
-      dispatch(setSchoolData(realTimeDocuments as CombinedSchoolDataFromFirebase));
+    dispatch(
+      setSchoolData(realTimeDocuments as CombinedSchoolDataFromFirebase)
+    );
     // eslint-disable-next-line
   }, [realTimeDocuments]);
 
@@ -96,7 +96,9 @@ function App() {
     }
     if (type === "students") {
       if (document) {
-        for (const [key, value] of Object.entries( document as StudentsDataFromFirebase )) {
+        for (const [key, value] of Object.entries(
+          document as StudentsDataFromFirebase
+        )) {
           if (key === student.user?.email) {
             dispatch(setStudentData(value as SingleStudentDataFromFirebase));
           }
@@ -105,7 +107,9 @@ function App() {
     }
     if (type === "teachers") {
       if (document) {
-        for (const [key, value] of Object.entries( document as TeachersDataFromFirebase )) {
+        for (const [key, value] of Object.entries(
+          document as TeachersDataFromFirebase
+        )) {
           if (key === teacher.user?.email) {
             dispatch(setTeacherData(value as SingleTeacherData));
           }
@@ -117,7 +121,11 @@ function App() {
 
   // sprawdzanie czy juz cały user się zapisał i wtedy kończy ładowanie
   useEffect(() => {
-    if ( (principal.data && schoolData) || ( teacher.data && schoolData ) || student.data ) {
+    if (
+      (principal.data && schoolData) ||
+      (teacher.data && schoolData) ||
+      student.data
+    ) {
       setLoading(false);
       nProgress.done();
     }
@@ -130,14 +138,14 @@ function App() {
       console.log(schoolData);
     }
   }, [principal, userType, schoolData]);
-  
+
   useEffect(() => {
     if (userType === "teachers") {
       console.log(teacher);
       console.log(schoolData);
     }
   }, [teacher, userType, schoolData]);
-  
+
   useEffect(() => {
     if (userType === "students") {
       console.log(student);
@@ -145,7 +153,6 @@ function App() {
     }
   }, [student, userType, schoolData]);
   ///
-
 
   // sprawdzanie stanu auth,
   useEffect(() => {
@@ -236,9 +243,9 @@ function App() {
               <Route
                 path="/classes"
                 element={
-                  <PrincipalRoute loading={loading}>
+                  <TeacherRoute loading={loading}>
                     <Classes />
-                  </PrincipalRoute>
+                  </TeacherRoute>
                 }
               />
               <Route
@@ -276,9 +283,9 @@ function App() {
               <Route
                 path="/class/:id/:subpage"
                 element={
-                  <PrincipalRoute loading={loading}>
+                  <TeacherRoute loading={loading}>
                     <SingleClass />
-                  </PrincipalRoute>
+                  </TeacherRoute>
                 }
               />
               <Route
