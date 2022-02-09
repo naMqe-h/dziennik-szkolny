@@ -8,11 +8,12 @@ import { RootState } from "../redux/store";
 export const useRealTimeCollection = () => {
   const principalUser = useSelector((state: RootState) => state.principal.user);
   const teacherUser = useSelector((state: RootState) => state.teacher.user)
+  const studentUser = useSelector((state: RootState) => state.student.user)
   const [realTimeDocuments, setRealTimeDocuments] = useState<CombinedSchoolDataFromFirebase>()
 
   useEffect(() => {
-    if (principalUser || teacherUser) {
-      const domain = principalUser?.displayName?.split("~")[0] || teacherUser?.displayName?.split("~")[0]
+    if (principalUser || teacherUser || studentUser) {
+      const domain = principalUser?.displayName?.split("~")[0] || teacherUser?.displayName?.split("~")[0] || studentUser?.displayName?.split("~")[0]
       const ref = collection(db, domain as string);
       const unsub = onSnapshot(ref, (snapshot) => {
         let data = {};
@@ -25,7 +26,7 @@ export const useRealTimeCollection = () => {
       return () => unsub();
     }
     // eslint-disable-next-line
-  }, [principalUser, teacherUser]);
+  }, [principalUser, teacherUser, studentUser]);
 
   return { realTimeDocuments };
 };

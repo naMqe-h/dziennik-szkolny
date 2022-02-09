@@ -10,10 +10,7 @@ export const Navbar = () => {
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
   const showThemeSwitcher = useMediaQuery("(min-width:600px)");
-  const isPremiumUser = useSelector(
-    (state: RootState) =>
-      state.schoolData.schoolData?.information.planType === "Premium"
-  );
+  const isPremiumUser = useSelector((state: RootState) => state.schoolData?.schoolData?.information?.planType === "Premium") || false
   const [theme, setTheme] = useState<string>(
     localStorage.getItem("theme") ?? "halloween"
   );
