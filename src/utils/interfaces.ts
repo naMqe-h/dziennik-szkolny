@@ -48,6 +48,7 @@ export interface CombinedPrincipalData
     PrincipalPersonalInformation {
   planType: PlanTypes;
   schoolInformation: SchoolInformation;
+  profilePicture: string;
 }
 export type PlanTypes = "Basic" | "Premium";
 
@@ -135,6 +136,7 @@ export interface StudentsDataFromFirebase {
     birth: string;
     class: string;
     grades: { [key: string]: SchoolGrade[] };
+    profilePicture: string;
   };
 }
 
@@ -149,6 +151,7 @@ export interface SingleStudentDataFromFirebase {
   birth: string;
   class: string;
   grades: { [key: string]: SchoolGrade[] };
+  profilePicture: string;
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
 export interface teacherWorkingHours {
@@ -169,6 +172,7 @@ export interface SingleTeacherData extends TeacherData {
   classTeacher: string;
   teachedClasses: string[];
   workingHours: teacherWorkingHours[];
+  profilePicture: string;
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {
@@ -244,6 +248,7 @@ export interface errorsInterface {
   class: ErrorObj,
   gender: ErrorObj;
   subject: ErrorObj;
+  profilePicture: ErrorObj,
 }
 
 //? Interfejsy związane z planem lekcji

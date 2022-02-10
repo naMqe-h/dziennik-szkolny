@@ -118,6 +118,7 @@ export const SingleClassView = () => {
           email: item.email,
           class: singleClass?.name as string,
           grades: {},
+          profilePicture: item.profilePicture,
         };
 
         const objWrapper = {

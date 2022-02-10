@@ -62,7 +62,7 @@ export const Student = () => {
       
         setIsAdding(true);
         const objWrapper: StudentsDataFromFirebase = {
-          [student.email]: { ...student, grades: {} },
+          [student.email]: { ...student, grades: {}, profilePicture: '' },
         };
         if (schoolData) {
           const previousStudents = schoolData.classes[student.class].students;
