@@ -20,39 +20,45 @@ export const Modal: React.FC<ModalProps> = ({ students, isOpen, setIsOpen, stude
 
     const domain = useSelector((state: RootState) => state.schoolData.schoolData?.information.domain)
     const teacher = useSelector((state: RootState) => state.teacher.data) || undefined
+
     const [newGrades, setNewGrades] = useState<{ [key: string] : number }>({})
+    const [topic, setTopic] = useState<string>('')
+    const [weight, setWeight] = useState<number>(0)
 
     const handleAdd = async () => {
         const newStudentsInfo = cloneDeep(studentsInfo)
         // tutaj tworzymy nowy obiekt uczniów z dopisanymi nowymi ocenami
-        //! dodac walidacje tematu oceny oraz jej wagi
-        for(const [key, value] of Object.entries(newGrades)) {
-            const prevGrades = cloneDeep(newStudentsInfo[key].grades)
-            const newGrade = {
-                grade: value,
-                weight: 0,
-                addedBy: teacher?.email as string,
-                date: Date.now().toLocaleString(),
-                topic: 'Test'
-            }
-            const newSubject = {
-                [teacher?.subject as string]: [
-                    newGrade
-                ]
-            }
-            if(newStudentsInfo[key]?.grades[teacher?.subject as string]) {
-                newStudentsInfo[key]?.grades[teacher?.subject as string].push(newGrade)
-            } else {
-                newStudentsInfo[key].grades = {
-                    ...prevGrades,
-                    ...newSubject,
+        if(topic !== '' && weight) {
+            for(const [key, value] of Object.entries(newGrades)) {
+                const prevGrades = cloneDeep(newStudentsInfo[key].grades)
+                const newGrade = {
+                    grade: value,
+                    weight: 0,
+                    addedBy: teacher?.email as string,
+                    date: Date.now().toLocaleString(),
+                    topic: 'Test',
+                }
+                const newSubject = {
+                    [teacher?.subject as string]: [
+                        newGrade
+                    ]
+                }
+                if(newStudentsInfo[key]?.grades[teacher?.subject as string]) {
+                    newStudentsInfo[key]?.grades[teacher?.subject as string].push(newGrade)
+                } else {
+                    newStudentsInfo[key].grades = {
+                        ...prevGrades,
+                        ...newSubject,
+                    }
                 }
             }
+            await setDocument(domain as string, 'students', newStudentsInfo)
+            toast.success('Dodane nowe oceny', { autoClose: 3000 })
+        } else {
+            //! Walidacja inputów
+            toast.error('Uzupełnij temat i wagę oceny', { autoClose: 3000 })
         }
-        console.log(newStudentsInfo)
-        console.log(newGrades)
-        await setDocument(domain as string, 'students', newStudentsInfo)
-        toast.success('Dodane nowe oceny', { autoClose: 3000 })
+        
     }
 
     return (
@@ -67,11 +73,11 @@ export const Modal: React.FC<ModalProps> = ({ students, isOpen, setIsOpen, stude
                     <div className="flex gap-6">
                         <div>
                             <p className="label-text">Temat</p>
-                            <input type="text" placeholder="Kartkówka" className="input input-bordered" />
+                            <input value={topic} onChange={(e) => setTopic(e.currentTarget.value)} type="text" placeholder="Kartkówka" className="input input-bordered" />
                         </div>
                         <div>
                             <p className="label-text">Waga oceny</p>
-                            <input type="number" min={0} max={10} placeholder="0-10" className="input input-bordered" />
+                            <input value={weight} onChange={(e) => setWeight(+e.currentTarget.value)} type="number" min={0} max={10} placeholder="0-10" className="input input-bordered" />
                         </div>
                     </div>
                     <div className="overflow-x-auto mt-6">

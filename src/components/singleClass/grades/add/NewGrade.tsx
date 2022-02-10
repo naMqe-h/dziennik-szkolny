@@ -16,14 +16,7 @@ interface NewGradeProps {
 }
 
 export const NewGrade: React.FC<NewGradeProps> = ({ email, setNewGrades }) => {
-    const [grade, setGrade] = useState<number>(0)
-    
-    useEffect(() => {
-        //! dodac checkbox czy wstawic kazdemu bez oceny 0 czy wstawic oceny tylko wybranym
-        handleGrade(0)
-        // eslint-disable-next-line
-    }, [])
-    
+    const [grade, setGrade] = useState<number>()
     
     const handleGrade = (_grade: number) => {
         setNewGrades(prev => (
