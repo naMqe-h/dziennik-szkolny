@@ -71,7 +71,7 @@ export const useValidateInputs = () => {
         setInputErrors(errorsInitial);
         setErrors(false);
         
-        Object.entries(data).map((field) => {
+        Object.entries(data).forEach((field) => {
           let fieldName = field[0];
           let fieldVal = field[1];
 
@@ -126,7 +126,7 @@ export const useValidateInputs = () => {
             }
           } else{
             if(fieldName === 'address'){
-              Object.entries(fieldVal).map((fieldObj) => {
+              Object.entries(fieldVal).forEach((fieldObj) => {
                 let fieldObjName:string = fieldObj[0];
                 let fieldObjVal:any = fieldObj[1];
   
