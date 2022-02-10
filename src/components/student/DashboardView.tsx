@@ -1,15 +1,14 @@
-import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai"
-import { BsJournalBookmark } from "react-icons/bs"
-import { RiNumbersLine } from "react-icons/ri"
-import { Link } from "react-router-dom"
-import { Card } from "../dashboard/Card"
-import { Events } from "../dashboard/Events"
-import { Stats } from "./Stats"
+import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
+import { BsJournalBookmark } from "react-icons/bs";
+import { RiNumbersLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import { Card } from "../dashboard/Card";
+import { Events } from "../dashboard/Events";
+import { Stats } from "./Stats";
 
 export const DashboardView = () => {
-
-    return (
-        <div className="flex justify-center">
+  return (
+    <div className="flex justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
         <div className="md:row-span-4 p-5 bg-base-200 rounded-xl flex flex-col justify-center">
           <Stats />
@@ -19,7 +18,7 @@ export const DashboardView = () => {
             <RiNumbersLine size={70} />
           </Card>
         </Link>
-        <Link to={"/"}>
+        <Link to={"/grades"}>
           <Card
             text="Oceny"
             background="radial-gradient(circle, rgba(109,58,156,1) 0%, rgba(33,33,33,1) 100%)"
@@ -47,5 +46,5 @@ export const DashboardView = () => {
         </div>
       </div>
     </div>
-    )
-}
+  );
+};

@@ -55,11 +55,10 @@ export const useValidateInputs = () => {
       postCode: 'Kod pocztowy',
       street: 'Ulicę',
       profile: 'Profil',
-      classTeacher: 'Nauczyciela',
       class: 'Klasę'
     }
 
-    const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture'];
+    const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher'];
     
     useEffect(() => {
       Object.values(inputErrors).filter((f) => f.error === true).map((field) => (

@@ -1,6 +1,7 @@
 export type currentStepType = 1 | 2 | 3 | 4 | 5;
 export type SortingOptions = "Ascending" | "Descending" | "Default";
 export type userType = "principals" | "teachers" | "students";
+export type termType = 1 | 2;
 export interface FormData {
   email: string;
   password: string;
@@ -11,7 +12,7 @@ export interface PrincipalLoginCredentials {
   passwords: {
     password: string;
     repeatedPassword: string;
-  }
+  };
 }
 export type genderType = "Kobieta" | "Mężczyzna" | "Inna";
 type schoolType =
@@ -95,8 +96,9 @@ export interface SchoolGrade {
   grade: number;
   weight: number;
   topic: string;
-  date: string;
+  date: string; //?Format to dd.mm.yyyy
   addedBy: string;
+  term: termType;
 }
 
 export interface SingleSubjectInClasses {
@@ -135,8 +137,8 @@ export interface StudentsDataFromFirebase {
     pesel: string;
     birth: string;
     class: string;
-    grades: { [key: string]: SchoolGrade[] };
     profilePicture: string;
+    grades: { [key: string]: SchoolGrade[] };
   };
 }
 
@@ -150,8 +152,8 @@ export interface SingleStudentDataFromFirebase {
   pesel: string;
   birth: string;
   class: string;
-  grades: { [key: string]: SchoolGrade[] };
   profilePicture: string;
+  grades: { [key: string]: SchoolGrade[] };
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
 export interface teacherWorkingHours {
@@ -230,22 +232,22 @@ export interface updatePrincipalPlanType {
 export type ErrorObj = { error: boolean; text: string };
 
 export interface errorsInterface {
-  firstName: ErrorObj,
-  lastName: ErrorObj,
-  birth: ErrorObj,
-  pesel: ErrorObj,
-  email: ErrorObj,
-  password: ErrorObj,
-  repeatedPassword: ErrorObj,
-  name: ErrorObj,
-  domain: ErrorObj,
-  city: ErrorObj,
-  houseNumber: ErrorObj,
-  postCode: ErrorObj,
-  street: ErrorObj,
-  profile: ErrorObj,
-  classTeacher: ErrorObj,
-  class: ErrorObj,
+  firstName: ErrorObj;
+  lastName: ErrorObj;
+  birth: ErrorObj;
+  pesel: ErrorObj;
+  email: ErrorObj;
+  password: ErrorObj;
+  repeatedPassword: ErrorObj;
+  name: ErrorObj;
+  domain: ErrorObj;
+  city: ErrorObj;
+  houseNumber: ErrorObj;
+  postCode: ErrorObj;
+  street: ErrorObj;
+  profile: ErrorObj;
+  classTeacher: ErrorObj;
+  class: ErrorObj;
   gender: ErrorObj;
   subject: ErrorObj;
   profilePicture: ErrorObj,
