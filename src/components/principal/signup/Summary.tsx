@@ -41,6 +41,7 @@ export const Summary: React.FC<summaryProps> = ({
       name: SchoolInformation.name,
       type: SchoolInformation.type,
     },
+    profilePicture: ''
   };
   const schoolData: CombinedSchoolInformationFromFirebase = {
     address: SchoolInformation.address,

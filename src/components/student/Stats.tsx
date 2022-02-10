@@ -14,6 +14,7 @@ export const Stats: React.FC = () => {
     const { getDocument, document } = useDocument();
     const domain = userData.email.split("@")[1];
     const [studentClassTeacher, setStudentClassTeacher] = useState<SingleTeacherData | undefined>(undefined);
+    const userPhoto = useSelector((state: RootState) => state.student.user?.photoURL)
 
     const frequence = 70;
 
@@ -49,15 +50,28 @@ export const Stats: React.FC = () => {
         <div className="stats grid-flow-row w-full">
         <div className="stat bg-base-200">
             <div className="stat-figure text-info">
-            <div className="avatar online">
-                <div className="w-16 h-16 p-1 mask mask-squircle bg-base-100">
-                <img
-                    src="https://images.unsplash.com/photo-1546456073-92b9f0a8d413?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-                    alt="Avatar Tailwind CSS Component"
-                    className="mask mask-squircle"
-                />
-                </div>
-            </div>
+                {userPhoto ? (
+                    <div className="avatar online">
+                    <div className="w-16 h-16 p-1 mask mask-squircle bg-base-100">
+                        <img
+                            src={userPhoto}
+                            alt="Avatar Tailwind CSS Component"
+                            className="mask mask-squircle"
+                        />
+                    </div>
+                    </div>
+                ):(
+                    <div className="avatar online placeholder flex flex-col justify-center items-center">
+
+                        <div className="text-neutral-content rounded-full w-16 h-16 p-1 mask mask-squircle bg-base-100">
+
+                            <span className="text-3xl">
+                            {userData?.firstName[0]}
+                            {userData?.lastName[0]}
+                            </span>
+                        </div>
+                    </div>
+                )}
             </div>
             <div className="stat-title">Witaj,</div>
             <div className="stat-value">{userData.firstName}</div>

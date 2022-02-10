@@ -21,7 +21,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { School } from "../components/settings/School";
 import { Plan } from "../components/settings/Plan";
 import { Password } from "../components/settings/Password";
-import { updatePassword } from "firebase/auth";
+import { updatePassword, updateProfile } from "firebase/auth";
 
 export const Settings = () => {
   const { userType } = useSelector((state: RootState) => state.userType)
@@ -61,11 +61,22 @@ export const Settings = () => {
   }, [type]);
 
   const handleProfileSubmit = (
-    data: CombinedPrincipalData | StudentData | TeacherData
+    data: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData,
   ) => {
     if (!userAuth || !userType) {
       return toast.error("Brak obiektu auth lub typu użytkownika", {
         autoClose: 2000,
+      });
+    }
+    if(data.profilePicture !== userAuth.photoURL){
+      updateProfile(userAuth, {
+       photoURL: data.profilePicture
+      }).then(() => {
+        toast.success("Zdjęcie profilowe zostało zmienione.", {autoClose: 2000});
+      }).catch((error) => {
+        toast.error(error, {
+          autoClose: 2000,
+        });
       });
     }
     if (userType === "principals") {
@@ -84,6 +95,9 @@ export const Settings = () => {
       }
 
     }
+    // ! Usunąć po naprawie buga z brakiem aktualizacji stanu po 
+    // ! zmianie autha usera
+    window.location.reload();
     return toast.success("Dane zapisane.", {autoClose: 2000});
   };
   const handlePlanChange = (plan: PlanTypes) => {
@@ -238,6 +252,7 @@ export const Settings = () => {
               <Profile
                 userType={userType as userType}
                 userData={userData as CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData}
+                userProfilePicture={userAuth?.photoURL}
                 save={handleProfileSubmit}
               />
             )}

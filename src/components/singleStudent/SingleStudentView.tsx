@@ -143,22 +143,23 @@ export const SingleStudentView = () => {
         <div className="max-w-screen-2xl w-full rounded-box md:border bg-base-200">
           <div className="flex flex-col justify-center items-center p-10">
             <div className="avatar placeholder flex flex-col justify-center items-center">
-              {/* With placeholder */}
-              <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
+
+              {student?.profilePicture ? (
+                 <div className="avatar flex flex-col justify-center items-center">
+                 <div className="mb-8 rounded-full w-32 h-32">
+                   <img src={student.profilePicture} 
+                   alt="Student Profile Picture"
+                   />
+                 </div>
+               </div>
+              ): (
+                <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
                 <span className="text-3xl">
                   {student?.firstName[0]}
                   {student?.lastName[0]}
                 </span>
               </div>
-              {/* without placeholder */}
-              {/* <div className="avatar flex flex-col justify-center items-center">
-                <div className="mb-8 rounded-full w-32 h-32">
-                  <img src="https://images.unsplash.com/photo-1546456073-92b9f0a8d413?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" 
-                  alt="Avatar Tailwind CSS Component"
-                  />
-                </div>
-              </div> */}
-
+              )}
               <div className="text-xl flex flex-col justify-center items-center">
                 <span>
                   {student?.firstName + " "} {student?.lastName}
