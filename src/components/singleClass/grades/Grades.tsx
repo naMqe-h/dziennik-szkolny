@@ -1,26 +1,30 @@
-import { SingleStudentDataFromFirebase, StudentsDataFromFirebase } from "../../../utils/interfaces"
+import {
+  SingleStudentDataFromFirebase,
+  StudentsDataFromFirebase,
+} from "../../../utils/interfaces";
 import { SingleStudentGradeRow } from "./SingleStudentGradeRow";
 
 interface GradesProps {
-    studentsInfo: StudentsDataFromFirebase,
+  studentsInfo: StudentsDataFromFirebase;
 }
 
 export const Grades: React.FC<GradesProps> = ({ studentsInfo }) => {
-    const tempStudents = Object.values(studentsInfo)
+  const tempStudents = Object.values(studentsInfo);
 
-    const students = tempStudents.sort(
-        (a: SingleStudentDataFromFirebase, b: SingleStudentDataFromFirebase) =>
-            a.lastName.localeCompare(b.lastName, "pl")
-    );
-    
-    
-    console.log(students)
+  const students = tempStudents.sort(
+    (a: SingleStudentDataFromFirebase, b: SingleStudentDataFromFirebase) =>
+      a.lastName.localeCompare(b.lastName, "pl")
+  );
 
-    return (
-        <div className="overflow-x-auto">
-            {students.map((student, index) => (
-                <SingleStudentGradeRow key={student.email} student={student} number={index + 1} />
-            ))}
-        </div>
-    )
-}
+  return (
+    <div className="overflow-x-auto">
+      {students.map((student, index) => (
+        <SingleStudentGradeRow
+          key={student.email}
+          student={student}
+          number={index + 1}
+        />
+      ))}
+    </div>
+  );
+};

@@ -5,12 +5,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
+import { useSetDocument } from "../hooks/useSetDocument";
 export const Navbar = () => {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
+  const userType = useSelector((state: RootState) => state.userType.userType);
   const showThemeSwitcher = useMediaQuery("(min-width:600px)");
-  const isPremiumUser = useSelector((state: RootState) => state.schoolData?.schoolData?.information?.planType === "Premium") || false
+  const isPremiumUser =
+    useSelector(
+      (state: RootState) =>
+        state.schoolData?.schoolData?.information?.planType === "Premium"
+    ) || false;
   const [theme, setTheme] = useState<string>(
     localStorage.getItem("theme") ?? "halloween"
   );
@@ -23,7 +29,6 @@ export const Navbar = () => {
   const handleLogout = () => {
     logoutUser();
   };
-
   return (
     <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content fixed top-0 z-20 w-screen">
       <div className="flex-1 px-2 mx-2">
@@ -60,26 +65,28 @@ export const Navbar = () => {
       {student.user || principal.user || teacher.user ? (
         <>
           <div className="flex-none mx-6">
-            <div className="dropdown dropdown-end dropdown-hover">
-              <FaPlus size={30} className="cursor-pointer" />
-              <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-                <li>
-                  <Link to="/add/class">Dodaj Klasę</Link>
-                </li>
-                <li>
-                  <Link to="/add/teacher">Dodaj Nauczyciela</Link>
-                </li>
-                <li>
-                  <Link to="/add/student">Dodaj Ucznia</Link>
-                </li>
-                <li>
-                  <Link to="/add/subject">Dodaj Przedmiot</Link>
-                </li>
-                <li>
-                  <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>
-                </li>
-              </ul>
-            </div>
+            {userType === "principals" && (
+              <div className="dropdown dropdown-end dropdown-hover">
+                <FaPlus size={30} className="cursor-pointer" />
+                <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+                  <li>
+                    <Link to="/add/class">Dodaj Klasę</Link>
+                  </li>
+                  <li>
+                    <Link to="/add/teacher">Dodaj Nauczyciela</Link>
+                  </li>
+                  <li>
+                    <Link to="/add/student">Dodaj Ucznia</Link>
+                  </li>
+                  <li>
+                    <Link to="/add/subject">Dodaj Przedmiot</Link>
+                  </li>
+                  <li>
+                    <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="flex-none mx-6">
