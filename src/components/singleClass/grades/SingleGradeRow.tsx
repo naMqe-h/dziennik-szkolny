@@ -15,9 +15,11 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades 
         grades.forEach(grade => {
             allGrades.push(grade.grade)
         })
-        const tempAvg = (allGrades.reduce((prev, curr) => (
-            prev + curr
-        )) / allGrades.length).toFixed(2)
+        let zero = 0
+        const tempAvg = (allGrades.reduce((prev, curr) => {
+            if(curr === 0) zero++
+            return prev + curr
+        }) / (allGrades.length - zero)).toFixed(2)
         setAvg(tempAvg)
         // eslint-disable-next-line 
     }, [grades])
@@ -25,7 +27,7 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades 
     return (
         <tr>
             <th>{subject}</th> 
-            <td className="flex">
+            <td className="flex flex-wrap gap-y-2">
                 {grades.map((grade, index) => (
                     <SingleGrade key={index} grade={grade} />
                 ))}
