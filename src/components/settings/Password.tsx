@@ -40,7 +40,6 @@ export const Password: React.FC<passwordProps> = ({save}) => {
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        console.log(formData);
         setValidated(false);
         validateData(formData);
         setValidated(true);

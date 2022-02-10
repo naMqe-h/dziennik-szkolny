@@ -4,29 +4,29 @@ import { useValidateInputs } from "../../hooks/useValidateInputs";
 import {
   CombinedPrincipalData,
   genderType,
-  StudentData,
-  TeacherData,
+  SingleStudentDataFromFirebase,
+  SingleTeacherData,
   userType,
 } from "../../utils/interfaces";
 
 interface profileProps {
   userType: userType;
-  userData: CombinedPrincipalData | StudentData | TeacherData;
-  save: (data: CombinedPrincipalData | StudentData | TeacherData) => void | React.ReactText ;
+  userProfilePicture: string | null | undefined;
+  userData: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData;
+  save: (data: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData) => React.ReactText
 }
 
 export const Profile: React.FC<profileProps> = ({ userType, userData, save }) => {
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   const [formData, setFormData] = useState<any>(userData);
   const [validated, setValidated] = useState<Boolean>(false);
-
   const { validateData, inputErrors, errors } = useValidateInputs();
 
 
   useEffect(() => {
     if(validated){
       if(errors) return;
-      save(formData);
+      save(formData)
     }
     setValidated(false);
   }, [validated, errors]);
@@ -63,7 +63,7 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
     if (formData === userData) return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
 
     setValidated(false);
-    validateData(formData);
+    validateData({...formData});
     setValidated(true);
 
   }
@@ -101,6 +101,21 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
             disabled={userType !== "principals" ? true : false}
             placeholder="Nazwisko"
           />
+
+          <div className="divider md:col-span-2" />
+
+          <label className="label w-full">
+            <span className="label-text w-full">Zdjęcie profilowe</span>
+          </label>
+          <input
+            type="text"
+            name="profilePicture"
+            value={formData.profilePicture}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
+            className={`input max-w-96 ${inputErrors.profilePicture.error ? 'border-red-500' : ''}`}
+            placeholder="Adres url zdjęcia profilowego"
+          />
+
 
           <div className="divider md:col-span-2" />
 

@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react"
-import { SchoolGrade } from "../../../utils/interfaces"
-import { SingleGrade } from "./SingleGrade"
+import { useEffect, useState } from "react";
+import useMediaQuery from "../../../hooks/useMediaQuery";
+import { SchoolGrade } from "../../../utils/interfaces";
+import { SingleGrade } from "./SingleGrade";
 
 interface SingleGradeRowProps {
-    subject: string
-    grades: SchoolGrade[]
+  subject: string;
+  grades: SchoolGrade[];
 }
 
-export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades }) => {
-    const [avg, setAvg] = useState<string>()
-    let allGrades: number[] = []
+export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
+  subject,
+  grades,
+}) => {
+  const isMobile = useMediaQuery("(max-width:768px)");
+  const [avg, setAvg] = useState<string>("0");
+  let allGrades: number[] = [];
 
     useEffect(() => {
         grades.forEach(grade => {

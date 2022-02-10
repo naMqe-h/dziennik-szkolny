@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {errorsInterface} from "../utils/interfaces";
-import { validateEmail, validatePesel } from "../utils/utils";
+import { isValidHttpUrl, validateEmail, validatePesel } from "../utils/utils";
 import { useDocument } from "./useDocument";
 
 
@@ -25,6 +25,7 @@ const errorsInitial:errorsInterface = {
     class: {error:false, text: ''},
     gender: {error:false, text: ''},
     subject: {error:false, text: ''},
+    profilePicture: {error:false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -54,11 +55,10 @@ export const useValidateInputs = () => {
       postCode: 'Kod pocztowy',
       street: 'Ulicę',
       profile: 'Profil',
-      classTeacher: 'Nauczyciela',
       class: 'Klasę'
     }
 
-    const skipInputs:string[] = ['teachedClasses', 'workingHours'];
+    const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher'];
     
     useEffect(() => {
       Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
@@ -74,6 +74,17 @@ export const useValidateInputs = () => {
         Object.entries(data).forEach((field) => {
           let fieldName = field[0];
           let fieldVal = field[1];
+
+          if(fieldName === 'profilePicture'){
+            if(fieldVal.length !== 0){
+              if(!isValidHttpUrl(fieldVal)){
+                setInputErrors((prev) => (
+                  {...prev, [field[0]]: {'error':true, 'text': 'Niepoprawny adres zdjęcia profilowego.'}}
+                ))
+                setErrors(true);
+              }
+            }
+          }
 
           if(skipInputs.includes(fieldName)) return;
           

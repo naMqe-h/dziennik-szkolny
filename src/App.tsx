@@ -61,6 +61,7 @@ import { Loader } from "./loader/Loader";
 
 //do uporządkowania
 import { Generate } from "./components/principal/lessonPlan/Generate";
+import { StudentGradesView } from "./components/student/grades/StudentGradesView";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
@@ -301,6 +302,14 @@ function App() {
                 element={
                   <StudentRoute loading={loading}>
                     <LessonPlanView />
+                  </StudentRoute>
+                }
+              />
+              <Route
+                path="/grades"
+                element={
+                  <StudentRoute loading={loading}>
+                    <StudentGradesView />
                   </StudentRoute>
                 }
               />

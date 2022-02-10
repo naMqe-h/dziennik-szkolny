@@ -62,3 +62,14 @@ export const showToastError = (error: AuthError) => {
       toast.error(`${error.code}`);
   }
 };
+export const isValidHttpUrl = (checkedUrl: string) =>  {
+  let url;
+  
+  try {
+    url = new URL(checkedUrl);
+  } catch (_) {
+    return false;  
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+}
