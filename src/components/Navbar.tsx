@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
+import { useSetDocument } from "../hooks/useSetDocument";
 export const Navbar = () => {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
@@ -28,7 +29,6 @@ export const Navbar = () => {
   const handleLogout = () => {
     logoutUser();
   };
-
   return (
     <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content fixed top-0 z-20 w-screen">
       <div className="flex-1 px-2 mx-2">

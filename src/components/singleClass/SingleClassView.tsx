@@ -118,6 +118,7 @@ export const SingleClassView = () => {
           email: item.email,
           class: singleClass?.name as string,
           grades: {},
+          profilePicture: "",
         };
 
         const objWrapper = {
@@ -303,8 +304,8 @@ export const SingleClassView = () => {
             singleClass={singleClass}
           />
         )}
-        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} /> }
-        {subpage === "frequency" && <Frequency /> }
+        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} />}
+        {subpage === "frequency" && <Frequency />}
         {subpage === "grades" && <Grades studentsInfo={studentsInfo} />}
       </div>
     </>

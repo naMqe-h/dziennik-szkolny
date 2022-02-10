@@ -136,6 +136,7 @@ export interface StudentsDataFromFirebase {
     pesel: string;
     birth: string;
     class: string;
+    profilePicture: string;
     grades: { [key: string]: SchoolGrade[] };
   };
 }
@@ -150,6 +151,7 @@ export interface SingleStudentDataFromFirebase {
   pesel: string;
   birth: string;
   class: string;
+  profilePicture: string;
   grades: { [key: string]: SchoolGrade[] };
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
