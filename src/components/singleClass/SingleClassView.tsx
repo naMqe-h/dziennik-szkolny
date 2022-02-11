@@ -37,10 +37,13 @@ export const SingleClassView = () => {
   const [classTeacherName, setClassTeacherName] = useState<string>();
   const [studentsInfo, setStudentsInfo] = useState({});
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
+  const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
   );
+  const principal = useSelector((state: RootState) => state.principal);
+  const teacher = useSelector((state: RootState) => state.teacher);
 
   const classes = schoolData?.classes;
   const teachers = schoolData?.teachers;
@@ -258,7 +261,7 @@ export const SingleClassView = () => {
               <option>Semestr 2</option>
             </select>
           </div>
-          {subpage === "info" && (
+          {subpage === "info" && principal.user && (
             <div className="grid grid-cols-2 gap-2 xl:flex">
               <Link
                 to="/add/student"
@@ -274,7 +277,7 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
-          {subpage === "subjects" && (
+          {subpage === "subjects" && principal.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsSubjectOpen((prev) => !prev)}
@@ -284,9 +287,12 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
-          {subpage === "grades" && (
+          {subpage === "grades" && teacher.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
-              <button className="btn btn-primary btn-outline ml-2">
+              <button
+                onClick={() => setIsGradeOpen((prev) => !prev)}
+                className="btn btn-primary btn-outline ml-2"
+              >
                 Dodaj ocenę
               </button>
             </div>
@@ -306,7 +312,13 @@ export const SingleClassView = () => {
         )}
         {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} />}
         {subpage === "frequency" && <Frequency />}
-        {subpage === "grades" && <Grades studentsInfo={studentsInfo} />}
+        {subpage === "grades" && (
+          <Grades
+            setIsOpen={setIsGradeOpen}
+            isOpen={isGradeOpen}
+            studentsInfo={studentsInfo}
+          />
+        )}
       </div>
     </>
   );

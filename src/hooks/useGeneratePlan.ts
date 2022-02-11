@@ -65,8 +65,8 @@ export const useGeneratePlan = () => {
                     if(plan[generatedDay][i] === undefined) { // sprawdzanie czy klasa ma o tej godzinie lekcje
                         if(workingHours.length < 22) {
                             // eslint-disable-next-line
-                            const temp = workingHours.some(item => item.dayOfWeek === generatedDay && item.hour === i+1) //sprawdzanie czy nauczyciel uczy o tej godzinie
-                            if(!temp) {
+                            const isWorking = workingHours.some(item => item.dayOfWeek === generatedDay && item.hour === i+1) //sprawdzanie czy nauczyciel uczy o tej godzinie
+                            if(!isWorking) {
                                 plan[generatedDay][i] = {
                                     subject: key,
                                     teacher: teacherOfSubjects[key],
