@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { RootState } from "../../../redux/store";
 import {
+  SchoolGrade,
   SingleStudentDataFromFirebase,
   termType,
 } from "../../../utils/interfaces";
@@ -15,6 +16,7 @@ import { SingleGradeRow } from "../../singleClass/grades/SingleGradeRow";
 export const StudentGradesView = () => {
   const userType = useSelector((state: RootState) => state.userType.userType);
   const student = useSelector((state: RootState) => state.student.data);
+  const state = useSelector((state: RootState) => state.schoolData);
   const [currentTerm, setCurrentTerm] = useState<termType>(1);
   const isMobile = useMediaQuery("(max-width:768px)");
   const [studentData, setStudentData] =
@@ -28,6 +30,7 @@ export const StudentGradesView = () => {
       navigate("/classes");
     } else {
       if (student) {
+        const newGrades: { [key: string]: SchoolGrade[] } = {};
         setStudentData(student);
       }
     }

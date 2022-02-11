@@ -37,11 +37,13 @@ export const SingleClassView = () => {
   const [classTeacherName, setClassTeacherName] = useState<string>();
   const [studentsInfo, setStudentsInfo] = useState({});
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
-  const [isGradeOpen, setIsGradeOpen] = useState(false)
+  const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
-  const principal = useSelector((state: RootState) => state.principal)
-  const teacher = useSelector((state: RootState) => state.teacher)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
+  const principal = useSelector((state: RootState) => state.principal);
+  const teacher = useSelector((state: RootState) => state.teacher);
 
   const classes = schoolData?.classes;
   const teachers = schoolData?.teachers;
@@ -278,7 +280,7 @@ export const SingleClassView = () => {
           {subpage === "subjects" && principal.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
-                onClick={() => setIsSubjectOpen(prev => !prev)}
+                onClick={() => setIsSubjectOpen((prev) => !prev)}
                 className="btn btn-primary btn-outline ml-2"
               >
                 Dodaj przedmiot
@@ -287,8 +289,8 @@ export const SingleClassView = () => {
           )}
           {subpage === "grades" && teacher.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
-              <button 
-                onClick={() => setIsGradeOpen(prev => !prev)}
+              <button
+                onClick={() => setIsGradeOpen((prev) => !prev)}
                 className="btn btn-primary btn-outline ml-2"
               >
                 Dodaj ocenę
@@ -308,9 +310,15 @@ export const SingleClassView = () => {
             singleClass={singleClass}
           />
         )}
-        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} /> }
-        {subpage === "frequency" && <Frequency /> }
-        {subpage === "grades" && <Grades setIsOpen={setIsGradeOpen} isOpen={isGradeOpen} studentsInfo={studentsInfo} />}
+        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} />}
+        {subpage === "frequency" && <Frequency />}
+        {subpage === "grades" && (
+          <Grades
+            setIsOpen={setIsGradeOpen}
+            isOpen={isGradeOpen}
+            studentsInfo={studentsInfo}
+          />
+        )}
       </div>
     </>
   );

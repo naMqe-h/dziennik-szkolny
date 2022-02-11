@@ -239,7 +239,7 @@ export interface errorsInterface {
   class: ErrorObj;
   gender: ErrorObj;
   subject: ErrorObj;
-  profilePicture: ErrorObj,
+  profilePicture: ErrorObj;
 }
 
 //? Interfejsy związane z planem lekcji

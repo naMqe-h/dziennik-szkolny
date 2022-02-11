@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
-import { useSetDocument } from "../hooks/useSetDocument";
 export const Navbar = () => {
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
