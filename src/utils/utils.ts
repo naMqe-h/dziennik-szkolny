@@ -1,6 +1,5 @@
 import { AuthError } from "firebase/auth";
 import { toast } from "react-toastify";
-import { SortingOfClasses } from "../components/principal/ClassesView";
 
 export const validateEmail = (email: string) => {
   return email
@@ -62,14 +61,14 @@ export const showToastError = (error: AuthError) => {
       toast.error(`${error.code}`);
   }
 };
-export const isValidHttpUrl = (checkedUrl: string) =>  {
+export const isValidHttpUrl = (checkedUrl: string) => {
   let url;
-  
+
   try {
     url = new URL(checkedUrl);
   } catch (_) {
-    return false;  
+    return false;
   }
 
   return url.protocol === "http:" || url.protocol === "https:";
-}
+};

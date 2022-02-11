@@ -32,7 +32,6 @@ export const SingleStudentView = () => {
   const [formData, setFormData] = useState<SingleStudentDataFromFirebase>();
   const [validated, setValidated] = useState<Boolean>(false);
 
-
   // ? Potem zmienić zeby dzialal tez dla nauczyciela
   const userAuth = useSelector((state: RootState) => state.principal.user);
   const schoolData = useSelector(
@@ -44,8 +43,8 @@ export const SingleStudentView = () => {
   const domain = userAuth?.displayName?.split("~")[0];
 
   useEffect(() => {
-    if(validated){
-      if(errors) return;
+    if (validated) {
+      if (errors) return;
       if (formData && student) {
         if (schoolData?.classes) {
           const oldClassDataStudents =
@@ -85,6 +84,7 @@ export const SingleStudentView = () => {
       }
     }
     setValidated(false);
+    // eslint-disable-next-line
   }, [validated, errors]);
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export const SingleStudentView = () => {
     }
     if (formData === student)
       return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
-    if(formData){
+    if (formData) {
       setValidated(false);
       validateData(formData);
       setValidated(true);
@@ -142,22 +142,19 @@ export const SingleStudentView = () => {
         <div className="max-w-screen-2xl w-full rounded-box md:border bg-base-200">
           <div className="flex flex-col justify-center items-center p-10">
             <div className="avatar placeholder flex flex-col justify-center items-center">
-
               {student?.profilePicture ? (
-                 <div className="avatar flex flex-col justify-center items-center">
-                 <div className="mb-8 rounded-full w-32 h-32">
-                   <img src={student.profilePicture} 
-                   alt="Student Profile Picture"
-                   />
-                 </div>
-               </div>
-              ): (
+                <div className="avatar flex flex-col justify-center items-center">
+                  <div className="mb-8 rounded-full w-32 h-32">
+                    <img src={student.profilePicture} alt="Student" />
+                  </div>
+                </div>
+              ) : (
                 <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
-                <span className="text-3xl">
-                  {student?.firstName[0]}
-                  {student?.lastName[0]}
-                </span>
-              </div>
+                  <span className="text-3xl">
+                    {student?.firstName[0]}
+                    {student?.lastName[0]}
+                  </span>
+                </div>
               )}
               <div className="text-xl flex flex-col justify-center items-center">
                 <span>
@@ -226,7 +223,9 @@ export const SingleStudentView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className={`input max-w-96 ${inputErrors.firstName.error ? 'border-red-500' :''}`}
+                    className={`input max-w-96 ${
+                      inputErrors.firstName.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Imię"
                   />
 
@@ -242,7 +241,9 @@ export const SingleStudentView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className={`input max-w-96 ${inputErrors.lastName.error ? 'border-red-500' :''}`}
+                    className={`input max-w-96 ${
+                      inputErrors.lastName.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Nazwisko"
                   />
 
@@ -252,7 +253,9 @@ export const SingleStudentView = () => {
                     <span className="label-text">Klasa</span>
                   </label>
                   <select
-                    className={`select select-bordered w-full max-w-xs ${inputErrors.class.error ? 'border-red-500' :''}`}
+                    className={`select select-bordered w-full max-w-xs ${
+                      inputErrors.class.error ? "border-red-500" : ""
+                    }`}
                     name="class"
                     value={formData.class}
                     onChange={(e) =>
@@ -273,7 +276,9 @@ export const SingleStudentView = () => {
                     <span className="label-text">Płeć</span>
                   </label>
                   <select
-                    className={`select select-bordered w-full max-w-xs ${inputErrors.gender.error ? 'border-red-500' :''}`}
+                    className={`select select-bordered w-full max-w-xs ${
+                      inputErrors.gender.error ? "border-red-500" : ""
+                    }`}
                     name="gender"
                     value={formData.gender}
                     onChange={(e) =>
@@ -299,7 +304,9 @@ export const SingleStudentView = () => {
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
-                    className={`input ${inputErrors.pesel.error ? 'border-red-500' :''}`}
+                    className={`input ${
+                      inputErrors.pesel.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Pesel"
                   />
 
@@ -316,7 +323,9 @@ export const SingleStudentView = () => {
                       handleChange(e.target.name, e.target.value)
                     }
                     max={new Date().toISOString().split("T")[0]}
-                    className={`input ${inputErrors.birth.error ? 'border-red-500' :''}`}
+                    className={`input ${
+                      inputErrors.birth.error ? "border-red-500" : ""
+                    }`}
                     placeholder={new Date().toLocaleDateString()}
                   />
 
