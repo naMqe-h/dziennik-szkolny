@@ -128,18 +128,7 @@ export interface SingleClassData extends ClassData {
 //! Here are the interaces from Firebase
 //? Interfejs Danych z firebasa o pojedynczym uczniu
 export interface StudentsDataFromFirebase {
-  [key: string]: {
-    firstName: string;
-    lastName: string;
-    gender: genderType;
-    email: string;
-    password: string;
-    pesel: string;
-    birth: string;
-    class: string;
-    profilePicture: string;
-    grades: { [key: string]: SchoolGrade[] };
-  };
+  [key: string]: SingleStudentDataFromFirebase;
 }
 
 //? Interfejs Danych z firebasa o pojedynczym uczniu
