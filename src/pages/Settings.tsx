@@ -97,7 +97,7 @@ export const Settings = () => {
     }
     // ! Usunąć po naprawie buga z brakiem aktualizacji stanu po 
     // ! zmianie autha usera
-    window.location.reload();
+    // window.location.reload();
     return toast.success("Dane zapisane.", {autoClose: 2000});
   };
   const handlePlanChange = (plan: PlanTypes) => {

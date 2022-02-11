@@ -68,19 +68,19 @@ export const Navbar = () => {
               <div className="dropdown dropdown-end dropdown-hover">
                 <FaPlus size={30} className="cursor-pointer" />
                 <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-                  <li>
+                  <li className="text-base-content">
                     <Link to="/add/class">Dodaj Klasę</Link>
                   </li>
-                  <li>
+                  <li className="text-base-content">
                     <Link to="/add/teacher">Dodaj Nauczyciela</Link>
                   </li>
-                  <li>
+                  <li className="text-base-content">
                     <Link to="/add/student">Dodaj Ucznia</Link>
                   </li>
-                  <li>
-                    <Link to="/add/subject">Dodaj Przedmiot</Link>
+                  <li className="text-base-content">
+                    <Link to="/add/subjec">Dodaj Przedmiot</Link>
                   </li>
-                  <li>
+                  <li className="text-base-content">
                     <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>
                   </li>
                 </ul>

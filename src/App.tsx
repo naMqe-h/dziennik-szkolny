@@ -22,6 +22,8 @@ import { Students } from "./pages/Students";
 import { SingleStudent } from "./pages/SingleStudent";
 import { SingleTeacher } from "./pages/SingleTeacher";
 import { LessonPlan as LessonPlanView } from "./pages/LessonPlan";
+import { Profile } from "./components/profile/Profile";
+
 
 // wrappers
 import { LayoutWrapper } from "./components/wrappers/LayoutWrapper";
@@ -228,9 +230,9 @@ function App() {
               <Route
                 path="/profile"
                 element={
-                  <PrincipalRoute loading={loading}>
-                    <p>Profile</p>
-                  </PrincipalRoute>
+                  <StudentRoute loading={loading}>
+                    <Profile />
+                  </StudentRoute>
                 }
               />
               <Route

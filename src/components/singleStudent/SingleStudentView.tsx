@@ -10,7 +10,6 @@ import {
   SingleStudentDataFromFirebase,
   StudentsDataFromFirebase,
 } from "../../utils/interfaces";
-import { validatePesel } from "../../utils/utils";
 
 // react icons
 import { HiOutlineMail } from "react-icons/hi";
@@ -189,14 +188,14 @@ export const SingleStudentView = () => {
           <div className="bg-base-300 rounded-b-2xl">
             {!edit ? (
               <div className="p-10 flex flex-col h-full items-center justify-evenly">
-                <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 w-full">
                   <div className="flex items-center text-xl p-5">
                     <HiOutlineMail className="mr-2 text-primary" />
-                    {student?.email}
+                    Email:{student?.email}
                   </div>
                   <div className="flex items-center text-xl p-5">
                     <FaBirthdayCake className="mr-2 text-primary" />
-                    {student?.birth}
+                    Data urodzenia: {student?.birth}
                   </div>
                   <div className="flex items-center text-xl p-5">
                     {student?.gender !== "Kobieta" ? (
@@ -204,11 +203,11 @@ export const SingleStudentView = () => {
                     ) : (
                       <CgGenderFemale className="mr-2 text-primary" />
                     )}
-                    {student?.gender}
+                    Płeć: {student?.gender}
                   </div>
                   <div className="flex items-center text-xl p-5">
                     <AiFillInfoCircle className="mr-2 text-primary" />
-                    {student?.pesel}
+                    Pesel: {student?.pesel}
                   </div>
                 </div>
               </div>
