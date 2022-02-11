@@ -9,9 +9,7 @@ import {
   SchoolInformation,
   SingleStudentDataFromFirebase,
   SingleTeacherData,
-  StudentData,
   StudentsDataFromFirebase,
-  TeacherData,
   TeachersDataFromFirebase,
   userType,
 } from "../utils/interfaces";
@@ -24,33 +22,38 @@ import { Password } from "../components/settings/Password";
 import { updatePassword, updateProfile } from "firebase/auth";
 
 export const Settings = () => {
-  const { userType } = useSelector((state: RootState) => state.userType)
+  const { userType } = useSelector((state: RootState) => state.userType);
   const userData = useSelector((state: RootState) => {
-    if(userType === 'principals'){
-      return state.principal.data
-    } else if(userType === 'students'){
-      return state.student.data
-    }else{
-      return state.teacher.data
+    if (userType === "principals") {
+      return state.principal.data;
+    } else if (userType === "students") {
+      return state.student.data;
+    } else {
+      return state.teacher.data;
     }
   });
   const userAuth = useSelector((state: RootState) => {
-    if(userType === 'principals'){
-      return state.principal.user
-    } else if(userType === 'students'){
-      return state.student.user
-    }else{
-      return state.teacher.user
+    if (userType === "principals") {
+      return state.principal.user;
+    } else if (userType === "students") {
+      return state.student.user;
+    } else {
+      return state.teacher.user;
     }
   });
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData?.information)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData?.information
+  );
   const { type } = useParams();
   const { setDocument } = useSetDocument();
   const navigate = useNavigate();
 
   const [activeRoute, setActiveRoute] = useState(type);
 
-  const possibleRoutes = userType === 'principals' ? ["profile", "school", "plan", "password"] : ["profile", "password"];
+  const possibleRoutes =
+    userType === "principals"
+      ? ["profile", "school", "plan", "password"]
+      : ["profile", "password"];
 
   useEffect(() => {
     setActiveRoute(type);
@@ -61,44 +64,56 @@ export const Settings = () => {
   }, [type]);
 
   const handleProfileSubmit = (
-    data: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData,
+    data:
+      | CombinedPrincipalData
+      | SingleStudentDataFromFirebase
+      | SingleTeacherData
   ) => {
     if (!userAuth || !userType) {
       return toast.error("Brak obiektu auth lub typu użytkownika", {
         autoClose: 2000,
       });
     }
-    if(data.profilePicture !== userAuth.photoURL){
+    if (data.profilePicture !== userAuth.photoURL) {
       updateProfile(userAuth, {
-       photoURL: data.profilePicture
-      }).then(() => {
-        toast.success("Zdjęcie profilowe zostało zmienione.", {autoClose: 2000});
-      }).catch((error) => {
-        toast.error(error, {
-          autoClose: 2000,
+        photoURL: data.profilePicture,
+      })
+        .then(() => {
+          toast.success("Zdjęcie profilowe zostało zmienione.", {
+            autoClose: 2000,
+          });
+        })
+        .catch((error) => {
+          toast.error(error, {
+            autoClose: 2000,
+          });
         });
-      });
     }
     if (userType === "principals") {
       const uid = userAuth?.uid;
       setDocument(userType, uid, data as CombinedPrincipalData);
-    }
-    else {
+    } else {
       const domain = userAuth.displayName?.split("~")[0];
 
-      if(userType ==="students"){
-        let tempData: StudentsDataFromFirebase ={[data.email] :{...userData as SingleStudentDataFromFirebase, ...data}}
-        setDocument(domain as string, userType, tempData)
+      if (userType === "students") {
+        let tempData: StudentsDataFromFirebase = {
+          [data.email]: {
+            ...(userData as SingleStudentDataFromFirebase),
+            ...data,
+          },
+        };
+        setDocument(domain as string, userType, tempData);
       } else {
-        let tempData: TeachersDataFromFirebase = {[data.email]:{ ...userData as SingleTeacherData, ...data}}
-        setDocument(domain as string, userType, tempData)
+        let tempData: TeachersDataFromFirebase = {
+          [data.email]: { ...(userData as SingleTeacherData), ...data },
+        };
+        setDocument(domain as string, userType, tempData);
       }
-
     }
-    // ! Usunąć po naprawie buga z brakiem aktualizacji stanu po 
+    // ! Usunąć po naprawie buga z brakiem aktualizacji stanu po
     // ! zmianie autha usera
     // window.location.reload();
-    return toast.success("Dane zapisane.", {autoClose: 2000});
+    return toast.success("Dane zapisane.", { autoClose: 2000 });
   };
   const handlePlanChange = (plan: PlanTypes) => {
     if (!userAuth || !userType) {
@@ -133,13 +148,13 @@ export const Settings = () => {
         ...data,
       };
       setDocument(userType, uid, dataForPrincipal as CombinedPrincipalData);
-      console.log(dataForSchool)
+      console.log(dataForSchool);
       setDocument(
         data.domain,
         "information",
         dataForSchool as CombinedSchoolInformationFromFirebase
       );
-      return toast.success("Dane zapisane.", {autoClose: 2000});
+      return toast.success("Dane zapisane.", { autoClose: 2000 });
     }
   };
 
@@ -149,14 +164,16 @@ export const Settings = () => {
         autoClose: 2000,
       });
     }
-    updatePassword(userAuth, password).then(() => {
-      return toast.success('Hasło zmienione pomyślnie', {autoClose: 2000})
-    }).catch((error) => {
-      return toast.error(error, {
-        autoClose: 2000,
+    updatePassword(userAuth, password)
+      .then(() => {
+        return toast.success("Hasło zmienione pomyślnie", { autoClose: 2000 });
+      })
+      .catch((error) => {
+        return toast.error(error, {
+          autoClose: 2000,
+        });
       });
-    })
-  }
+  };
   return (
     <div className="h-full m-4">
       <div className="flex justify-center">
@@ -167,7 +184,9 @@ export const Settings = () => {
             </li>
             <li
               className={`rounded-2xl ${
-                activeRoute === "profile" ? "bg-primary" : ""
+                activeRoute === "profile"
+                  ? "bg-primary text-primary-content"
+                  : ""
               }`}
             >
               <Link to="/settings/profile">Edytuj profil</Link>
@@ -176,14 +195,18 @@ export const Settings = () => {
               <>
                 <li
                   className={`rounded-2xl ${
-                    activeRoute === "school" ? "bg-primary" : ""
+                    activeRoute === "school"
+                      ? "bg-primary text-primary-content"
+                      : ""
                   }`}
                 >
                   <Link to="/settings/school">Ustawienia szkoły</Link>
                 </li>
                 <li
                   className={`rounded-2xl ${
-                    activeRoute === "plan" ? "bg-primary" : ""
+                    activeRoute === "plan"
+                      ? "bg-primary text-primary-content"
+                      : ""
                   }`}
                 >
                   <Link to="/settings/plan">Plan</Link>
@@ -194,7 +217,9 @@ export const Settings = () => {
             )}
             <li
               className={`rounded-2xl ${
-                activeRoute === "password" ? "bg-primary" : ""
+                activeRoute === "password"
+                  ? "bg-primary text-primary-content"
+                  : ""
               }`}
             >
               <Link to="/settings/password">Zmień hasło</Link>
@@ -212,7 +237,9 @@ export const Settings = () => {
               <ul className="menu w-full p-3 rounded-tl-2xl rounded-bl-2xl flex">
                 <li
                   className={`rounded-2xl ${
-                    activeRoute === "profile" ? "bg-primary" : ""
+                    activeRoute === "profile"
+                      ? "bg-primary text-primary-content"
+                      : ""
                   }`}
                 >
                   <Link to="/settings/profile">Edytuj profil</Link>
@@ -221,14 +248,18 @@ export const Settings = () => {
                   <>
                     <li
                       className={`rounded-2xl ${
-                        activeRoute === "school" ? "bg-primary" : ""
+                        activeRoute === "school"
+                          ? "bg-primary text-primary-content"
+                          : ""
                       }`}
                     >
                       <Link to="/settings/school">Ustawienia szkoły</Link>
                     </li>
                     <li
                       className={`rounded-2xl ${
-                        activeRoute === "plan" ? "bg-primary" : ""
+                        activeRoute === "plan"
+                          ? "bg-primary text-primary-content"
+                          : ""
                       }`}
                     >
                       <Link to="/settings/plan">Plan</Link>
@@ -237,7 +268,13 @@ export const Settings = () => {
                 ) : (
                   ""
                 )}
-                <li className={`rounded-2xl ${ activeRoute === "settings" ? "bg-primary" : ""}`}>
+                <li
+                  className={`rounded-2xl ${
+                    activeRoute === "password"
+                      ? "bg-primary text-primary-content"
+                      : ""
+                  }`}
+                >
                   <Link to="/settings/password">Zmień hasło</Link>
                 </li>
                 <li className={activeRoute === "" ? "" : ""}>
@@ -251,7 +288,12 @@ export const Settings = () => {
             {type === "profile" && (
               <Profile
                 userType={userType as userType}
-                userData={userData as CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData}
+                userData={
+                  userData as
+                    | CombinedPrincipalData
+                    | SingleStudentDataFromFirebase
+                    | SingleTeacherData
+                }
                 userProfilePicture={userAuth?.photoURL}
                 save={handleProfileSubmit}
               />
@@ -268,9 +310,7 @@ export const Settings = () => {
                 planChange={handlePlanChange}
               />
             )}
-             {type === "password" && (
-              <Password save={handlePasswordChange} />
-            )}
+            {type === "password" && <Password save={handlePasswordChange} />}
           </div>
         </div>
       </div>

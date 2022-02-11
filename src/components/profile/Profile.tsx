@@ -1,13 +1,7 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Loader } from "../../loader/Loader";
+import { Link, useNavigate } from "react-router-dom";
+
 import { RootState } from "../../redux/store";
-import {
-  SingleStudentDataFromFirebase,
-  StudentsDataFromFirebase,
-} from "../../utils/interfaces";
 
 // react icons
 import { HiOutlineMail } from "react-icons/hi";
@@ -28,6 +22,7 @@ export const Profile = () => {
       return state.teacher.data;
     }
   });
+  // eslint-disable-next-line
   const userAuth = useSelector((state: RootState) => {
     if (userType === "principals") {
       return state.principal.user;
@@ -55,10 +50,7 @@ export const Profile = () => {
               {userData?.profilePicture ? (
                 <div className="avatar flex flex-col justify-center items-center">
                   <div className="mb-8 rounded-full w-32 h-32">
-                    <img
-                      src={userData.profilePicture}
-                      alt="Student Profile Picture"
-                    />
+                    <img src={userData.profilePicture} alt="Student" />
                   </div>
                 </div>
               ) : (
@@ -162,11 +154,13 @@ export const Profile = () => {
                     </div>
                     <div className="flex items-center text-xl p-5">
                       <MdOutlineSchool className="mr-2 text-primary" />
-                      Ilość nauczycieli: {schoolData?.information?.teachersCount}
+                      Ilość nauczycieli:{" "}
+                      {schoolData?.information?.teachersCount}
                     </div>
                     <div className="flex items-center text-xl p-5">
                       <FaCity className="mr-2 text-primary" />
-                      Ilość przedmiotów: {schoolData?.information?.subjectsCount}
+                      Ilość przedmiotów:{" "}
+                      {schoolData?.information?.subjectsCount}
                     </div>
                   </div>
                 </>
@@ -179,7 +173,14 @@ export const Profile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 mb-6 w-full">
                     <div className="flex items-center text-xl p-5">
                       <CgWebsite className="mr-2 text-primary" />
-                      Wychowawstwo: {userData?.classTeacher ? <Link to={`/classes/${userData?.classTeacher}/info`}>userData?.classTeacher</Link> : 'Brak'}
+                      Wychowawstwo:{" "}
+                      {userData?.classTeacher ? (
+                        <Link to={`/classes/${userData?.classTeacher}/info`}>
+                          userData?.classTeacher
+                        </Link>
+                      ) : (
+                        "Brak"
+                      )}
                     </div>
                     <div className="flex items-center text-xl p-5">
                       <AiFillInfoCircle className="mr-2 text-primary" />

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { FcSettings } from "react-icons/fc";
-import { RiFileSettingsLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
@@ -29,12 +28,29 @@ export const StudentGradesView = () => {
     if (userType === "principals" || userType === "teachers") {
       navigate("/classes");
     } else {
-      if (student) {
+      if (student && state.schoolData?.teachers) {
         const newGrades: { [key: string]: SchoolGrade[] } = {};
-        setStudentData(student);
+        const teachersSubjectsArray: string[] = [];
+        Object.values(state.schoolData?.teachers).forEach((item) => {
+          if (item.teachedClasses.some((x) => x === student.class)) {
+            teachersSubjectsArray.push(item.subject);
+          }
+        });
+        teachersSubjectsArray.forEach((item) => {
+          if (student.grades[item]) {
+            newGrades[item] = student.grades[item];
+          } else {
+            newGrades[item] = [];
+          }
+        });
+        const newStudent: SingleStudentDataFromFirebase = {
+          ...student,
+          grades: newGrades,
+        };
+        setStudentData(newStudent);
       }
     }
-  }, [userType]);
+  }, [userType, state.schoolData?.teachers, student, navigate]);
   return (
     <section className="card bg-base-200 w-full border rounded-box border-base-300 py-4 px-8">
       <Link to="/" className="flex w-max items-center mb-2 gap-2">
