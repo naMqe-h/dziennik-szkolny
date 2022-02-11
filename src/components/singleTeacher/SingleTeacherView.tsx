@@ -17,6 +17,9 @@ import { CgGenderMale, CgGenderFemale } from "react-icons/cg";
 import { GiTeacher } from "react-icons/gi";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useValidateInputs } from "../../hooks/useValidateInputs";
+import { MdOutlineSchool } from "react-icons/md";
+import { RiBookMarkFill } from "react-icons/ri";
+
 
 export const SingleTeacherView = () => {
   const { email } = useParams();
@@ -58,6 +61,7 @@ export const SingleTeacherView = () => {
     if (teacher) {
       setFormData(teacher);
     }
+    console.log(teacher)
   }, [teacher]);
 
   const handleChange = (name: string, value: string) => {
@@ -155,21 +159,22 @@ export const SingleTeacherView = () => {
         <div className="max-w-screen-2xl w-full rounded-box md:border bg-base-200">
           <div className="flex flex-col justify-center items-center p-10">
             <div className="avatar placeholder flex flex-col justify-center items-center">
-              {/* With placeholder */}
-              <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
+            {teacher?.profilePicture ? (
+                 <div className="avatar flex flex-col justify-center items-center">
+                 <div className="mb-8 rounded-full w-32 h-32">
+                   <img src={teacher.profilePicture} 
+                   alt="Student Profile Picture"
+                   />
+                 </div>
+               </div>
+              ): (
+                <div className="bg-neutral-focus text-neutral-content rounded-full w-32 h-32 mb-8">
                 <span className="text-3xl">
                   {teacher?.firstName[0]}
                   {teacher?.lastName[0]}
                 </span>
               </div>
-              {/* without placeholder */}
-              {/* <div className="avatar flex flex-col justify-center items-center">
-                <div className="mb-8 rounded-full w-32 h-32">
-                  <img src="https://images.unsplash.com/photo-1546456073-92b9f0a8d413?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" 
-                  alt="Avatar Tailwind CSS Component"
-                  />
-                </div>
-              </div> */}
+              )}
 
               <div className="text-xl flex flex-col justify-center items-center">
                 <span>
@@ -201,14 +206,11 @@ export const SingleTeacherView = () => {
           <div className="bg-base-300 rounded-b-2xl">
             {!edit ? (
               <div className="p-10 flex flex-col h-full items-center justify-evenly">
-                <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="card-title divider w-full">Dane Personalne</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 w-full">
                   <div className="flex items-center text-xl p-5">
                     <HiOutlineMail className="mr-2 text-primary" />
-                    {teacher?.email}
-                  </div>
-                  <div className="flex items-center text-xl p-5">
-                    <GiTeacher className="mr-2 text-primary" />
-                    {teacher?.subject}
+                    Email: {teacher?.email}
                   </div>
                   <div className="flex items-center text-xl p-5">
                     {teacher?.gender !== "Kobieta" ? (
@@ -216,9 +218,26 @@ export const SingleTeacherView = () => {
                     ) : (
                       <CgGenderFemale className="mr-2 text-primary" />
                     )}
-                    {teacher?.gender}
+                    Płeć: {teacher?.gender}
                   </div>
                 </div>
+                <div className="card-title divider w-full">
+                    Dane Nauczyciela
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 mb-6 w-full">
+                    <div className="flex items-center text-xl p-5">
+                      <RiBookMarkFill className="mr-2 text-primary" />
+                      Wychowawstwo: {teacher?.classTeacher ? <Link to={`/classes/${teacher?.classTeacher}/info`} className="text-accent"> {teacher?.classTeacher}</Link> : 'Brak'}
+                    </div>
+                    <div className="flex items-center text-xl p-5">
+                      <GiTeacher className="mr-2 text-primary" />
+                      Uczone klasy: {teacher?.teachedClasses.length}
+                    </div>
+                    <div className="flex items-center text-xl p-5">
+                      <MdOutlineSchool className="mr-2 text-primary" />
+                      Uczony przedmiot: {teacher?.subject}
+                    </div>
+                  </div>
               </div>
             ) : (
               <form className="form-control p-10">
