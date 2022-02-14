@@ -5,6 +5,7 @@ import { RootState } from "../../redux/store";
 import {
   SingleClassData,
   SingleStudentDataFromFirebase,
+  termType,
 } from "../../utils/interfaces";
 import { FcConferenceCall } from "react-icons/fc";
 import { SingleClassTable } from "./SingleClassTable";
@@ -39,6 +40,7 @@ export const SingleClassView = () => {
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
   const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
+  const [term, setTerm] = useState<termType>(1);
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
   );
@@ -93,7 +95,6 @@ export const SingleClassView = () => {
     }
     // eslint-disable-next-line
   }, [singleClass]);
-
   const handleGenerate = async () => {
     if (countGenerate <= 30) {
       const baseUrl = process.env.REACT_APP_HEROKU_URL;
@@ -256,22 +257,25 @@ export const SingleClassView = () => {
             >
               Oceny
             </Link>
-            <select className="select select-bordered select-secondary  max-w-full">
-              <option>Semestr 1</option>
-              <option>Semestr 2</option>
+            <select
+              className="select select-bordered select-secondary  max-w-full"
+              onChange={(e) => setTerm(Number(e.target.value) as termType)}
+            >
+              <option value={1}>Semestr 1</option>
+              <option value={2}>Semestr 2</option>
             </select>
           </div>
           {subpage === "info" && principal.user && (
             <div className="grid grid-cols-2 gap-2 xl:flex">
               <Link
                 to="/add/student"
-                className="btn btn-primary btn-outline ml-2"
+                className="btn btn-primary btn-outline lg:ml-2"
               >
                 Dodaj ucznia
               </Link>
               <button
                 onClick={() => setIsOpen((prev) => !prev)}
-                className={`btn btn-primary btn-outline ml-2`}
+                className={`btn btn-primary btn-outline lg:ml-2`}
               >
                 Wygeneruj uczniów
               </button>
@@ -317,6 +321,7 @@ export const SingleClassView = () => {
             setIsOpen={setIsGradeOpen}
             isOpen={isGradeOpen}
             studentsInfo={studentsInfo}
+            term={term}
           />
         )}
       </div>

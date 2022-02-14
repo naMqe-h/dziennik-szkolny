@@ -36,13 +36,15 @@ export const StudentGradesView = () => {
             teachersSubjectsArray.push(item.subject);
           }
         });
-        teachersSubjectsArray.forEach((item) => {
-          if (student.grades[item]) {
-            newGrades[item] = student.grades[item];
-          } else {
-            newGrades[item] = [];
-          }
-        });
+        teachersSubjectsArray
+          .sort((a, b) => a.localeCompare(b))
+          .forEach((item) => {
+            if (student.grades[item]) {
+              newGrades[item] = student.grades[item];
+            } else {
+              newGrades[item] = [];
+            }
+          });
         const newStudent: SingleStudentDataFromFirebase = {
           ...student,
           grades: newGrades,
