@@ -9,15 +9,17 @@ interface SingleGradeRowProps {
   grades: SchoolGrade[];
 }
 
-export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades }) => {
-  const { calculateAvg } = useAverage()
+export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
+  subject,
+  grades,
+}) => {
+  const { calculateAvg } = useAverage();
 
   const isMobile = useMediaQuery("(max-width:768px)");
   const [avg, setAvg] = useState<string>("0.00");
-
   useEffect(() => {
     if (grades.length > 0) {
-      const tempAvg = calculateAvg(grades)
+      const tempAvg = calculateAvg(grades);
       setAvg(tempAvg);
     } else {
       setAvg("0.00");
@@ -27,7 +29,7 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades 
 
   return (
     <tr>
-      <th>{subject}</th>
+      <th>{subject === "Wiedza o Społeczeństwie" ? "WOS" : subject}</th>
       <td className={`${grades.length > 0 && "flex flex-wrap"}`}>
         {grades.map((grade, index) => (
           <SingleGrade key={index} grade={grade} />
