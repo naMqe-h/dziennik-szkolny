@@ -80,6 +80,7 @@ export const Class = () => {
           fullName,
           subjects: [{ name: "GodzinaWychowawcza", teacher: classTeacher }],
           students: [],
+          schedule: []
         },
       };
       // update firebase
