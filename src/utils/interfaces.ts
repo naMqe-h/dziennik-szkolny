@@ -221,25 +221,7 @@ export interface updatePrincipalPlanType {
 export type ErrorObj = { error: boolean; text: string };
 
 export interface errorsInterface {
-  firstName: ErrorObj;
-  lastName: ErrorObj;
-  birth: ErrorObj;
-  pesel: ErrorObj;
-  email: ErrorObj;
-  password: ErrorObj;
-  repeatedPassword: ErrorObj;
-  name: ErrorObj;
-  domain: ErrorObj;
-  city: ErrorObj;
-  houseNumber: ErrorObj;
-  postCode: ErrorObj;
-  street: ErrorObj;
-  profile: ErrorObj;
-  classTeacher: ErrorObj;
-  class: ErrorObj;
-  gender: ErrorObj;
-  subject: ErrorObj;
-  profilePicture: ErrorObj;
+  [key: string] : ErrorObj
 }
 
 //? Interfejsy związane z planem lekcji

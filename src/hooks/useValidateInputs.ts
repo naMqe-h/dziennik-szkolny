@@ -26,6 +26,8 @@ const errorsInitial:errorsInterface = {
     gender: {error:false, text: ''},
     subject: {error:false, text: ''},
     profilePicture: {error:false, text: ''},
+    weight: {error:false, text: ''},
+    topic: {error: false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -55,7 +57,9 @@ export const useValidateInputs = () => {
       postCode: 'Kod pocztowy',
       street: 'Ulicę',
       profile: 'Profil',
-      class: 'Klasę'
+      class: 'Klasę',
+      topic: 'Temat',
+      weight: 'wagę',
     }
 
     const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher'];
