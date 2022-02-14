@@ -39,7 +39,7 @@ export const Navbar = () => {
       {showThemeSwitcher && (
         <select
           data-choose-theme
-          className="select bg-base-100 text-primary"
+          className="select bg-base-100 text-primary mr-4"
           onChange={(e) => setTheme(e.target.value)}
           value={theme}
         >
@@ -78,7 +78,7 @@ export const Navbar = () => {
                     <Link to="/add/student">Dodaj Ucznia</Link>
                   </li>
                   <li className="text-base-content">
-                    <Link to="/add/subjec">Dodaj Przedmiot</Link>
+                    <Link to="/add/subject">Dodaj Przedmiot</Link>
                   </li>
                   <li className="text-base-content">
                     <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>

@@ -77,7 +77,7 @@ export const StudentsView = () => {
       });
       if (!key) return setStudentsData(searchedStudents);
       const type = sorting[key as keyof SortingOfStudents];
-      if (key == "lp") {
+      if (key === "lp") {
         if (type === "Descending") {
           return setStudentsData(searchedStudents.reverse());
         }

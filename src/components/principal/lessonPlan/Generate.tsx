@@ -52,7 +52,7 @@ export const Generate = () => {
       for (const [key, value] of Object.entries(schoolData?.classes)) {
         tempArray.push(value);
       }
-      setSelectClassValue(tempArray[0].name);
+      setSelectClassValue(tempArray[0]?.name);
       // setSelectClassValue('1b');
       setAllClassesArray(tempArray);
     }

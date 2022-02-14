@@ -45,10 +45,10 @@ export const Modal: React.FC<ModalProps> = ({
         const prevGrades = cloneDeep(newStudentsInfo[key].grades);
         const newGrade: SchoolGrade = {
           grade: value,
-          weight: 0,
+          weight,
           addedBy: teacher?.email as string,
           date: Date.now().toLocaleString(),
-          topic: "Test",
+          topic,
           term: 1,
         };
         const newSubject = {

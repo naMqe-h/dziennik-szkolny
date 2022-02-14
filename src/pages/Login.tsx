@@ -10,7 +10,7 @@ import { RootState } from "../redux/store";
 
 // importy logowania
 import { useLogin } from "../hooks/useLogin";
-import { useStudentLogin } from '../hooks/useStudentLogin'
+import { useStudentLogin } from "../hooks/useStudentLogin";
 import { useCollection } from "../hooks/useCollection";
 import { useTeacherLogin } from "../hooks/useTeacherLogin";
 
@@ -19,49 +19,46 @@ interface LoginProps {
 }
 
 type LoginCredentialsErrors = {
-  email: {error:boolean, text: string};
-  password: {error:boolean, text: string};
+  email: { error: boolean; text: string };
+  password: { error: boolean; text: string };
 };
-const defaultErrorState:LoginCredentialsErrors = {
-  email: {error:false, text: ''},
-  password: {error:false, text: ''},
+const defaultErrorState: LoginCredentialsErrors = {
+  email: { error: false, text: "" },
+  password: { error: false, text: "" },
 };
-
 
 export const Login: React.FC<LoginProps> = ({ loading }) => {
   const dispatch = useDispatch();
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
-  const userType = useSelector((state: RootState) => state.userType.userType)
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
-  const [allPrincipalsEmails, setAllPrincipalsEmails] = useState<string[]>([])
+  const userType = useSelector((state: RootState) => state.userType.userType);
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
+  const [allPrincipalsEmails, setAllPrincipalsEmails] = useState<string[]>([]);
 
   const { principalLogin } = useLogin();
   const { studentLogin } = useStudentLogin();
-  const { teacherLogin } = useTeacherLogin()
-  const { getCollection, documents  } = useCollection()
+  const { teacherLogin } = useTeacherLogin();
+  const { getCollection, documents } = useCollection();
 
   useEffect(() => {
-    getCollection('principals')
+    getCollection("principals");
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setAllPrincipalsEmails([])
+    setAllPrincipalsEmails([]);
     // eslint-disable-next-line
-    for(const [key, _value] of Object.entries(documents)) {
-      const value : CombinedPrincipalData = _value as CombinedPrincipalData
-      setAllPrincipalsEmails(prev => (
-        [
-          ...prev,
-          value.email,
-        ]
-      ))
+    for (const [key, _value] of Object.entries(documents)) {
+      const value: CombinedPrincipalData = _value as CombinedPrincipalData;
+      setAllPrincipalsEmails((prev) => [...prev, value.email]);
     }
-  }, [documents])
+  }, [documents]);
 
-  const [fieldErrors, setFieldErrors] = useState<LoginCredentialsErrors>(defaultErrorState);
+  const [fieldErrors, setFieldErrors] =
+    useState<LoginCredentialsErrors>(defaultErrorState);
 
   const [userData, setUserData] = useState<FormData>({
     email: "",
@@ -70,59 +67,71 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   });
 
   useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
+    Object.values(fieldErrors)
+      .filter((f) => f.error === true)
+      .map((field) => toast.error(field.text, { autoClose: 2000 }));
   }, [fieldErrors]);
 
   const validateInputs = () => {
     setFieldErrors(defaultErrorState);
     let errors = false;
-    if (userData.email.length === 0){
-      setFieldErrors((prev) => (
-            {...prev, email: {'error':true, 'text':"Podaj Email"}}))
-      errors = true
+    if (userData.email.length === 0) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: { error: true, text: "Podaj Email" },
+      }));
+      errors = true;
     }
-    if (userData.password.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, password: {'error':true, 'text':"Podaj Hasło"}}))
-       errors = true
+    if (userData.password.length === 0) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        password: { error: true, text: "Podaj Hasło" },
+      }));
+      errors = true;
     }
-    if (!validateEmail(userData.email)){
-      setFieldErrors((prev) => (
-        {...prev, password: {'error':true, 'text':"Podaj Poprawny Email"}}))
-       errors = true
+    if (!validateEmail(userData.email)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        password: { error: true, text: "Podaj Poprawny Email" },
+      }));
+      errors = true;
     }
-    return errors
-  }
+    return errors;
+  };
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
-    if(validateInputs()) return
-    
-    if(userData.role === 'principals') {
-      if(allPrincipalsEmails.includes(userData.email)) {
-        handlePrincipalLogin()
-      } else {
-        return toast.error('Nie ma dyrektora z takim adresem email', { autoClose: 4000 })
-      }
-    } 
-    
-    if(userData.role === 'students') {
-      if(allPrincipalsEmails.includes(userData.email)) {
-        return toast.error('Wybierz poprawny typ logowania', { autoClose: 4000 })
-      } else {
-        handleStudentLogin()
-      }
-    } 
+    if (validateInputs()) return;
 
-    if(userData.role === 'teachers') {
-      if(allPrincipalsEmails.includes(userData.email)) {
-        return toast.error('Wybierz poprawny typ logowania', { autoClose: 4000 })
+    if (userData.role === "principals") {
+      if (allPrincipalsEmails.includes(userData.email)) {
+        handlePrincipalLogin();
       } else {
-        handleTeacherLogin()
+        return toast.error("Nie ma dyrektora z takim adresem email", {
+          autoClose: 4000,
+        });
       }
-    } 
+    }
+
+    if (userData.role === "students") {
+      if (allPrincipalsEmails.includes(userData.email)) {
+        return toast.error("Wybierz poprawny typ logowania", {
+          autoClose: 4000,
+        });
+      } else {
+        handleStudentLogin();
+      }
+    }
+
+    if (userData.role === "teachers") {
+      if (allPrincipalsEmails.includes(userData.email)) {
+        return toast.error("Wybierz poprawny typ logowania", {
+          autoClose: 4000,
+        });
+      } else {
+        handleTeacherLogin();
+      }
+    }
   }
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -134,7 +143,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   }
 
   //logowanie dla dyrektora
-  const handlePrincipalLogin = async () => { 
+  const handlePrincipalLogin = async () => {
     nProgress.start();
     dispatch(setUserType(userData.role));
     await principalLogin(userData.email, userData.password, userData.role);
@@ -142,31 +151,35 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
   };
 
   //logowanie dla ucznia
-  const handleStudentLogin = async () => { 
+  const handleStudentLogin = async () => {
     nProgress.start();
-    await studentLogin(userData.email, userData.password)
+    await studentLogin(userData.email, userData.password);
     nProgress.done();
   };
 
   //logowanie dla nauczyciela
-  const handleTeacherLogin = async () => { 
+  const handleTeacherLogin = async () => {
     nProgress.start();
-    await teacherLogin(userData.email, userData.password)
+    await teacherLogin(userData.email, userData.password);
     nProgress.done();
   };
 
   if (!loading) {
-    return (principal.user && principal.data && schoolData && userType) || (student.data && student.user && userType) || (teacher.data && schoolData) ? (
+    return (principal.user && principal.data && schoolData && userType) ||
+      (student.data && student.user && userType) ||
+      (teacher.data && schoolData) ? (
       <Navigate to="/" />
     ) : (
       <div className="mt-12 flex items-center justify-center">
         <form className="form-control card bg-base-200 p-14" action="none">
           <label className="input-group my-4">
-            <span className="bg-primary">Email</span>
+            <span className="bg-primary text-primary-content">Email</span>
             <input
               type="text"
               name="email"
-              className={`input ${fieldErrors.email.error ? "border-red-500" : ''}`}
+              className={`input ${
+                fieldErrors.email.error ? "border-red-500" : ""
+              }`}
               autoComplete="email"
               value={userData.email}
               placeholder="Email"
@@ -174,11 +187,13 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
             />
           </label>
           <label className="input-group my-4">
-            <span className="bg-primary">Hasło</span>
+            <span className="bg-primary text-primary-content">Hasło</span>
             <input
               type="password"
               name="password"
-              className={`input ${fieldErrors.password.error ? "border-red-500" : ''}`}
+              className={`input ${
+                fieldErrors.password.error ? "border-red-500" : ""
+              }`}
               autoComplete="current-password"
               value={userData.password}
               placeholder="********"
@@ -186,7 +201,9 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
             />
           </label>
           <label className="input-group my-4  ">
-            <span className="bg-primary">Zaloguj jako</span>
+            <span className="bg-primary text-primary-content">
+              Zaloguj jako
+            </span>
             <select
               name="role"
               className="select"
@@ -200,7 +217,7 @@ export const Login: React.FC<LoginProps> = ({ loading }) => {
           </label>
           <div className="flex items-center justify-center w-full">
             <button
-              className="btn-primary text-white btn w-[40%]"
+              className="btn-primary text-primary-content btn w-[40%]"
               onClick={(e) => validateData(e)}
             >
               Zaloguj

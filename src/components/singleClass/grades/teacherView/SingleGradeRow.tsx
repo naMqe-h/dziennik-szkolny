@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import { useAverage } from "../../../../hooks/useAverage"
 import { RootState } from "../../../../redux/store"
 import { SchoolGrade, SingleStudentDataFromFirebase } from "../../../../utils/interfaces"
 import { SingleGrade } from "../SingleGrade"
@@ -10,10 +11,11 @@ interface SingleGradeRowProps {
 }
 
 export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ student, number }) => {
+    const { calculateAvg } = useAverage()
+
     const subject = useSelector((state: RootState) => state.teacher.data?.subject)
     const [grades, setGrades] = useState<SchoolGrade[]>([])
     const [avg, setAvg] = useState<string>()
-    let allGrades: number[] = []
 
     useEffect(() => {
         setGrades(student.grades[subject as string])
@@ -22,15 +24,10 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ student, number 
 
     useEffect(() => {
         if(grades?.length > 0) {
-            grades?.forEach(grade => {
-                allGrades.push(grade.grade)
-            })
-            let zero = 0
-            const tempAvg = (allGrades?.reduce((prev, curr) => {
-                if(curr === 0) zero++
-                return prev + curr
-            }) / (allGrades.length - zero)).toFixed(2)
+            const tempAvg = calculateAvg(grades)
             setAvg(tempAvg)
+        } else {
+            setAvg("0.00");
         }
         // eslint-disable-next-line 
     }, [grades])
