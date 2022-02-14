@@ -1,9 +1,10 @@
-import { cloneDeep } from "lodash";
-import { Dispatch, SetStateAction, useState } from "react";
+import { cloneDeep, toUpper } from "lodash";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../../../hooks/useSetDocument";
+import { useValidateInputs } from "../../../../hooks/useValidateInputs";
 import { RootState } from "../../../../redux/store";
 import {
   SchoolGrade,
@@ -36,11 +37,18 @@ export const Modal: React.FC<ModalProps> = ({
   const [newGrades, setNewGrades] = useState<{ [key: string]: number }>({});
   const [topic, setTopic] = useState<string>("");
   const [weight, setWeight] = useState<number>(0);
+  const [validated, setValidated] = useState<Boolean>(false);
 
-  const handleAdd = async () => {
-    const newStudentsInfo = cloneDeep(studentsInfo);
-    // tutaj tworzymy nowy obiekt uczniów z dopisanymi nowymi ocenami
-    if (topic !== "" && weight) {
+  const { validateData, inputErrors, errors } = useValidateInputs();
+
+  useEffect(() => {
+    if(validated){
+      if(errors) return
+      
+      const newStudentsInfo = cloneDeep(studentsInfo);
+      // tutaj tworzymy nowy obiekt uczniów z dopisanymi nowymi ocenami
+
+
       for (const [key, value] of Object.entries(newGrades)) {
         const prevGrades = cloneDeep(newStudentsInfo[key].grades);
         const newGrade: SchoolGrade = {
@@ -65,12 +73,21 @@ export const Modal: React.FC<ModalProps> = ({
           };
         }
       }
-      await setDocument(domain as string, "students", newStudentsInfo);
+      setDocument(domain as string, "students", newStudentsInfo);
       toast.success("Dodane nowe oceny", { autoClose: 3000 });
-    } else {
-      //! Walidacja inputów
-      toast.error("Uzupełnij temat i wagę oceny", { autoClose: 3000 });
+      
     }
+    setValidated(false);
+  }, [validated, errors])
+  
+
+  const handleAdd = () => {
+    
+    setValidated(false);
+    validateData({topic, weight})
+    setValidated(true);
+
+
   };
 
   return (
@@ -90,7 +107,7 @@ export const Modal: React.FC<ModalProps> = ({
                 onChange={(e) => setTopic(e.currentTarget.value)}
                 type="text"
                 placeholder="Kartkówka"
-                className="input input-bordered"
+                className={`input input-bordered ${inputErrors.topic.error ? 'border-red-500' : ''}`}
               />
             </div>
             <div>
@@ -102,7 +119,7 @@ export const Modal: React.FC<ModalProps> = ({
                 min={0}
                 max={10}
                 placeholder="0-10"
-                className="input input-bordered"
+                className={`input input-bordered ${inputErrors.weight.error ? 'border-red-500' : ''}`}
               />
             </div>
           </div>
