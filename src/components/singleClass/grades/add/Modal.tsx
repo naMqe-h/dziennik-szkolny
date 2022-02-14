@@ -77,6 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
       toast.success("Dodane nowe oceny", { autoClose: 3000 });
       
     }
+    setValidated(false);
   }, [validated, errors])
   
 
