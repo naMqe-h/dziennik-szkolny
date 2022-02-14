@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAverage } from "../../../hooks/useAverage";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { SchoolGrade } from "../../../utils/interfaces";
 import { SingleGrade } from "./SingleGrade";
@@ -8,27 +9,15 @@ interface SingleGradeRowProps {
   grades: SchoolGrade[];
 }
 
-export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
-  subject,
-  grades,
-}) => {
+export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({ subject, grades }) => {
+  const { calculateAvg } = useAverage()
+
   const isMobile = useMediaQuery("(max-width:768px)");
   const [avg, setAvg] = useState<string>("0.00");
-  let allGrades: number[] = [];
 
   useEffect(() => {
-    grades.forEach((grade) => {
-      allGrades.push(grade.grade);
-    });
-    let zero = 0;
-    if (allGrades.length > 0) {
-      const tempAvg = (
-        allGrades.reduce((prev, curr) => {
-          if (curr === 0) zero++;
-          return prev + curr;
-        }, 0) /
-        (allGrades.length - zero)
-      ).toFixed(2);
+    if (grades.length > 0) {
+      const tempAvg = calculateAvg(grades)
       setAvg(tempAvg);
     } else {
       setAvg("0.00");

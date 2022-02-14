@@ -78,7 +78,7 @@ export const Navbar = () => {
                     <Link to="/add/student">Dodaj Ucznia</Link>
                   </li>
                   <li className="text-base-content">
-                    <Link to="/add/subjec">Dodaj Przedmiot</Link>
+                    <Link to="/add/subject">Dodaj Przedmiot</Link>
                   </li>
                   <li className="text-base-content">
                     <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>
