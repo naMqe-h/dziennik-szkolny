@@ -31,7 +31,10 @@ export const Navbar = () => {
   return (
     <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content fixed top-0 z-20 w-screen">
       <div className="flex-1 px-2 mx-2">
-        <NavLink to="/" className="text-xl text-center font-bold flex">
+        <NavLink
+          to="/"
+          className="text-xl text-center font-bold flex items-center"
+        >
           <FaBook className="mr-3" size={30} />
           Dziennik szkolny
         </NavLink>

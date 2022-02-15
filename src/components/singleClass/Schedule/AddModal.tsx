@@ -1,23 +1,29 @@
+import moment from "moment"
 import React, { useEffect, useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
 import { useValidateInputs } from "../../../hooks/useValidateInputs"
+import { scheduleItem } from "../../../utils/interfaces"
+
+ 
 
 interface addModalItf{
     isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>> ;
     teacherEmail: string;
-    singleClassName: string | undefined;
-    add: (data: any) => void;
+    add: (data: any, oldItem?: any) => void;
+    event?: scheduleItem;
 }
 
-export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail, singleClassName, add}) => {
+export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail, add, event}) => {
 
-    const initialFormData = {
+    const initialFormData:scheduleItem= {
         name: '',
-        date: Date.now().toLocaleString(),
+        date:  new Date().toISOString().split("T")[0],
         teacher: teacherEmail
     }
-    const [formData, setFormData] = useState(initialFormData);
+    const [formData, setFormData] = useState(event ? {...event, date: moment(Number(event.date.replaceAll(/\s/g, ""))).format(
+        "yyyy-MM-DD"
+      ) } : initialFormData);
     const [validated, setValidated] = useState(false)
     const { validateData, inputErrors, errors } = useValidateInputs();
     
@@ -25,7 +31,12 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
     useEffect(() => {
         if(validated){
             if(errors) return;
-            add(formData)
+            if(!event){
+                add(formData)
+                setFormData(initialFormData);
+            } else {
+                add(formData, event);
+            }
 
         }
         setValidated(false);
@@ -41,6 +52,9 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
 
     const handleSubmit = () => {
         setValidated(false);
+        setFormData((prev) => ({
+            ...prev, date: String(Date.parse(prev.date))
+        }))
         validateData(formData);
         setValidated(true);
     }
@@ -54,7 +68,7 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
                 className="absolute top-2 right-2 cursor-pointer"
             />
             <h2 className="mb-3">
-                Dodaj wydarzenie
+                {event ? "Edytuj wydarzenie" : "Dodaj wydarzenie"}
             </h2>
             <label>Nazwa</label>
             <input 
@@ -73,7 +87,7 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
               />
             <button onClick={handleSubmit} className="btn btn-primary w-44 mt-3">
-                Dodaj
+                {event ? "Zmień" : "Dodaj"}
             </button>
             </div>
         </div>
