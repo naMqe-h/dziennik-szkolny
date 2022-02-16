@@ -20,6 +20,7 @@ import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { LessonPlan } from "./lessonPlan/LessonPlan";
 import { Frequency } from "./frequency/Frequency";
+import { Schedule } from "./Schedule/Schedule";
 import { MobileLessonPlan } from "./lessonPlan/mobileLessonPlan/MobileLessonPlan";
 
 export const SingleClassView = () => {
@@ -32,6 +33,8 @@ export const SingleClassView = () => {
 
   //modal generowanie
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false)
+
   const [countGenerate, setCountGenerate] = useState<number>(1);
   const [yearGnerate, setYearGenerate] = useState<number>(2000);
   const [singleClass, setSingleClass] = useState<SingleClassData>();
@@ -256,6 +259,12 @@ export const SingleClassView = () => {
             >
               Oceny
             </Link>
+            <Link
+              to={`/class/${id}/schedule`}
+              className="btn btn-secondary btn-outline "
+            >
+              Wydarzenia
+            </Link>
             <select
               className="select select-bordered select-secondary  max-w-full"
               onChange={(e) => setTerm(Number(e.target.value) as termType)}
@@ -301,6 +310,16 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
+          {subpage === "schedule" && teacher.user  && (
+            <div className="grid grid-cols-1 gap-2 xl:flex">
+              <button
+                onClick={() => setIsScheduleOpen((prev) => !prev)}
+                className="btn btn-primary btn-outline ml-2"
+              >
+                Dodaj wydarzenie
+              </button>
+            </div>
+          )}
         </div>
 
         {subpage === "info" && (
@@ -330,6 +349,7 @@ export const SingleClassView = () => {
             term={term}
           />
         )}
+        {subpage === "schedule" && <Schedule singleClass={singleClass} isOpen={isScheduleOpen} setIsOpen={setIsScheduleOpen} userData={teacher.user ? teacher.data : principal.data} domain={domain} />}
       </div>
     </>
   );

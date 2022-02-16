@@ -28,6 +28,7 @@ const errorsInitial:errorsInterface = {
     profilePicture: {error:false, text: ''},
     weight: {error:false, text: ''},
     topic: {error: false, text: ''},
+    date: {error: false, text: ''}
 }
 
 export const useValidateInputs = () => {
