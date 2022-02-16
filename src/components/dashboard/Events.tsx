@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ImArrowLeft, ImArrowRight, ImCross } from "react-icons/im";
+import { ImArrowLeft, ImArrowRight } from "react-icons/im";
 import Moment from "react-moment";
 import moment from "moment";
 import { scheduleItemsArray } from "../../utils/interfaces";
@@ -29,20 +29,20 @@ export const Events: React.FC = () => {
 
 
   useEffect(() => {
-    if(userType === 'principals'){
-      return
-    } else if(userType === 'teachers'){
-      if(classes){
+    if(classes){
+      if(userType === 'principals'){
+        return
+      } else if(userType === 'teachers'){
         const teachedClasses = userData?.teachedClasses;
         const teachedClassesScheduleArray = [];
-
+  
         for(let val of teachedClasses){
           teachedClassesScheduleArray.push(...Object.values(classes).filter((classObj) => classObj.name === val)[0].schedule.filter((item) => item.teacher === userData.email));
-        }
+          }
         setEvents(teachedClassesScheduleArray);
+      } else {
+        setEvents(Object.values(classes).filter((classObj) => classObj.name ===  userData.class)[0].schedule);
       }
-    } else {
-      return
     }
   }, [])
   
