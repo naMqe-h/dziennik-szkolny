@@ -254,4 +254,14 @@ export interface scheduleItem{
   teacher: string;
 }
 
+// TODO zmienic interface i implementacje w fireabse
+// export interface scheduleItem{
+//   name: string,
+//   dateFrom: string;
+//   dateTo: string;
+//   addedBy: string;
+//   receiver: string | "global";
+// }
+
+
 export type scheduleItemsArray = Array<scheduleItem>;
