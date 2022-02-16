@@ -1,5 +1,6 @@
 import { AuthError } from "firebase/auth";
 import { toast } from "react-toastify";
+import { daysOfWeek } from "./interfaces";
 
 export const validateEmail = (email: string) => {
   return email
@@ -71,4 +72,12 @@ export const isValidHttpUrl = (checkedUrl: string) => {
   }
 
   return url.protocol === "http:" || url.protocol === "https:";
+};
+export const getDayOfTheWeek = (day: number): daysOfWeek => {
+  if (day === 0 || day === 1 || day === 6) return "monday";
+  if (day === 2) return "tuesday";
+  if (day === 3) return "wednesday";
+  if (day === 4) return "thursday";
+  if (day === 5) return "friday";
+  return "monday";
 };
