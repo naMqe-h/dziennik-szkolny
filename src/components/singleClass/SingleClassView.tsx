@@ -33,7 +33,7 @@ export const SingleClassView = () => {
 
   //modal generowanie
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isScheduleOpen, setIsScheduleOpen] = useState(false)
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
   const [countGenerate, setCountGenerate] = useState<number>(1);
   const [yearGnerate, setYearGenerate] = useState<number>(2000);
@@ -310,7 +310,7 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
-          {subpage === "schedule" && teacher.user  && (
+          {subpage === "schedule" && teacher.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsScheduleOpen((prev) => !prev)}
@@ -349,7 +349,15 @@ export const SingleClassView = () => {
             term={term}
           />
         )}
-        {subpage === "schedule" && <Schedule singleClass={singleClass} isOpen={isScheduleOpen} setIsOpen={setIsScheduleOpen} userData={teacher.user ? teacher.data : principal.data} domain={domain} />}
+        {subpage === "schedule" && (
+          <Schedule
+            singleClass={singleClass}
+            isOpen={isScheduleOpen}
+            setIsOpen={setIsScheduleOpen}
+            userData={teacher.user ? teacher.data : principal.data}
+            domain={domain}
+          />
+        )}
       </div>
     </>
   );
