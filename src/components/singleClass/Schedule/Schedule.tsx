@@ -56,9 +56,7 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, isOpen, setIsOpen, 
     
     return(
         <div>
-            {userType === 'teachers' && (
-                <AddModal isOpen={isOpen} setIsOpen={setIsOpen} teacherEmail={userData.email} add={handleAdd} />
-            )}
+            <AddModal isOpen={isOpen} setIsOpen={setIsOpen} teacherEmail={userData.email} add={handleAdd} />
             {singleClass?.schedule ? (
                 <ScheduleTable schedule={singleClass.schedule} userEmail={userData.email} userType={userType} edit={handleEdit} />
             ) : ("Brak wydarzeń") }

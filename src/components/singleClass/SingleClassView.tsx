@@ -310,7 +310,7 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
-          {subpage === "schedule" && teacher.user && (
+          {subpage === "schedule" && (teacher.user || principal.user) && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsScheduleOpen((prev) => !prev)}

@@ -9,7 +9,7 @@ interface ScheduleTableItf {
   schedule: scheduleItemsArray;
   userEmail: string;
   userType: userType | undefined;
-  edit: any; // ? change later
+  edit: (data: any, oldItem: any) => void;
 }
 export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   schedule,
