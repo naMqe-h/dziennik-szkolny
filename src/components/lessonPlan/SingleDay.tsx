@@ -7,7 +7,9 @@ interface SingleDayProps {
 }
 
 export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
-  const [sortedLessons, setSortedLessons] = useState<singleHoursFromLessonPlan[] | undefined[]>([]);
+  const [sortedLessons, setSortedLessons] = useState<
+    singleHoursFromLessonPlan[] | undefined[]
+  >([]);
   const [jsx, setJsx] = useState<any[]>();
 
   useEffect(() => {
@@ -32,7 +34,6 @@ export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
     }
     setJsx(temp);
   }, [sortedLessons]);
-
   return (
     <tr>
       <th className="text-primary-focus !static">{dayOfWeek}</th>

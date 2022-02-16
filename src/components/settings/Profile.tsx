@@ -12,38 +12,51 @@ import {
 interface profileProps {
   userType: userType;
   userProfilePicture: string | null | undefined;
-  userData: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData;
-  save: (data: CombinedPrincipalData | SingleStudentDataFromFirebase | SingleTeacherData) => React.ReactText
+  userData:
+    | CombinedPrincipalData
+    | SingleStudentDataFromFirebase
+    | SingleTeacherData;
+  save: (
+    data:
+      | CombinedPrincipalData
+      | SingleStudentDataFromFirebase
+      | SingleTeacherData
+  ) => React.ReactText;
 }
 
-export const Profile: React.FC<profileProps> = ({ userType, userData, save }) => {
+export const Profile: React.FC<profileProps> = ({
+  userType,
+  userData,
+  save,
+}) => {
   const genders: genderType[] = ["Kobieta", "Mężczyzna", "Inna"];
   const [formData, setFormData] = useState<any>(userData);
   const [validated, setValidated] = useState<Boolean>(false);
   const { validateData, inputErrors, errors } = useValidateInputs();
 
-
   useEffect(() => {
-    if(validated){
-      if(errors) return;
-      save(formData)
+    if (validated) {
+      if (errors) return;
+      save(formData);
     }
     setValidated(false);
   }, [validated, errors]);
 
-  // TODO zmiana zdjęcia profilowego 
+  // TODO zmiana zdjęcia profilowego
 
   const handleChange = (name: string, value: string) => {
-
     if (name === "pesel") {
-        setFormData((prev: Object) => {
-          return { ...prev, [name]: String(value) };
-    });} else if(name === "city" ||
-    name === "houseNumber" ||
-    name === "postCode" ||
-    name === "street"){
-        let addressObject = { ...formData.address };
-        const newObj = { ...addressObject, [name]: value };
+      setFormData((prev: Object) => {
+        return { ...prev, [name]: String(value) };
+      });
+    } else if (
+      name === "city" ||
+      name === "houseNumber" ||
+      name === "postCode" ||
+      name === "street"
+    ) {
+      let addressObject = { ...formData.address };
+      const newObj = { ...addressObject, [name]: value };
       setFormData((prev: Object) => {
         return { ...prev, address: newObj };
       });
@@ -55,17 +68,16 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
         };
       });
     }
-    
   };
 
   function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-    if (formData === userData) return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
+    if (formData === userData)
+      return toast.error("Żadne dane się nie zmieniły", { autoClose: 2000 });
 
     setValidated(false);
-    validateData({...formData});
+    validateData({ ...formData });
     setValidated(true);
-
   }
 
   return (
@@ -82,7 +94,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
             name="firstName"
             value={formData.firstName}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-            className={`input max-w-96 ${inputErrors.firstName.error ? 'border-red-500' : ''}`}
+            className={`input max-w-96 ${
+              inputErrors.firstName.error ? "border-red-500" : ""
+            }`}
             disabled={userType !== "principals" ? true : false}
             placeholder="Imię"
           />
@@ -97,7 +111,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
             name="lastName"
             value={formData.lastName}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-            className={`input max-w-96 ${inputErrors.lastName.error ? 'border-red-500' : ''}`}
+            className={`input max-w-96 ${
+              inputErrors.lastName.error ? "border-red-500" : ""
+            }`}
             disabled={userType !== "principals" ? true : false}
             placeholder="Nazwisko"
           />
@@ -112,10 +128,11 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
             name="profilePicture"
             value={formData.profilePicture}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-            className={`input max-w-96 ${inputErrors.profilePicture.error ? 'border-red-500' : ''}`}
+            className={`input max-w-96 ${
+              inputErrors.profilePicture.error ? "border-red-500" : ""
+            }`}
             placeholder="Adres url zdjęcia profilowego"
           />
-
 
           <div className="divider md:col-span-2" />
 
@@ -147,8 +164,11 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 name="pesel"
                 value={formData.pesel}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
-                className={`input ${inputErrors.pesel.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.pesel.error ? "border-red-500" : ""
+                }`}
                 placeholder="Pesel"
+                disabled={userType === "students"}
               />
 
               <div className="divider md:col-span-2" />
@@ -162,7 +182,10 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 value={formData.birth}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 max={new Date().toISOString().split("T")[0]}
-                className={`input ${inputErrors.birth.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.birth.error ? "border-red-500" : ""
+                }`}
+                disabled={userType === "students"}
                 placeholder={new Date().toLocaleDateString()}
               />
             </>
@@ -184,7 +207,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="city"
                 value={formData.address.city}
-                className={`input ${inputErrors.city.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.city.error ? "border-red-500" : ""
+                }`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Miasto"
               />
@@ -198,7 +223,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="postCode"
                 value={formData.address.postCode}
-                className={`input ${inputErrors.postCode.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.postCode.error ? "border-red-500" : ""
+                }`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="xx-xxx"
               />
@@ -212,7 +239,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="text"
                 name="street"
                 value={formData.address.street}
-                className={`input ${inputErrors.street.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.street.error ? "border-red-500" : ""
+                }`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Ulica"
               />
@@ -226,7 +255,9 @@ export const Profile: React.FC<profileProps> = ({ userType, userData, save }) =>
                 type="number"
                 name="houseNumber"
                 value={formData.address.houseNumber}
-                className={`input ${inputErrors.houseNumber.error ? 'border-red-500' : ''}`}
+                className={`input ${
+                  inputErrors.houseNumber.error ? "border-red-500" : ""
+                }`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 placeholder="Numer Domu"
               />

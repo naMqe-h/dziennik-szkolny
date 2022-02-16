@@ -11,9 +11,11 @@ import { getDayOfTheWeek } from "../../../../utils/utils";
 import { SingleMobileHour } from "./SingleMobileHour";
 interface MobileLessonPlanProps {
   singleClass: SingleClassData | undefined;
+  singleTaecherData?: singleClassLessonPlan;
 }
 export const MobileLessonPlan: React.FC<MobileLessonPlanProps> = ({
   singleClass,
+  singleTaecherData,
 }) => {
   const [singleClassLessonPlan, setSingleClassLessonPlan] =
     useState<singleClassLessonPlan>({});
@@ -28,28 +30,37 @@ export const MobileLessonPlan: React.FC<MobileLessonPlanProps> = ({
     if (!isEmpty(singleClassLessonPlan)) {
       const dayPlan = singleClassLessonPlan[currentDay];
       const temp: JSX.Element[] = [];
-      const lastHour = dayPlan.reduce((prev, current) =>
-        prev.hour > current.hour ? prev : current
-      );
-      for (let i = 0; i < lastHour.hour; i++) {
-        temp.push(
-          <SingleMobileHour
-            isEmpty={!dayPlan.some((x) => x.hour === i + 1)}
-            lesson={dayPlan[i]}
-            index={i}
-            key={i}
-          />
+      if (dayPlan.length > 0) {
+        const lastHour = dayPlan.reduce((prev, current) =>
+          prev.hour > current.hour ? prev : current
         );
+        for (let i = 0; i < lastHour.hour; i++) {
+          temp.push(
+            <SingleMobileHour
+              isEmpty={!dayPlan.some((x) => x.hour === i + 1)}
+              lesson={dayPlan[i]}
+              index={i}
+              key={i}
+            />
+          );
+        }
+        setMappedHours(temp);
+      } else {
+        setMappedHours([]);
       }
-      setMappedHours(temp);
       //   console.table(dayPlan);
     }
   }, [currentDay, singleClassLessonPlan]);
   useEffect(() => {
     if (singleClass && allLessonPlans) {
-      setSingleClassLessonPlan(
-        allLessonPlans[singleClass.name] as singleClassLessonPlan
-      );
+      if (allLessonPlans) {
+        setSingleClassLessonPlan(
+          allLessonPlans[singleClass.name] as singleClassLessonPlan
+        );
+      }
+    } else if (singleTaecherData) {
+      console.log(singleTaecherData);
+      setSingleClassLessonPlan(singleTaecherData);
     }
   }, [allLessonPlans, singleClass]);
   return (

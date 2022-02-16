@@ -39,7 +39,9 @@ export const Grades: React.FC<GradesProps> = ({
       />
       {/* //! zmienic widok dla nauczyciela na jeden przedmiot */}
       <div className="overflow-x-auto">
-        {userType === "teachers" && <GradesTable students={students} />}
+        {userType === "teachers" && (
+          <GradesTable students={students} term={term} />
+        )}
         {userType === "principals" &&
           students.map((student, index) => (
             <SingleStudentGradeRow

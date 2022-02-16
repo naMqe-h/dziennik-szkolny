@@ -29,7 +29,6 @@ export const SingleHour: React.FC<SingleHourProps> = ({ lesson, isEmpty }) => {
       }
     }
   }, [teachers, isEmpty, lesson?.teacher]);
-
   useEffect(() => {
     if (subjects) {
       for (const [key, value] of Object.entries(subjects)) {
@@ -37,7 +36,6 @@ export const SingleHour: React.FC<SingleHourProps> = ({ lesson, isEmpty }) => {
       }
     }
   }, [subjects, isEmpty, lesson?.subject]);
-
   return (
     <td className="border-2 border-base-200">
       <div>
