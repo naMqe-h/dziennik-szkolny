@@ -21,6 +21,7 @@ import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
 import { LessonPlan } from "./lessonPlan/LessonPlan";
 import { Frequency } from "./frequency/Frequency";
 import { Schedule } from "./Schedule/Schedule";
+import { MobileLessonPlan } from "./lessonPlan/mobileLessonPlan/MobileLessonPlan";
 
 export const SingleClassView = () => {
   const { data: users, loading, getData, setData } = useFetch();
@@ -36,7 +37,6 @@ export const SingleClassView = () => {
 
   const [countGenerate, setCountGenerate] = useState<number>(1);
   const [yearGnerate, setYearGenerate] = useState<number>(2000);
-
   const [singleClass, setSingleClass] = useState<SingleClassData>();
   const [classTeacherName, setClassTeacherName] = useState<string>();
   const [studentsInfo, setStudentsInfo] = useState({});
@@ -55,8 +55,10 @@ export const SingleClassView = () => {
   const allStudents = schoolData?.students;
   const domain = schoolData?.information.domain;
 
-  const isTablet = useMediaQuery("(max-width:700px)");
   const isMobile = useMediaQuery("(max-width:480px)");
+  const isTablet = useMediaQuery("(max-width:700px)");
+  const showMobileLessonPlan = useMediaQuery("(max-width:1024px)");
+
   useEffect(() => {
     if (classes && id) {
       for (const [key, value] of Object.entries(classes)) {
@@ -152,10 +154,8 @@ export const SingleClassView = () => {
     if (users.length > 0) {
       saveGeneratedUsers();
     }
-
     // eslint-disable-next-line
   }, [users]);
-
   return (
     <>
       <div className={`modal ${isOpen ? "modal-open" : ""} `}>
@@ -205,7 +205,6 @@ export const SingleClassView = () => {
           </button>
         </div>
       </div>
-
       <div className="p-8 overflow-x-auto">
         <Link to="/classes" className="flex items-center mb-2 gap-2">
           <BsFillArrowLeftCircleFill
@@ -290,6 +289,7 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
+
           {subpage === "subjects" && principal.user && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
@@ -333,7 +333,13 @@ export const SingleClassView = () => {
             singleClass={singleClass}
           />
         )}
-        {subpage === "lesson-plan" && <LessonPlan singleClass={singleClass} />}
+        {subpage === "lesson-plan" ? (
+          showMobileLessonPlan ? (
+            <MobileLessonPlan singleClass={singleClass} />
+          ) : (
+            <LessonPlan singleClass={singleClass} />
+          )
+        ) : null}
         {subpage === "frequency" && <Frequency />}
         {subpage === "grades" && (
           <Grades

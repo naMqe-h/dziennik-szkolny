@@ -18,12 +18,16 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
 
     const initialFormData:scheduleItem= {
         name: '',
-        date:  new Date().toISOString().split("T")[0],
+        dateFrom:  new Date().toISOString().split("T")[0],
+        dateTo: new Date().toISOString().split("T")[0],
         teacher: teacherEmail
     }
-    const [formData, setFormData] = useState(event ? {...event, date: moment(Number(event.date.replaceAll(/\s/g, ""))).format(
+    const [formData, setFormData] = useState(event ? {...event, dateFrom: moment(Number(event.dateFrom.replaceAll(/\s/g, ""))).format(
         "yyyy-MM-DD"
-      ) } : initialFormData);
+      ),
+    dateTo: moment(Number(event.dateTo.replaceAll(/\s/g, ""))).format(
+        "yyyy-MM-DD"
+      ), } : initialFormData);
     const [validated, setValidated] = useState(false)
     const { validateData, inputErrors, errors } = useValidateInputs();
     
@@ -53,7 +57,8 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
     const handleSubmit = () => {
         setValidated(false);
         setFormData((prev) => ({
-            ...prev, date: String(Date.parse(prev.date))
+            ...prev, dateFrom: String(Date.parse(prev.dateFrom)),
+            dateTo: String(Date.parse(prev.dateTo))
         }))
         validateData(formData);
         setValidated(true);
@@ -77,13 +82,22 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail,
                 value={formData.name} 
                 className={`input ${inputErrors.name.error ? "border-red-500" : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)} />
-            <label>Data</label>
+            <label>Data Rozpoczęcia</label>
             <input
                 type="date"
-                name="date"
-                value={formData.date}
+                name="dateFrom"
+                value={formData.dateFrom}
                 min={new Date().toISOString().split("T")[0]}
-                className={`input ${inputErrors.date.error ? "border-red-500" : ''}`}
+                className={`input ${inputErrors.dateFrom.error ? "border-red-500" : ''}`}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
+              />
+            <label>Data Zakończenia</label>
+            <input
+                type="date"
+                name="dateTo"
+                value={formData.dateTo}
+                min={formData.dateFrom}
+                className={`input ${inputErrors.dateTo.error ? "border-red-500" : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
               />
             <button onClick={handleSubmit} className="btn btn-primary w-44 mt-3">

@@ -21,7 +21,8 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   const [eventEdit, setEventEdit] = useState({
     event: {
       name: "",
-      date: "",
+      dateFrom: "",
+      dateTo: "",
       teacher: "",
     },
     edit: isOpen,
@@ -39,7 +40,8 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
       <thead>
         <tr>
           <th>Nazwa wydarzenia</th>
-          <th>Data</th>
+          <th>Data rozpoczęcia</th>
+          <th>Data zakończenia</th>
           <th>Dodał</th>
           <th className="w-1"></th>
         </tr>
@@ -49,7 +51,12 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
             <tr key={item.name+index}>
               <td>{item.name}</td>
               <td>
-                {moment(Number(item.date.replaceAll(/\s/g, ""))).format(
+                {moment(Number(item.dateFrom.replaceAll(/\s/g, ""))).format(
+                  "DD.MM.yyyy"
+                )}
+              </td>
+              <td>
+                {moment(Number(item.dateTo.replaceAll(/\s/g, ""))).format(
                   "DD.MM.yyyy"
                 )}
               </td>
