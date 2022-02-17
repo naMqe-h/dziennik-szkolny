@@ -6,17 +6,21 @@ import { Link } from "react-router-dom";
 import { scheduleItemsArray, userType } from "../../../utils/interfaces";
 import { AddModal } from "./AddModal";
 
+type selectOption = {value: string, label:string}
+
 interface ScheduleTableItf {
   schedule: scheduleItemsArray;
   userEmail: string;
   userType: userType | undefined;
   edit: (data: any, oldItem: any) => void;
+  selectItems: selectOption[];
 }
 export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   schedule,
   userEmail,
   userType,
   edit,
+  selectItems
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [eventEdit, setEventEdit] = useState({
@@ -41,7 +45,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
     <table className="table w-full table-zebra">
       <thead>
         <tr>
-          <th>Nazwa wydarzenia</th>
+          <th className="!static">Nazwa wydarzenia</th>
           <th>Data rozpoczęcia</th>
           <th>Data zakończenia</th>
           <th>Odbiorcy</th>
@@ -68,7 +72,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                   return 'Wszyscy'
                 }
                 return(
-                  <Link to={`/class/${rec}/info`} className="kbd mx-1 border-primary" >
+                  <Link to={`/class/${rec}/info`} className="kbd mx-1 border-primary" key={index+rec} >
                     {rec}
                   </Link>
                 ) 
@@ -86,6 +90,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                       add={edit}
                       event={item}
                       reciever={item.receiver}
+                      selectItems={selectItems}
                     />
                     <button
                       className="btn btn-square btn-warning btn-sm"

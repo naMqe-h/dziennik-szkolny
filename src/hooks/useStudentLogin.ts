@@ -49,39 +49,44 @@ export const useStudentLogin = () => {
       let tempError = true;
       for (const [key, value] of Object.entries(school?.students)) {
         if (key === email) {
-          if (value.password === "1") {
+          if (!value.isActive) {
             tempError = false;
-            signInWithEmailAndPassword(auth, email, password)
-              .then((res) => {
-                dispatch(setUserType("students"));
-                dispatch(setStudentAuth(res.user));
-                dispatch(
-                  setStudentData(value as SingleStudentDataFromFirebase)
-                );
-              })
-              .catch((err: AuthError) => {
-                showToastError(err);
-              });
-          } else if (value.password === password) {
-            tempError = false;
-            createUserWithEmailAndPassword(auth, email, password).then(
-              (res) => {
-                updateProfile(res.user, {
-                  displayName: `${domain}~students`,
-                }).then(() => {
-                  //jesli uczen się juz zalogował to ustawiamy w firestore jego hasło na '1' żeby nie przechowywac tam hasła
-                  const data = { [email]: { password: "1" } };
-                  setDocument(domain, "students", data);
+            toast.error("Twoje konto jest nieaktywne");
+          } else {
+            if (value.password === "1") {
+              tempError = false;
+              signInWithEmailAndPassword(auth, email, password)
+                .then((res) => {
                   dispatch(setUserType("students"));
                   dispatch(setStudentAuth(res.user));
                   dispatch(
                     setStudentData(value as SingleStudentDataFromFirebase)
                   );
+                })
+                .catch((err: AuthError) => {
+                  showToastError(err);
                 });
-              }
-            );
-          } else {
-            toast.error("Podane hasło jest niepoprawne", { autoClose: 3000 });
+            } else if (value.password === password) {
+              tempError = false;
+              createUserWithEmailAndPassword(auth, email, password).then(
+                (res) => {
+                  updateProfile(res.user, {
+                    displayName: `${domain}~students`,
+                  }).then(() => {
+                    //jesli uczen się juz zalogował to ustawiamy w firestore jego hasło na '1' żeby nie przechowywac tam hasła
+                    const data = { [email]: { password: "1" } };
+                    setDocument(domain, "students", data);
+                    dispatch(setUserType("students"));
+                    dispatch(setStudentAuth(res.user));
+                    dispatch(
+                      setStudentData(value as SingleStudentDataFromFirebase)
+                    );
+                  });
+                }
+              );
+            } else {
+              toast.error("Podane hasło jest niepoprawne", { autoClose: 3000 });
+            }
           }
         }
       }

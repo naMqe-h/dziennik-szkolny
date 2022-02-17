@@ -18,11 +18,17 @@ interface scheduleItf{
 }
 export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, setIsOpen, userData, domain}) => {
 
+    //types
+    type selectOption = {value: string, label:string}
+
     // selectors
     const userType = useSelector((state: RootState) => state.userType.userType); 
+    const classes = useSelector((state: RootState) => state.schoolData.schoolData?.classes)
 
     // states
     const [classEvents, setClassEvents] = useState<scheduleItemsArray>()
+    const [selectOptions, setSelectOptions] = useState<Array<selectOption>>();
+
 
     // hooks
     const { setDocument } = useSetDocument();
@@ -31,11 +37,26 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
         if(events){
             setClassEvents(events?.classes.filter((classObj) => classObj.receiver.some((rec) => rec === singleClass?.name)  ));
         }
+        if(classes){
+            if(userType === 'principals'){
+                setSelectOptions(Object.keys(classes).map((className) => {
+                    return {value: className, label: className}
+              }))
+            } else if(userType === 'teachers'){
+                const teachedClasses = userData?.teachedClasses;
+
+                setSelectOptions(Object.values(classes).filter(({name}) => (
+                    teachedClasses.some((className: string) => className === name)
+                )).map(({name}) => (
+                    {value: name, label: name}
+                )))
+            }
+        }
     }, [])
     
-    useEffect(() => {
-      console.log(classEvents);
-    }, [classEvents])
+    // useEffect(() => {
+    //   console.log(classEvents);
+    // }, [classEvents])
     
 
     const handleAdd = (data: any) => {
@@ -65,9 +86,10 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     if(!singleClass) return <div>Brak obiektu klasy</div>
     return(
         <div>
-            <AddModal isOpen={isOpen} setIsOpen={setIsOpen} userEmail={userData.email} add={handleAdd} reciever={[singleClass.name]}/>
+            <AddModal isOpen={isOpen} setIsOpen={setIsOpen} userEmail={userData.email} add={handleAdd} reciever={[singleClass.name]} selectItems={selectOptions ? selectOptions : []} />
             {classEvents ? (
-                <ScheduleTable schedule={classEvents} userEmail={userData.email} userType={userType} edit={handleEdit} />
+                <ScheduleTable schedule={classEvents} userEmail={userData.email} userType={userType} edit={handleEdit}
+                selectItems={selectOptions ? selectOptions : []} />
             ) : ("Brak wydarzeń") }
         </div>
     )

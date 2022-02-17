@@ -56,15 +56,15 @@ export const StudentsView = () => {
 
   useEffect(() => {
     if (schoolData?.students) {
-      const StudentsDataWithoutPassword = Object.values(
-        schoolData.students
-      ).map((x) => {
-        let newX;
-        if (x.class === "") {
-          newX = { ...x, class: "Brak klasy" };
-        }
-        return omit(newX ? newX : x, ["password"]);
-      });
+      const StudentsDataWithoutPassword = Object.values(schoolData.students)
+        .map((x) => {
+          let newX;
+          if (x.class === "") {
+            newX = { ...x, class: "Brak klasy" };
+          }
+          return omit(newX ? newX : x, ["password"]);
+        })
+        .filter((x) => x.isActive !== false);
       const searchedStudents = StudentsDataWithoutPassword.filter((x) => {
         const keyed = Object.values(x).filter((x) => typeof x === "string");
         return keyed.some((v) =>

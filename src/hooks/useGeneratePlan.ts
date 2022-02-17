@@ -44,7 +44,6 @@ export const useGeneratePlan = () => {
             thursday: [],
             friday: []
         }
-
         // dodac ilość godzin pracy dla nauczyciela - 20 godzin
         
         for(let [key, value] of Object.entries(hoursValue)) {

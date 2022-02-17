@@ -4,7 +4,7 @@ import { useValidateInputs } from "../../hooks/useValidateInputs";
 import { RootState } from "../../redux/store"
 import { scheduleItem, scheduleItemsArray } from "../../utils/interfaces";
 import { ScheduleTable } from "../singleClass/Schedule/ScheduleTable";
-import Select, { StylesConfig } from 'react-select';
+import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import moment from "moment";
 import { useSetDocument } from "../../hooks/useSetDocument";
@@ -38,6 +38,7 @@ export const Event:React.FC = () => {
     const [formData, setFormData] = useState(initialFormData)
     const [selectOptions, setSelectOptions] = useState<Array<selectOption>>();
     const [validated, setValidated] = useState<Boolean>(false)
+    const [datesChanged, setDatesChanged] = useState(false)
 
     // Hooks
     const { validateData, inputErrors, errors } = useValidateInputs();
@@ -56,7 +57,7 @@ export const Event:React.FC = () => {
       if(classes){
           setSelectOptions(Object.keys(classes).map((className) => {
               return {value: className, label: className}
-          }))
+        }))
           
       }
     }, [])
@@ -65,6 +66,20 @@ export const Event:React.FC = () => {
       if(validated){
         if(errors) return
         console.log(formData);
+
+        setFormData((prev) => ({
+            ...prev, dateFrom: String(Date.parse(prev.dateFrom)),
+            dateTo: String(Date.parse(prev.dateTo))
+        }))
+
+        setDatesChanged(true);
+        
+      }
+      setValidated(false);
+    }, [validated, errors])
+
+    useEffect(() => {
+      if(datesChanged){
         if(firebaseEvents){
             if(formData.receiver[0] === 'global'){
                 let obj = {'global': [...firebaseEvents?.global, formData]}
@@ -73,13 +88,15 @@ export const Event:React.FC = () => {
                 let obj = {'classes': [...firebaseEvents?.classes, formData]}
                 setDocument(domain as string, 'events', obj);
             }
+            toast.success('Wydarzenie dodane poprawnie', {autoClose: 2000})
+            setFormData(initialFormData);
         } else{
-            toast.error('Brak obiektu wydarzeń')
+            toast.error('Brak obiektu wydarzeń', {autoClose: 2000})
         }
-        
       }
-      setValidated(false);
-    }, [validated, errors])
+      setDatesChanged(false);
+    }, [datesChanged])
+    
 
     
     
@@ -111,17 +128,39 @@ export const Event:React.FC = () => {
         }))
       }
 
-    const handleEdit = () => {
-        
+    const handleEdit = (data: scheduleItem, oldItem: scheduleItem) => {
+        if(firebaseEvents && domain){
+
+            if(data.receiver[0] === 'global' && oldItem.receiver[0] === 'global'){
+                let oldEvents = firebaseEvents.global.filter((ev) => ev !== oldItem);
+                setDocument(domain as string, "events", {global: [
+                    ...oldEvents, data
+                ]});
+            } else if(data.receiver[0] === 'global' && oldItem.receiver[0] !== 'global'){
+                let oldClassesEvents = firebaseEvents.classes.filter((ev) => ev !== oldItem);
+
+                setDocument(domain as string, "events", {classes: oldClassesEvents});
+                setDocument(domain as string, "events", {global: [...firebaseEvents.global, data]});
+            } else if(data.receiver[0] !== 'global' && oldItem.receiver[0] === 'global'){
+                let oldGlobalEvents = firebaseEvents.global.filter((ev) => ev !== oldItem);
+
+                setDocument(domain as string, "events", {global: oldGlobalEvents});
+                setDocument(domain as string, "events", {classes: [...firebaseEvents.classes, data]});
+            } else if(data.receiver[0] !== 'global' && oldItem.receiver[0] !== 'global'){
+                let oldEvents = firebaseEvents.classes.filter((ev) => ev !== oldItem);
+                setDocument(domain as string, "events", {classes: [
+                    ...oldEvents, data
+                ]});
+            }
+            toast.success("Edycja wydarzenia została wykonana.", {autoClose: 2000});
+        } else{
+            toast.error("Brak obiektu klasy", {autoClose: 2000})
+        }
     }
     
     const handleSubmit = (e:React.SyntheticEvent) => {
         e.preventDefault();
         setValidated(false);
-        setFormData((prev) => ({
-            ...prev, dateFrom: String(Date.parse(prev.dateFrom)),
-            dateTo: String(Date.parse(prev.dateTo))
-        }))
         validateData(formData);
         setValidated(true);
     }
@@ -183,6 +222,7 @@ export const Event:React.FC = () => {
                             id="global" 
                             onChange={(e) => handleChange(e.target.name, e.target.value, e.target.checked)} 
                             className="checkbox ml-2"
+                            checked={formData.receiver[0] === 'global'}
                             />
                         </div>
 
@@ -210,7 +250,7 @@ export const Event:React.FC = () => {
                 </div>
             </form>
             <div className="text-2xl text-center my-5 text-primary">Twoje wydarzenia</div>
-            <ScheduleTable schedule={events} userEmail={userData.email} userType={userType} edit={handleEdit} />
+            <ScheduleTable schedule={events} userEmail={userData.email} userType={userType} edit={handleEdit} selectItems={selectOptions ? selectOptions : []} />
         
         </div>
     )

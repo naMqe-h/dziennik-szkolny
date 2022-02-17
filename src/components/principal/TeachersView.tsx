@@ -59,7 +59,7 @@ export const TeachersView: React.FC = () => {
           newX = { ...x, classTeacher: "Brak klasy" };
         }
         return omit(newX ? newX : x, ["password"]);
-      });
+      }).filter(x=>x.isActive!==false);
       const saerchedTeachers = TeachersDataWithoutPassword.filter((x) => {
         const keyed = Object.values(x).filter((x) => typeof x === "string");
         return keyed.some((v) =>

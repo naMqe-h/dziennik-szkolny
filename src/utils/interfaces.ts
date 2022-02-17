@@ -113,6 +113,7 @@ export interface ClassData {
   classTeacher: string; //?Mail
   profile: string;
   subjects: SingleSubjectInClasses[];
+  isActive: boolean;
 }
 //?Interfejs dla pojedynczego przedmiotu szkolnego
 
@@ -120,10 +121,12 @@ export interface SubjectData {
   name: string;
   teachers: string[];
   includedAvg: boolean;
+  isActive: boolean;
 }
 //? Interfejs Klasy ze Studentami do np sprawdzania frekwencji  || Wyświetlania informacji o danej klasie
 export interface SingleClassData extends ClassData {
   students: string[];
+  isActive: boolean;
 }
 //! Here are the interaces from Firebase
 //? Interfejs Danych z firebasa o pojedynczym uczniu
@@ -143,6 +146,7 @@ export interface SingleStudentDataFromFirebase {
   class: string;
   profilePicture: string;
   grades: { [key: string]: SchoolGrade[] };
+  isActive: boolean;
 }
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
 export interface teacherWorkingHours {
@@ -164,6 +168,7 @@ export interface SingleTeacherData extends TeacherData {
   teachedClasses: string[];
   workingHours: teacherWorkingHours[];
   profilePicture: string;
+  isActive: boolean;
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {
@@ -221,7 +226,7 @@ export interface updatePrincipalPlanType {
 export type ErrorObj = { error: boolean; text: string };
 
 export interface errorsInterface {
-  [key: string] : ErrorObj
+  [key: string]: ErrorObj;
 }
 
 //? Interfejsy związane z planem lekcji

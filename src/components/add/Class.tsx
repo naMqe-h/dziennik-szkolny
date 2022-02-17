@@ -25,7 +25,9 @@ export const Class = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const [teachers, setTeachers] = useState<SingleTeacherData[]>([]);
   const [validated, setValidated] = useState<Boolean>(false);
 
@@ -35,7 +37,6 @@ export const Class = () => {
     useState<classCredentials>(defaultState);
 
   const { validateData, inputErrors, errors } = useValidateInputs();
-  
 
   useEffect(() => {
     if (schoolData?.teachers) {
@@ -49,9 +50,6 @@ export const Class = () => {
     }
     // eslint-disable-next-line
   }, [schoolData?.classes]);
-
-
-
 
   function clearForm() {
     setClassCredential(defaultState);
@@ -67,7 +65,7 @@ export const Class = () => {
   };
 
   useEffect(() => {
-    if(validated){
+    if (validated) {
       if (isAdding || errors) return;
       setIsAdding(true);
       const { name, profile, classTeacher } = classCredential;
@@ -80,6 +78,7 @@ export const Class = () => {
           fullName,
           subjects: [{ name: "GodzinaWychowawcza", teacher: classTeacher }],
           students: [],
+          isActive: true,
         },
       };
       // update firebase
@@ -99,7 +98,6 @@ export const Class = () => {
     }
     setValidated(false);
   }, [validated, errors]);
-  
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
