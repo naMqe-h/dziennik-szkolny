@@ -352,6 +352,7 @@ export const SingleClassView = () => {
         {subpage === "schedule" && (
           <Schedule
             singleClass={singleClass}
+            events={schoolData?.events}
             isOpen={isScheduleOpen}
             setIsOpen={setIsScheduleOpen}
             userData={teacher.user ? teacher.data : principal.data}

@@ -33,13 +33,13 @@ export const Events: React.FC = () => {
       if(userType === 'principals'){
         return
       } else if(userType === 'teachers'){
-        const teachedClasses = userData?.teachedClasses;
-        const teachedClassesScheduleArray = [];
+        // const teachedClasses = userData?.teachedClasses;
+        // const teachedClassesScheduleArray = [];
   
-        for(let val of teachedClasses){
-          teachedClassesScheduleArray.push(...Object.values(classes).filter((classObj) => classObj.name === val)[0].schedule.filter((item) => item.teacher === userData.email));
-          }
-        setEvents(teachedClassesScheduleArray);
+        // for(let val of teachedClasses){
+        //   teachedClassesScheduleArray.push(...Object.values(classes).filter((classObj) => classObj.name === val)[0].schedule.filter((item) => item.teacher === userData.email));
+        //   }
+        // setEvents(teachedClassesScheduleArray);
       } else {
         setEvents(Object.values(classes).filter((classObj) => classObj.name ===  userData.class)[0].schedule);
       }

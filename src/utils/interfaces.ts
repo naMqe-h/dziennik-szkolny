@@ -194,6 +194,7 @@ export interface TeachersDataFromFirebase {
 export interface CombinedSchoolDataFromFirebase {
   classes: ClassesDataFromFirebase;
   information: CombinedSchoolInformationFromFirebase;
+  events: eventsFromFirebase;
   lessonPlans: LessonPlansDataFromFirebase;
   students: StudentsDataFromFirebase;
   subjects: SchoolSubjectsDataFromFirebase;
@@ -247,21 +248,25 @@ export interface singleHoursFromLessonPlan {
   hour: number;
 }
 
-export interface scheduleItem{
-  name: string,
-  dateFrom: string;
-  dateTo: string;
-  teacher: string;
-}
-
-// TODO zmienic interface i implementacje w fireabse
 // export interface scheduleItem{
 //   name: string,
 //   dateFrom: string;
 //   dateTo: string;
-//   addedBy: string;
-//   receiver: string | "global";
+//   teacher: string;
 // }
+
+// TODO zmienic interface i implementacje w fireabse
+export interface scheduleItem{
+  name: string,
+  dateFrom: string;
+  dateTo: string;
+  addedBy: string;
+  receiver: Array<string>;
+}
+export interface eventsFromFirebase{
+  global: Array<scheduleItem>,
+  classes: Array<scheduleItem>
+}
 
 
 export type scheduleItemsArray = Array<scheduleItem>;

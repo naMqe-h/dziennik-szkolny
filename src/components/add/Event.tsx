@@ -12,7 +12,8 @@ export const Event:React.FC = () => {
         name: '',
         dateFrom: new Date().toISOString().split("T")[0],
         dateTo: new Date().toISOString().split("T")[0],
-        teacher: '',
+        addedBy: '',
+        receiver: ['']
     }
     
     // selectors
@@ -31,10 +32,10 @@ export const Event:React.FC = () => {
     useEffect(() => {
       if(classes){
 
-        let schedules = Object.values(classes).map(({schedule}) => schedule).filter((ev) => ev.length !== 0).map(schedule => schedule.filter((ev) => ev.teacher === userData?.email)).flat();
+        // let schedules = Object.values(classes).map(({schedule}) => schedule).filter((ev) => ev.length !== 0).map(schedule => schedule.filter((ev) => ev.teacher === userData?.email)).flat();
         
         
-        setEvents(schedules);
+        // setEvents(schedules);
       }
     }, [])
     

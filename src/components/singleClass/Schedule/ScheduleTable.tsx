@@ -23,7 +23,8 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
       name: "",
       dateFrom: "",
       dateTo: "",
-      teacher: "",
+      addedBy: "",
+      receiver: ['']
     },
     edit: isOpen,
   });
@@ -60,17 +61,18 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                   "DD.MM.yyyy"
                 )}
               </td>
-              <td>{item.teacher}</td>
+              <td>{item.addedBy}</td>
               <td>
-                {(userType === "principals" || item.teacher === userEmail) && (
+                {(userType === "principals" || item.addedBy === userEmail) && (
                   <>
                     <AddModal
                       key={item.name + index}
                       isOpen={eventEdit.edit && eventEdit.event === item}
                       setIsOpen={setIsOpen}
-                      teacherEmail={userEmail}
+                      userEmail={userEmail}
                       add={edit}
                       event={item}
+                      reciever={item.receiver}
                     />
                     <button
                       className="btn btn-square btn-warning btn-sm"

@@ -9,18 +9,20 @@ import { scheduleItem } from "../../../utils/interfaces"
 interface addModalItf{
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>> ;
-    teacherEmail: string;
+    userEmail: string;
     add: (data: any, oldItem?: any) => void;
     event?: scheduleItem;
+    reciever: string[];
 }
 
-export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, teacherEmail, add, event}) => {
+export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, add, event, reciever}) => {
 
     const initialFormData:scheduleItem= {
         name: '',
         dateFrom:  new Date().toISOString().split("T")[0],
         dateTo: new Date().toISOString().split("T")[0],
-        teacher: teacherEmail
+        addedBy: userEmail,
+        receiver: reciever 
     }
     const [formData, setFormData] = useState(event ? {...event, dateFrom: moment(Number(event.dateFrom.replaceAll(/\s/g, ""))).format(
         "yyyy-MM-DD"
