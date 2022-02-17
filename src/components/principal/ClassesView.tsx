@@ -1,4 +1,5 @@
 import { deleteField, doc, updateDoc } from "firebase/firestore";
+import { cloneDeep } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -13,8 +14,10 @@ import {
   ClassesDataFromFirebase,
   SingleClassData,
   SortingOptions,
+  StudentsDataFromFirebase,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
+import { Teacher } from "../add/Teacher";
 import { SearchButton } from "../searchButton/SearchButton";
 import { ClassTable } from "./classes/ClassTable";
 interface ModalOptions {
@@ -75,24 +78,57 @@ export const ClassesView: React.FC = () => {
         });
       } else {
         const { domain } = schoolData.information;
-        const RemovedTeacherObject = Object.values(schoolData.teachers).find(
-          (x) => {
-            const Name = `${x.firstName} ${x.lastName}`;
-            return Name === removedClassData.classTeacher;
+        // const RemovedTeacherObject = Object.values(schoolData.teachers).find(
+        //   (x) => {
+        //     const Name = `${x.firstName} ${x.lastName}`;
+        //     return Name === removedClassData.classTeacher;
+        //   }
+        // );
+        //? Przy przywracaniu klasy należy przywrócić uczniów do klasy chyba że zostali przypisani do innej
+        const oldStudents = cloneDeep(schoolData.students);
+        const newStudents: StudentsDataFromFirebase = {};
+        Object.entries(oldStudents).forEach((values, _N) => {
+          const studentEmail = values[0];
+          const studentData = values[1];
+          if (studentData.class === removedClassData.name) {
+            newStudents[studentEmail] = { ...studentData, class: "" };
+          } else {
+            newStudents[studentEmail] = studentData;
           }
-        );
-        const teacherEmail = RemovedTeacherObject?.email;
-        await updateDoc(doc(db, domain, "classes"), {
-          [removedClassData.name]: deleteField(),
         });
+        const removedClassObject: SingleClassData =
+          schoolData.classes[removedClassData.name];
+        //?Przy przywracaniu klasy będzie trzeba dodać godziny pracowania dla nauczycieli zgodnie z planem lekcji
+        const oldTeachers = schoolData.teachers;
+        const newTeachers: TeachersDataFromFirebase = {};
+        Object.entries(oldTeachers).forEach((values, _N) => {
+          const teacherEmail = values[0];
+          const teacherData = values[1];
+          const newClassTeacher =
+            teacherData.classTeacher === removedClassData.name
+              ? ""
+              : teacherData.classTeacher;
+          const newTeachedClasses = teacherData.teachedClasses.filter(
+            (x) => x !== removedClassData.name
+          );
+          const newWorkingHours = teacherData.workingHours.filter(
+            (x) => x.className !== removedClassData.name
+          );
+          newTeachers[teacherEmail] = {
+            ...teacherData,
+            workingHours: newWorkingHours,
+            teachedClasses: newTeachedClasses,
+            classTeacher: newClassTeacher,
+          };
+        });
+        console.log(newTeachers);
         try {
-          if (teacherEmail) {
-            setDocument(domain, "teachers", {
-              [teacherEmail as string]: {
-                classTeacher: "",
-              },
-            });
-          }
+          //? Przy przywracaniu klasy należy przywrócić wychowawce
+          setDocument(domain, "classes", {
+            [removedClassData.name]: { ...removedClassObject, isActive: false },
+          });
+          setDocument(domain, "teachers", newTeachers);
+          setDocument(domain, "students", newStudents);
           updateCounter(domain, "classesCount", "decrement");
         } catch (error) {
           console.log(error);
@@ -116,10 +152,12 @@ export const ClassesView: React.FC = () => {
       }
       // console.log(schoolData.classes);
       classesDataWithoutConverting.current = Object.values(values);
-      const allClasses = Object.values(values).map((x) => {
-        const newName = findClassTeacherName(x.classTeacher);
-        return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
-      });
+      const allClasses = Object.values(values)
+        .map((x) => {
+          const newName = findClassTeacherName(x.classTeacher);
+          return { ...x, classTeacher: newName ? newName : "Brak wychowawcy" };
+        })
+        .filter((x) => x.isActive !== false);
       //Potem implementujemy searcha poprzez filtrowanie obiektu wszystkich klas i zostawianie tylko pól typu string
       const searchedClasses = allClasses
         .filter((x) => {
@@ -189,8 +227,8 @@ export const ClassesView: React.FC = () => {
           <h2 className="text-2xl text-center">
             {`Czy napewno chcesz usunąć tą klasę ${ModalOptions.removedClass?.name} ?`}
           </h2>
-          <span className=" text-error select-none text text-center justify-center flex mt-4">
-            Usuniętej klasy nie da się przywrócić
+          <span className=" text-success select-none text text-center justify-center flex mt-4">
+            Usuniętą klasę można w każdej chwili przywrócić!
           </span>
           <div className="modal-action">
             <button

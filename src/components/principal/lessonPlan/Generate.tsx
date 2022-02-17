@@ -39,11 +39,15 @@ export const Generate = () => {
   const [allClassesArray, setAllClassesArray] = useState<SingleClassData[]>();
 
   // wartośći inputów od przedmiotów
-  const [subejctsInputsValues, setSubejctsInputsValues] = useState<SubejctsInputsValues>({});
-  const [sumSubjectsInputsValues, setSumSubjectsInputsValues] = useState<number>(0);
+  const [subejctsInputsValues, setSubejctsInputsValues] =
+    useState<SubejctsInputsValues>({});
+  const [sumSubjectsInputsValues, setSumSubjectsInputsValues] =
+    useState<number>(0);
 
   // redux
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData);
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
   useEffect(() => {
     let tempArray = [];
@@ -106,7 +110,7 @@ export const Generate = () => {
         tempState = {
           ...tempState,
           GodzinaWychowawcza: 1,
-          [item.shortName]: 3,
+          [item.shortName]: 0,
         };
       });
       setSubejctsInputsValues(tempState);
@@ -135,12 +139,12 @@ export const Generate = () => {
   };
 
   const handleDelete = () => {
-    setIsPlanNew(false)
-    setSingleClassLessonPlan(undefined)
-    if(singleClassInfo) {
-      deletePlan(singleClassInfo?.name, singleClassInfo)
+    setIsPlanNew(false);
+    setSingleClassLessonPlan(undefined);
+    if (singleClassInfo) {
+      deletePlan(singleClassInfo?.name, singleClassInfo);
     }
-  }
+  };
 
   const handleSave = () => {
     setIsPlanNew(false);
@@ -156,7 +160,6 @@ export const Generate = () => {
       [item.shortName]: +e.target.value,
     }));
   };
-
   return (
     <div className="mx-auto flex gap-2 pt-12 mr-8 ">
       <div className="flex-none w-72 p-4">
@@ -203,11 +206,17 @@ export const Generate = () => {
           ))}
         </div>
         {!singleClassLessonPlan ? (
-          <button className="btn btn-outline btn-primary w-full mt-4" onClick={handleGenerate} >
+          <button
+            className="btn btn-outline btn-primary w-full mt-4"
+            onClick={handleGenerate}
+          >
             Generuj plan
           </button>
         ) : (
-          <button className="btn btn-outline btn-error w-full mt-4" onClick={handleDelete}>
+          <button
+            className="btn btn-outline btn-error w-full mt-4"
+            onClick={handleDelete}
+          >
             Usuń plan
           </button>
         )}

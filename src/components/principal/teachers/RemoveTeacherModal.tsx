@@ -1,11 +1,16 @@
 import { deleteField, arrayRemove } from "firebase/firestore";
+import { cloneDeep } from "lodash";
 import nProgress from "nprogress";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../../hooks/useUpdateInfoCounter";
 import { RootState } from "../../../redux/store";
-import { SingleTeacherData } from "../../../utils/interfaces";
+import {
+  LessonPlansDataFromFirebase,
+  singleClassLessonPlan,
+  SingleTeacherData,
+} from "../../../utils/interfaces";
 import { ModalOptionsTeachers } from "../TeachersView";
 
 interface RemoveTeacherModalProps {
@@ -17,7 +22,9 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
   setModalOptions,
 }) => {
   const principal = useSelector((state: RootState) => state.principal);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
 
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
@@ -34,6 +41,7 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
           const keys = Object.keys(schoolData.classes).filter((x) => {
             return removedTeacher.teachedClasses.some((y) => y === x);
           });
+          //?Przy przywracaniu należy wziąć arraya teahcedClasses i dodać spowrotem do fielda danej klasy tego nauczyciela i jego przedmiot
           Object.entries(allClasses).forEach((item) => {
             if (keys.some((y) => y === item[0])) {
               const FilteredArray = item[1].subjects.filter(
@@ -42,15 +50,36 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
               allClasses[item[0]] = { ...item[1], subjects: FilteredArray };
             }
           });
+          const newLessonsPlans: LessonPlansDataFromFirebase = cloneDeep(
+            schoolData.lessonPlans
+          );
+          removedTeacher.teachedClasses.forEach((item) => {
+            const newLessonPlan: singleClassLessonPlan = {};
+            const oldClassLessonPlan = schoolData.lessonPlans[item];
+            if (oldClassLessonPlan) {
+              Object.entries(oldClassLessonPlan).forEach((values, _n) => {
+                const dayOfTheWeek = values[0];
+                const hoursArray = values[1];
+                newLessonPlan[dayOfTheWeek] = hoursArray.filter(
+                  (x) => x.teacher !== removedTeacher.email
+                );
+              });
+            }
+            newLessonsPlans[item] = newLessonPlan;
+          });
+          const removedTeacherData: SingleTeacherData =
+            schoolData.teachers[email];
           setDocument(domain, "teachers", {
-            [email]: deleteField(),
+            [email]: { ...removedTeacherData, isActive: false },
           });
           const subjectName = removedTeacher.subject.replaceAll(/\s/g, "");
+          //?Przy przywracaniu trzeba dodać do array znowu
           setDocument(domain, "subjects", {
             [subjectName]: {
               teachers: arrayRemove(removedTeacher.email),
             },
           });
+          setDocument(domain, "lessonPlans", newLessonsPlans);
           setDocument(domain, "classes", allClasses);
           if (removedTeacher.classTeacher !== "Brak klasy") {
             setDocument(domain, "classes", {
@@ -79,8 +108,8 @@ export const RemoveTeacherModal: React.FC<RemoveTeacherModalProps> = ({
         <h2 className="text-2xl text-center">
           {`Czy napewno chcesz usunąć tego nauczyciela ${ModalOptions.removedTeacher?.firstName} ${ModalOptions.removedTeacher?.lastName} ?`}
         </h2>
-        <span className=" text-error select-none text text-center justify-center flex mt-4">
-          Usuniętego nauczyciela nie da się przywrócić!
+        <span className=" text-success select-none text text-center justify-center flex mt-4">
+          Usuniętego nauczyciela można przywrócić w dowolnym momencie!
         </span>
         <div className="modal-action">
           <button
