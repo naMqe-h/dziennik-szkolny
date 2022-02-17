@@ -3,6 +3,7 @@ import { Class } from "../components/add/Class";
 import { Teacher } from "../components/add/Teacher";
 import { Student } from "../components/add/Student";
 import { Subject } from "../components/add/Subject";
+import { Event } from "../components/add/Event";
 
 export const Add = () => {
   const { type } = useParams();
@@ -13,6 +14,7 @@ export const Add = () => {
       {type === "teacher" && <Teacher />}
       {type === "student" && <Student />}
       {type === "subject" && <Subject />}
+      {type === "event" && <Event />}
     </div>
   );
 };

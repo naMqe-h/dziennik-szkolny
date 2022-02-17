@@ -28,7 +28,9 @@ const errorsInitial:errorsInterface = {
     profilePicture: {error:false, text: ''},
     weight: {error:false, text: ''},
     topic: {error: false, text: ''},
-    date: {error: false, text: ''}
+    dateFrom: {error: false, text: ''},
+    dateTo: {error: false, text: ''},
+    receiver: {error: false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -63,7 +65,7 @@ export const useValidateInputs = () => {
       weight: 'wagę',
     }
 
-    const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher'];
+    const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher', 'addedBy'];
     
     useEffect(() => {
       Object.values(inputErrors).filter((f) => f.error === true).map((field) => (
@@ -79,7 +81,6 @@ export const useValidateInputs = () => {
         Object.entries(data).forEach((field) => {
           let fieldName = field[0];
           let fieldVal = field[1];
-
           if(fieldName === 'profilePicture'){
             if(fieldVal.length !== 0){
               if(!isValidHttpUrl(fieldVal)){
@@ -139,6 +140,13 @@ export const useValidateInputs = () => {
                     {...prev, 'domain': {'error':true, 'text':"Podaj poprawną domene"}}))
                     setErrors(true);
                 }
+            }
+            if(fieldName === 'receiver'){
+              if(fieldVal[0].length === 0){
+                  setInputErrors((prev) => (
+                    {...prev, 'receiver': {'error':true, 'text':"Podaj odbiorcę"}}))
+                  setErrors(true);
+              }
             }
           } else{
             if(fieldName === 'address'){

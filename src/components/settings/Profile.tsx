@@ -42,8 +42,6 @@ export const Profile: React.FC<profileProps> = ({
     setValidated(false);
   }, [validated, errors]);
 
-  // TODO zmiana zdjęcia profilowego
-
   const handleChange = (name: string, value: string) => {
     if (name === "pesel") {
       setFormData((prev: Object) => {

@@ -132,6 +132,9 @@ export const Navbar = () => {
                     <Link to="/add/subject">Dodaj Przedmiot</Link>
                   </li>
                   <li className="text-base-content">
+                    <Link to="/add/event">Dodaj Wydarzenie</Link>
+                  </li>
+                  <li className="text-base-content">
                     <Link to="/lesson-plan/generate">Generuj plan lekcji</Link>
                   </li>
                 </ul>
@@ -147,22 +150,22 @@ export const Navbar = () => {
                 (!student.user || principal.user || teacher.user) &&
                 (!teacher.user || student.user || principal.user) ? (
                   <>
-                    <li>
+                    <li className="text-base-content">
                       <Link to="/login">Zaloguj się</Link>
                     </li>
-                    <li>
+                    <li className="text-base-content">
                       <Link to="/signup">Zarejestruj się</Link>
                     </li>
                   </>
                 ) : (
                   <>
-                    <li>
+                    <li className="text-base-content">
                       <Link to="/profile">Profil</Link>
                     </li>
-                    <li>
+                    <li className="text-base-content">
                       <Link to="/settings/profile">Ustawienia</Link>
                     </li>
-                    <li>
+                    <li className="text-base-content">
                       {/* eslint-disable-next-line*/}
                       <a onClick={handleLogout}>Wyloguj się</a>
                     </li>

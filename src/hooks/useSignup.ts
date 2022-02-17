@@ -41,6 +41,10 @@ export const useSignup = () => {
           schoolData.principalUID = res.user.uid;
           setDocument("principals", res.user.uid, data);
           setDocument(data.schoolInformation.domain, "information", schoolData);
+          setDocument(data.schoolInformation.domain, "events", {
+            classes:[],
+            global:[]
+          });
           setDocument('utils', 'domains', { names: [ ...document?.names, data.schoolInformation.domain ] });
           toast.success("Udało ci się utworzyć konto 😎");
           navigate("/");

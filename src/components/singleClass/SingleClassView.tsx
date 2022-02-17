@@ -311,7 +311,7 @@ export const SingleClassView = () => {
               </button>
             </div>
           )}
-          {subpage === "schedule" && teacher.user && (
+          {subpage === "schedule" && (teacher.user || principal.user) && (
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsScheduleOpen((prev) => !prev)}
@@ -353,6 +353,7 @@ export const SingleClassView = () => {
         {subpage === "schedule" && (
           <Schedule
             singleClass={singleClass}
+            events={schoolData?.events}
             isOpen={isScheduleOpen}
             setIsOpen={setIsScheduleOpen}
             userData={teacher.user ? teacher.data : principal.data}
