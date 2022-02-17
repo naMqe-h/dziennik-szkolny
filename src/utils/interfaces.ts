@@ -124,7 +124,6 @@ export interface SubjectData {
 //? Interfejs Klasy ze Studentami do np sprawdzania frekwencji  || Wyświetlania informacji o danej klasie
 export interface SingleClassData extends ClassData {
   students: string[];
-  schedule: scheduleItemsArray;
 }
 //! Here are the interaces from Firebase
 //? Interfejs Danych z firebasa o pojedynczym uczniu
@@ -248,14 +247,6 @@ export interface singleHoursFromLessonPlan {
   hour: number;
 }
 
-// export interface scheduleItem{
-//   name: string,
-//   dateFrom: string;
-//   dateTo: string;
-//   teacher: string;
-// }
-
-// TODO zmienic interface i implementacje w fireabse
 export interface scheduleItem{
   name: string,
   dateFrom: string;

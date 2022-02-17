@@ -20,7 +20,7 @@ export const Events: React.FC = () => {
       return state.student.data
     }
   })
-  const classes = useSelector((state: RootState) => state.schoolData.schoolData?.classes)
+  const firebaseEvents = useSelector((state: RootState) => state.schoolData.schoolData?.events)
 
   // states
   const [events, setEvents] = useState<scheduleItemsArray>([]);
@@ -29,20 +29,19 @@ export const Events: React.FC = () => {
 
 
   useEffect(() => {
-    if(classes){
-      if(userType === 'principals'){
-        return
-      } else if(userType === 'teachers'){
-        // const teachedClasses = userData?.teachedClasses;
-        // const teachedClassesScheduleArray = [];
+    if(firebaseEvents){
+      if(userType === 'teachers'){
+        const teachedClasses = userData?.teachedClasses;
+        const teachedClassesScheduleArray = [];
   
-        // for(let val of teachedClasses){
-        //   teachedClassesScheduleArray.push(...Object.values(classes).filter((classObj) => classObj.name === val)[0].schedule.filter((item) => item.teacher === userData.email));
-        //   }
-        // setEvents(teachedClassesScheduleArray);
-      } else {
-        setEvents(Object.values(classes).filter((classObj) => classObj.name ===  userData.class)[0].schedule);
+        for(let val of teachedClasses){
+          teachedClassesScheduleArray.push(...Object.values(firebaseEvents.classes).filter((ev) => ev.receiver.some((rec) => rec === val)));
+          }
+        setEvents(teachedClassesScheduleArray);
+      } else if(userType=== 'students') {
+        setEvents(Object.values(firebaseEvents.classes).filter((ev) => ev.receiver.some((rec) => rec === userData.class)));
       }
+      setEvents((prev) => [...prev, ...firebaseEvents.global])
     }
   }, [])
   

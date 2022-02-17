@@ -51,6 +51,15 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
 
 
     const handleChange = (name: string, value: string) => {
+        if(name === 'dateFrom'){
+            let dateFrom = moment(value)
+            let dateTo = moment(formData.dateTo)
+            if(dateTo.isBefore(dateFrom)){
+                setFormData((prev) => ({
+                    ...prev, 'dateTo': value
+                }))
+            }
+        }
         setFormData((prev) => ({
             ...prev, [name]:value
         }));

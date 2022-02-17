@@ -2,6 +2,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { scheduleItemsArray, userType } from "../../../utils/interfaces";
 import { AddModal } from "./AddModal";
 
@@ -43,6 +44,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
           <th>Nazwa wydarzenia</th>
           <th>Data rozpoczęcia</th>
           <th>Data zakończenia</th>
+          <th>Odbiorcy</th>
           <th>Dodał</th>
           <th className="w-1"></th>
         </tr>
@@ -61,6 +63,17 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                   "DD.MM.yyyy"
                 )}
               </td>
+              <td>{item.receiver.map((rec) => {
+                if(rec === 'global'){
+                  return 'Wszyscy'
+                }
+                return(
+                  <Link to={`/class/${rec}/info`} className="kbd mx-1 border-primary" >
+                    {rec}
+                  </Link>
+                ) 
+
+              })}</td>
               <td>{item.addedBy}</td>
               <td>
                 {(userType === "principals" || item.addedBy === userEmail) && (
