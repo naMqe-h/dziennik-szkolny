@@ -5,7 +5,16 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
+import { useSetDocument } from "../hooks/useSetDocument";
+import {
+  ClassesDataFromFirebase,
+  SchoolSubjectsDataFromFirebase,
+  StudentsDataFromFirebase,
+  TeachersDataFromFirebase,
+} from "../utils/interfaces";
 export const Navbar = () => {
+  const { setDocument } = useSetDocument();
+  const state = useSelector((state: RootState) => state.schoolData);
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
   const teacher = useSelector((state: RootState) => state.teacher);
@@ -39,6 +48,45 @@ export const Navbar = () => {
           Dziennik szkolny
         </NavLink>
       </div>
+      {/* <button
+        className="btn"
+        onClick={() => {
+          if (
+            state.schoolData?.teachers &&
+            state.schoolData.students &&
+            state.schoolData.subjects &&
+            state.schoolData.classes
+          ) {
+            const oldTeachers = state.schoolData?.teachers;
+            const oldSubjects = state.schoolData?.subjects;
+            const oldStudents = state.schoolData?.students;
+            const oldClasses = state.schoolData?.classes;
+            const newTeachers: TeachersDataFromFirebase = {};
+            const newStudents: StudentsDataFromFirebase = {};
+            const newSubjects: SchoolSubjectsDataFromFirebase = {};
+            const newClasses: ClassesDataFromFirebase = {};
+            Object.entries(oldTeachers).forEach((item) => {
+              newTeachers[item[0]] = { ...item[1], isActive: true };
+            });
+            Object.entries(oldStudents).forEach((item) => {
+              newStudents[item[0]] = { ...item[1], isActive: true };
+            });
+            Object.entries(oldSubjects).forEach((item) => {
+              newSubjects[item[0]] = { ...item[1], isActive: true };
+            });
+            Object.entries(oldClasses).forEach((item) => {
+              newClasses[item[0]] = { ...item[1], isActive: true };
+            });
+            const domain = state.schoolData.information.domain;
+            setDocument(domain as string, "teachers", newTeachers);
+            setDocument(domain as string, "students", newStudents);
+            setDocument(domain as string, "classes", newClasses);
+            setDocument(domain as string, "subjects", newSubjects);
+          }
+        }}
+      >
+        Click
+      </button> */}
       {showThemeSwitcher && (
         <select
           data-choose-theme

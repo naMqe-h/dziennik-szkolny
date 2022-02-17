@@ -9,36 +9,34 @@ import { RootState } from "../../redux/store";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
-type OptionsType = { value: string; label: string }[];
-interface SubjectDataForm extends Omit<SubjectData, "teachers"> {
-  teachers: OptionsType;
-}
+interface SubjectDataForm extends Omit<SubjectData, "teachers" | "isActive"> {}
 const defaultState: SubjectDataForm = {
   includedAvg: true,
   name: "",
-  teachers: [],
 };
 
 type SubjectCredentialsErrors = {
   name: ErrorObj;
-  
 };
-const defaultErrorState:SubjectCredentialsErrors = {
-  name: {error:false, text: ''},
+const defaultErrorState: SubjectCredentialsErrors = {
+  name: { error: false, text: "" },
 };
 
 export const Subject: React.FC = () => {
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [subjectData, setSubjectData] = useState<SubjectDataForm>(defaultState);
-  const [fieldErrors, setFieldErrors] = useState<SubjectCredentialsErrors>(defaultErrorState);
+  const [fieldErrors, setFieldErrors] =
+    useState<SubjectCredentialsErrors>(defaultErrorState);
 
   useEffect(() => {
-    Object.values(fieldErrors).filter((f) => f.error === true).map((field) => (
-      toast.error(field.text, { autoClose: 2000 })
-    ))
+    Object.values(fieldErrors)
+      .filter((f) => f.error === true)
+      .map((field) => toast.error(field.text, { autoClose: 2000 }));
   }, [fieldErrors]);
 
   const validateInputs = (nameWithoutWhitespace: string) => {
@@ -49,12 +47,14 @@ export const Subject: React.FC = () => {
     //         {...prev, ['firstName']: {'error':true, 'text':"Podaj Imię"}}))
     //     errors = true
     // }
-    if (subjectData.name.length === 0){
-      setFieldErrors((prev) => (
-        {...prev, name: {'error':true, 'text':"Podaj nazwe przedmiotu"}}))
-        errors = true
+    if (subjectData.name.length === 0) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        name: { error: true, text: "Podaj nazwe przedmiotu" },
+      }));
+      errors = true;
     }
-    
+
     if (schoolData?.subjects) {
       if (
         Object.keys(schoolData?.subjects).some(
@@ -63,9 +63,11 @@ export const Subject: React.FC = () => {
             nameWithoutWhitespace.toLowerCase()
         )
       ) {
-        setFieldErrors((prev) => (
-          {...prev, name: {'error':true, 'text':"Podaj nazwa przedmiotu jest już zajęta"}}))
-          errors = true
+        setFieldErrors((prev) => ({
+          ...prev,
+          name: { error: true, text: "Podaj nazwa przedmiotu jest już zajęta" },
+        }));
+        errors = true;
       }
     }
 
@@ -75,25 +77,28 @@ export const Subject: React.FC = () => {
           schoolData?.subjects as SchoolSubjectsDataFromFirebase
         ).some((x) => x === nameWithoutWhitespace)
       ) {
-        setFieldErrors((prev) => (
-          {...prev, name: {'error':true, 'text':"Podany przedmiot już istnieje"}}))
-          errors = true
+        setFieldErrors((prev) => ({
+          ...prev,
+          name: { error: true, text: "Podany przedmiot już istnieje" },
+        }));
+        errors = true;
       }
     }
-    
-    return errors
-  }
+
+    return errors;
+  };
 
   function validateData(e: React.SyntheticEvent) {
     e.preventDefault();
     const nameWithoutWhitespace = subjectData.name.replaceAll(/\s+/g, "");
     if (isAdding || validateInputs(nameWithoutWhitespace)) return;
-    
+
     setIsAdding(true);
     const wrapperObj: SubjectData = {
       name: subjectData.name,
       teachers: [],
       includedAvg: subjectData.includedAvg,
+      isActive: true,
     };
     const objForFirebase: SchoolSubjectsDataFromFirebase = {
       [nameWithoutWhitespace]: wrapperObj,
@@ -140,7 +145,9 @@ export const Subject: React.FC = () => {
           <input
             type="text"
             name="name"
-            className={`input ${fieldErrors.name.error ? "border-red-500" : ''}`}
+            className={`input ${
+              fieldErrors.name.error ? "border-red-500" : ""
+            }`}
             autoComplete="name"
             value={subjectData.name}
             placeholder="Nazwa przedmiotu"

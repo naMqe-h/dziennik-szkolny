@@ -39,7 +39,11 @@ export const useTeacherLogin = () => {
       //sprawdzanie danych
         if(school?.teachers) {
             let tempError = true
-            for(const [key, value] of Object.entries(school?.teachers)) {
+            for (const [key, value] of Object.entries(school?.teachers)) {
+                 if (!value.isActive) {
+                   tempError = false;
+                   toast.error("Twoje konto jest nieaktywne");
+                 }else{
                 if(key === email) {
                     if(value.password === '1') {
                         tempError = false
@@ -68,6 +72,7 @@ export const useTeacherLogin = () => {
                         toast.error("Podane hasło jest niepoprawne", { autoClose: 3000 })
                     }
                 }
+            }
             }
             if(tempError) toast.error("Nie ma nauczyciela o takim adresie email", { autoClose: 3000 })
         }

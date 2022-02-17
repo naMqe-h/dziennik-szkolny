@@ -128,6 +128,7 @@ export const SingleClassView = () => {
           class: singleClass?.name as string,
           grades: {},
           profilePicture: "",
+          isActive: true,
         };
 
         const objWrapper = {

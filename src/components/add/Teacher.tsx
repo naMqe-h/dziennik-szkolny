@@ -16,7 +16,9 @@ export const Teacher = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const { updateCounter } = useUpdateInfoCounter();
   const { setDocument } = useSetDocument();
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const [subjects, setSubjects] = useState<string[]>([]);
   const [teacher, setTeacher] = useState<teacherInterface>({
     firstName: "",
@@ -42,9 +44,6 @@ export const Teacher = () => {
   const { validateData, inputErrors, errors } = useValidateInputs();
   const [validated, setValidated] = useState<Boolean>(false);
 
-
-
-
   useEffect(() => {
     if (teacher.firstName.length >= 3 && teacher.lastName.length >= 3) {
       setCanBeGenerated(true);
@@ -52,8 +51,6 @@ export const Teacher = () => {
       setCanBeGenerated(false);
     }
   }, [teacher.firstName, teacher.lastName]);
-
-
 
   useEffect(() => {
     if (schoolData?.subjects) {
@@ -67,49 +64,52 @@ export const Teacher = () => {
     }
   }, [schoolData?.subjects]);
 
-  
   useEffect(() => {
-    if(validated){
+    if (validated) {
       if (isAdding || errors) return;
 
-    
-    //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
-    // const newObj:single
-    if (schoolData) {
-      setIsAdding(true);
-      const objWrapper: TeachersDataFromFirebase = {
-        [teacher.email]: { ...teacher, classTeacher: "", teachedClasses: [], workingHours: [], profilePicture: '' },
-      };
-      setDocument(
-        schoolData?.information.domain as string,
-        "teachers",
-        objWrapper
-      );
-      updateCounter(
-        schoolData.information.domain,
-        "teachersCount",
-        "increment"
-      );
-      //Dodaje tutaj nauczyciela do przedmiotu
-      const domain = schoolData.information.domain;
-      const { subject, email } = teacher;
-      const previousTeachers =
-        schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")]
-          .teachers;
-          setDocument(domain as string, "subjects", {
-        [subject.replaceAll(/\s/g, "")]: {
-          teachers: [...previousTeachers, email],
-        },
-      });
-      toast.success("Udało ci się dodać nowego nauczyciela", {
-        autoClose: 2000,
-      });
-    }
-    clearForm();
-    setIsAdding(false);
+      //TODO DODAĆ SPRAWDZANIE CZY TAKI EMAIL ISTNIEJE JUŻ
+      // const newObj:single
+      if (schoolData) {
+        setIsAdding(true);
+        const objWrapper: TeachersDataFromFirebase = {
+          [teacher.email]: {
+            ...teacher,
+            classTeacher: "",
+            teachedClasses: [],
+            workingHours: [],
+            profilePicture: "",
+            isActive: true,
+          },
+        };
+        setDocument(
+          schoolData?.information.domain as string,
+          "teachers",
+          objWrapper
+        );
+        updateCounter(
+          schoolData.information.domain,
+          "teachersCount",
+          "increment"
+        );
+        //Dodaje tutaj nauczyciela do przedmiotu
+        const domain = schoolData.information.domain;
+        const { subject, email } = teacher;
+        const previousTeachers =
+          schoolData.subjects[teacher.subject.replaceAll(/\s/g, "")].teachers;
+        setDocument(domain as string, "subjects", {
+          [subject.replaceAll(/\s/g, "")]: {
+            teachers: [...previousTeachers, email],
+          },
+        });
+        toast.success("Udało ci się dodać nowego nauczyciela", {
+          autoClose: 2000,
+        });
+      }
+      clearForm();
+      setIsAdding(false);
     }
   }, [validated, errors]);
-
 
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -124,7 +124,6 @@ export const Teacher = () => {
     });
   };
 
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -136,8 +135,6 @@ export const Teacher = () => {
       };
     });
   };
-
-
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -153,7 +150,9 @@ export const Teacher = () => {
             <span className="label-text">Imię</span>
           </label>
           <input
-            className={`input ${inputErrors.firstName.error ? "border-red-500" : ''}`}
+            className={`input ${
+              inputErrors.firstName.error ? "border-red-500" : ""
+            }`}
             type="text"
             placeholder="Imię"
             name="firstName"
@@ -165,7 +164,9 @@ export const Teacher = () => {
             <span className="label-text">Naziwsko</span>
           </label>
           <input
-            className={`input ${inputErrors.lastName.error ? "border-red-500" : ''}`}
+            className={`input ${
+              inputErrors.lastName.error ? "border-red-500" : ""
+            }`}
             type="text"
             placeholder="Naziwsko"
             name="lastName"
