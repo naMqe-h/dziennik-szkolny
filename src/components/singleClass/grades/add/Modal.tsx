@@ -1,4 +1,4 @@
-import { cloneDeep, toUpper } from "lodash";
+import { cloneDeep } from "lodash";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import {
   SchoolGrade,
   SingleStudentDataFromFirebase,
   StudentsDataFromFirebase,
+  termType,
 } from "../../../../utils/interfaces";
 import { NewGrade } from "./NewGrade";
 
@@ -33,6 +34,7 @@ export const Modal: React.FC<ModalProps> = ({
   );
   const teacher =
     useSelector((state: RootState) => state.teacher.data) || undefined;
+  const term = useSelector((state: RootState) => state.schoolData.schoolData?.information.term)
 
   const [newGrades, setNewGrades] = useState<{ [key: string]: number }>({});
   const [topic, setTopic] = useState<string>("");
@@ -56,7 +58,7 @@ export const Modal: React.FC<ModalProps> = ({
           addedBy: teacher?.email as string,
           date: Date.now().toLocaleString(),
           topic,
-          term: 1,
+          term: term as termType,
         };
         const newSubject = {
           [teacher?.subject as string]: [newGrade],
@@ -79,6 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
       setWeight(0);
     }
     setValidated(false);
+    // eslint-disable-next-line
   }, [validated, errors]);
   const handleAdd = () => {
     setValidated(false);

@@ -7,14 +7,12 @@ interface schoolProps {
     schoolData: CombinedSchoolInformationFromFirebase;
     save: (data: SchoolInformation) => void | React.ReactText ;
 }
-type formDataInterface = Pick<SchoolInformation, "name" | "type" | "address" >
+type formDataInterface = Pick<CombinedSchoolInformationFromFirebase, "name" | "type" | "address" | 'term' >
 
 export const School:React.FC<schoolProps> = ({schoolData, save}) => {
-    const {name, type, address, domain} = schoolData;
-    const formSchoolData = {name, type, address} 
+    const {name, type, address, domain, term} = schoolData;
+    const formSchoolData = {name, type, address, term} 
     const [formData, setFormData] = useState<formDataInterface>(formSchoolData);
-
-
 
     const schoolTypes = [
         "Szkoła Podstawowa",
@@ -101,6 +99,21 @@ export const School:React.FC<schoolProps> = ({schoolData, save}) => {
                     {type}
                     </option>
                 ))}
+                </select>
+                <div className="divider md:col-span-2" />
+
+
+                <label className="label">
+                    <span className="label-text">Semestr</span>
+                </label>
+                <select
+                    className="select select-bordered w-full"
+                    value={formData.term}
+                    name="term"
+                    onChange={(e) => handleChange(e.target.name, e.target.value)}
+                >
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
                 </select>
                 <div className="divider md:col-span-2" />
                 <span className="card-title text-center md:col-span-2 mt-10">Adres</span>

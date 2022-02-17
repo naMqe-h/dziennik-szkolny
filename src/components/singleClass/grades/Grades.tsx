@@ -37,7 +37,6 @@ export const Grades: React.FC<GradesProps> = ({
         students={students}
         studentsInfo={studentsInfo}
       />
-      {/* //! zmienic widok dla nauczyciela na jeden przedmiot */}
       <div className="overflow-x-auto">
         {userType === "teachers" && (
           <GradesTable students={students} term={term} />
