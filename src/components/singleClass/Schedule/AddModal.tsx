@@ -6,7 +6,7 @@ import { scheduleItem } from "../../../utils/interfaces"
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import { toast } from "react-toastify"
-import { conformsTo, isEqual } from "lodash"
+import { isEqual } from "lodash"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/store"
 
@@ -51,19 +51,11 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
       ), } : initialFormData);
 
     const [validated, setValidated] = useState(false)
-    const [defaultValue, setDefaultValue] = useState<selectOption[]>()
+
     const [datesChanged, setDatesChanged] = useState(false)
 
     const { validateData, inputErrors, errors } = useValidateInputs();
     const animatedComponents = makeAnimated();
-    
-    
-    useEffect(() => {
-        let mappedRecievers = reciever.map((name) => (
-            {value: name, label: name}
-        ))
-      setDefaultValue(mappedRecievers)
-    }, [])
     
 
     useEffect(() => {
@@ -211,7 +203,7 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
                             components={animatedComponents}
                             isMulti
                             options={selectItems}
-                            value={defaultValue ? (defaultValue[0].value === 'global' ? '' : defaultValue) : ''}
+                            value={formData.receiver.map((rec) => ({value: rec, label: rec}))}
                             isDisabled={formData.receiver[0] === 'global'}
                             onChange={handleSelectChange}
                         />
