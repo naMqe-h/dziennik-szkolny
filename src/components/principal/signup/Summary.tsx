@@ -53,7 +53,8 @@ export const Summary: React.FC<summaryProps> = ({
     subjectsCount: 0,
     classesCount: 0,
     planType: chosenPlan,
-    principalUID:""
+    principalUID:"",
+    term: 1
   };
 
   const handleSignup = (e: React.SyntheticEvent) => {

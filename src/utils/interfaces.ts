@@ -183,6 +183,7 @@ export interface CombinedSchoolInformationFromFirebase
   studentsCount: number;
   subjectsCount: number;
   planType: PlanTypes;
+  term: termType;
 }
 //?Interfejs dla dokumentu z firebasa z wszystkimi przedmiotami szkolnymi oraz nauczycielami którzy ich uczą
 export interface SchoolSubjectsDataFromFirebase {

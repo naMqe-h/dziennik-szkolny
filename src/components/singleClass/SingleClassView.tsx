@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../redux/store";
@@ -43,10 +43,8 @@ export const SingleClassView = () => {
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
   const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
+  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
   const [term, setTerm] = useState<termType>(1);
-  const schoolData = useSelector(
-    (state: RootState) => state.schoolData.schoolData
-  );
   const principal = useSelector((state: RootState) => state.principal);
   const teacher = useSelector((state: RootState) => state.teacher);
 
@@ -268,7 +266,8 @@ export const SingleClassView = () => {
             </Link>
             <select
               className="select select-bordered select-secondary  max-w-full"
-              onChange={(e) => setTerm(Number(e.target.value) as termType)}
+              defaultValue={term}
+              onChange={(e) => setTerm(+e.target.value as termType)}
             >
               <option value={1}>Semestr 1</option>
               <option value={2}>Semestr 2</option>
