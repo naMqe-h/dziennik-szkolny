@@ -1,11 +1,9 @@
-import { deleteField, doc, updateDoc } from "firebase/firestore";
-import { cloneDeep } from "lodash";
+import { cloneDeep, union } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { db } from "../../firebase/firebase.config";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { useUpdateInfoCounter } from "../../hooks/useUpdateInfoCounter";
@@ -141,9 +139,17 @@ export const ClassesView: React.FC = () => {
     if (schoolData?.classes) {
       //Na początku zmieniamy email wychowawcy na imię i nazwisko
       let values: ClassesDataFromFirebase = {};
-      if (userType === "teachers") {
+      if (userType === "teachers" && dataAboutTeacher) {
+        const hasOwnClass = dataAboutTeacher?.classTeacher !== "";
+        let teachedClassesWithOwnClass: string[] =
+          dataAboutTeacher?.teachedClasses;
+        if (hasOwnClass) {
+          teachedClassesWithOwnClass = union(dataAboutTeacher?.teachedClasses, [
+            dataAboutTeacher.classTeacher,
+          ]);
+        }
         Object.keys(schoolData.classes).filter((x) => {
-          if (dataAboutTeacher?.teachedClasses.some((y) => x === y)) {
+          if (teachedClassesWithOwnClass.some((y) => x === y)) {
             values[x] = schoolData.classes[x];
           }
         });

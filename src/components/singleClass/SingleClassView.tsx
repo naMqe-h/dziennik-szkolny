@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import {
+  eventsFromFirebase,
   SingleClassData,
   SingleStudentDataFromFirebase,
   termType,
@@ -43,10 +44,15 @@ export const SingleClassView = () => {
   const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
   const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
-  const schoolData = useSelector((state: RootState) => state.schoolData.schoolData)
+  const schoolData = useSelector(
+    (state: RootState) => state.schoolData.schoolData
+  );
   const [term, setTerm] = useState<termType>(1);
   const principal = useSelector((state: RootState) => state.principal);
   const teacher = useSelector((state: RootState) => state.teacher);
+  const [events, setEvents] = useState<eventsFromFirebase>(
+    schoolData?.events ?? { classes: [], global: [] }
+  );
 
   const classes = schoolData?.classes;
   const teachers = schoolData?.teachers;
@@ -56,7 +62,9 @@ export const SingleClassView = () => {
   const isMobile = useMediaQuery("(max-width:480px)");
   const isTablet = useMediaQuery("(max-width:700px)");
   const showMobileLessonPlan = useMediaQuery("(max-width:1024px)");
-
+  useEffect(() => {
+    setEvents(schoolData?.events as eventsFromFirebase);
+  }, [schoolData?.events]);
   useEffect(() => {
     if (classes && id) {
       for (const [key, value] of Object.entries(classes)) {
@@ -75,7 +83,6 @@ export const SingleClassView = () => {
     }
     // eslint-disable-next-line
   }, [checked]);
-
   useEffect(() => {
     if (teachers) {
       for (const [key, value] of Object.entries(teachers)) {
@@ -352,7 +359,7 @@ export const SingleClassView = () => {
         {subpage === "schedule" && (
           <Schedule
             singleClass={singleClass}
-            events={schoolData?.events}
+            events={events}
             isOpen={isScheduleOpen}
             setIsOpen={setIsScheduleOpen}
             userData={teacher.user ? teacher.data : principal.data}

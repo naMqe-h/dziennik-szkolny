@@ -6,7 +6,9 @@ import { scheduleItem } from "../../../utils/interfaces"
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import { toast } from "react-toastify"
-import { isEqual } from "lodash"
+import { conformsTo, isEqual } from "lodash"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../redux/store"
 
 
 type selectOption = {value: string, label:string}
@@ -22,15 +24,18 @@ interface addModalItf{
 }
 
 export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, add, event, reciever, selectItems}) => {
+    const userType = useSelector(
+      (state: RootState) => state.userType.userType
+    );
 
-    const initialFormData:scheduleItem= {
+    const initialFormData:Omit<scheduleItem,'isActive'>= {
         name: '',
         dateFrom:  new Date().toISOString().split("T")[0],
         dateTo: new Date().toISOString().split("T")[0],
         addedBy: userEmail,
         receiver: reciever 
     }
-    const formReset:scheduleItem= {
+    const formReset:Omit<scheduleItem,'isActive'>= {
         name: '',
         dateFrom:  new Date().toISOString().split("T")[0],
         dateTo: new Date().toISOString().split("T")[0],
@@ -129,7 +134,6 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
             }));
         }
     }
-    
     function handleSelectChange(currentSelected:any) {
         let selectedInputs = currentSelected.map((val:any) => val.value);
         setFormData((prev) => ({
@@ -188,6 +192,7 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
                 >
                     <legend className="text-center font-bold">Odbiorca</legend>
                     <div className="flex flex-col items-center">
+                        {userType==='principals'&&
                         <div className="flex items-center">
                             <span>Wszyscy</span>
                             <input 
@@ -199,7 +204,7 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
                             className="checkbox ml-2"
                             />
                         </div>
-
+                        }
                         <Select
                             className="my-5 text-neutral-focus"
                             closeMenuOnSelect={false}

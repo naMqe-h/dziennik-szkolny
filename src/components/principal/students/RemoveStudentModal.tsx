@@ -44,7 +44,7 @@ export const RemoveStudentModal: React.FC<RemoveStudentModalProps> = ({
             [removedStudent.class]: newClassObject,
           });
         }
-        // updateCounter(domain, "studentsCount", "decrement");
+        updateCounter(domain, "studentsCount", "decrement");
         nProgress.done();
         setModalOptions({ isOpen: false, removedStudent: null });
         toast.success("Udało ci się usunąć ucznia", { autoClose: 2000 });
