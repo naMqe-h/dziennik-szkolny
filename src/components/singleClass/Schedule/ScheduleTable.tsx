@@ -94,7 +94,6 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
       if (key === "dateFrom") {
         if (type === "Descending") {
           return setSortedSchedule(
-            //? Posortujcie te daty bo nie mam kurwa siły już
             newSchedule.sort(
               (a, b) =>
                 moment(+a.dateFrom).valueOf() - moment(+b.dateFrom).valueOf()
