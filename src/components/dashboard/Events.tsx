@@ -58,9 +58,6 @@ export const Events: React.FC = () => {
     
   }, [date, events]);
 
-  useEffect(() => {
-    console.log(todayEvents);
-  }, [todayEvents])
   
 
   

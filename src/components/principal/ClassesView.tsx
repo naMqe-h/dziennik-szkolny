@@ -15,7 +15,6 @@ import {
   StudentsDataFromFirebase,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
-import { Teacher } from "../add/Teacher";
 import { SearchButton } from "../searchButton/SearchButton";
 import { ClassTable } from "./classes/ClassTable";
 interface ModalOptions {
