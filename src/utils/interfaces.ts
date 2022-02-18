@@ -258,6 +258,7 @@ export interface scheduleItem{
   dateFrom: string;
   dateTo: string;
   addedBy: string;
+  isActive:boolean
   receiver: Array<string>;
 }
 export interface eventsFromFirebase{

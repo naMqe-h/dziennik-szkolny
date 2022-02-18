@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { RootState } from "../../../redux/store";
-import { eventsFromFirebase, scheduleItem, scheduleItemsArray, SingleClassData } from "../../../utils/interfaces"
+import { eventsFromFirebase,scheduleItemsArray, SingleClassData } from "../../../utils/interfaces"
 import { AddModal } from "./AddModal"
 import { ScheduleTable } from "./ScheduleTable"
 
@@ -29,7 +29,6 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     const [classEvents, setClassEvents] = useState<scheduleItemsArray>()
     const [selectOptions, setSelectOptions] = useState<Array<selectOption>>();
 
-
     // hooks
     const { setDocument } = useSetDocument();
 
@@ -52,7 +51,7 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
                 )))
             }
         }
-    }, [])
+    }, [events,singleClass])
     
     // useEffect(() => {
     //   console.log(classEvents);
@@ -87,7 +86,7 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     return(
         <div>
             <AddModal isOpen={isOpen} setIsOpen={setIsOpen} userEmail={userData.email} add={handleAdd} reciever={[singleClass.name]} selectItems={selectOptions ? selectOptions : []} />
-            {classEvents ? (
+            {classEvents && classEvents.length>0 ? (
                 <ScheduleTable schedule={classEvents} userEmail={userData.email} userType={userType} edit={handleEdit}
                 selectItems={selectOptions ? selectOptions : []} />
             ) : ("Brak wydarzeń") }
