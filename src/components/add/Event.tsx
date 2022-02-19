@@ -67,7 +67,7 @@ export const Event: React.FC = () => {
         })
       );
     }
-  }, []);
+  }, [firebaseEvents, classes]);
 
   useEffect(() => {
     if (validated) {

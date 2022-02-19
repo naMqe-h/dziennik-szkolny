@@ -59,32 +59,51 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
     
 
     useEffect(() => {
-        if(validated){
+      if(validated){
 
-            if(errors){
-                setValidated(false);
-                return;
-            } 
-            if(event){
-                let eventDatesChanged = {...event, 
-                    dateFrom: moment(Number(event.dateFrom.replaceAll(/\s/g, ""))).format("yyyy-MM-DD"),
-                    dateTo: moment(Number(event.dateTo.replaceAll(/\s/g, ""))).format("yyyy-MM-DD")
-                }
-                if(isEqual(formData, eventDatesChanged)) {
-                    toast.warning('Żadne dane się nie zmieniły', {autoClose: 2000})
-                    setValidated(false);
-                    return 
-                }
-            }
-            
-            
-            setFormData((prev) => ({
-                ...prev, dateFrom: String(Date.parse(prev.dateFrom)),
-                dateTo: String(Date.parse(prev.dateTo))
-            }))
+          if(errors){
+              setValidated(false);
+              return;
+          } 
+          if(event){
+              let eventDatesChanged = {...event, 
+                  dateFrom: moment(Number(event.dateFrom.replaceAll(/\s/g, ""))).format("yyyy-MM-DD"),
+                  dateTo: moment(Number(event.dateTo.replaceAll(/\s/g, ""))).format("yyyy-MM-DD")
+              }
+              if(isEqual(formData, eventDatesChanged)) {
+                  toast.warning('Żadne dane się nie zmieniły', {autoClose: 2000})
+                  setValidated(false);
+                  return 
+              }
+          }
+          
+          
+          setFormData((prev) => ({
+              ...prev, dateFrom: String(Date.parse(prev.dateFrom)),
+              dateTo: String(Date.parse(prev.dateTo))
+          }))
 
-            setDatesChanged(true)
-   }, [datesChanged]);
+          setDatesChanged(true);
+
+          
+
+      }
+      setValidated(false);
+    }, [validated, errors])
+
+    useEffect(() => {
+      if(datesChanged){
+        if(!event){
+            add(formData)
+        } else {
+            add(formData, event);   
+        }
+        setFormData(formReset);
+      }
+      setDatesChanged(false);
+    }, [datesChanged])
+
+
 
   const handleChange = (name: string, value: string, checked?: Boolean) => {
     if (name === "global") {
