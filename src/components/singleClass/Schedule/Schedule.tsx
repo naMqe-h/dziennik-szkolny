@@ -86,10 +86,10 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     return(
         <div>
             <AddModal isOpen={isOpen} setIsOpen={setIsOpen} userEmail={userData.email} add={handleAdd} reciever={[singleClass.name]} selectItems={selectOptions ? selectOptions : []} />
-            {classEvents && classEvents.length>0 ? (
+            {classEvents ?
                 <ScheduleTable schedule={classEvents} userEmail={userData.email} userType={userType} edit={handleEdit}
                 selectItems={selectOptions ? selectOptions : []} />
-            ) : ("Brak wydarzeń") }
+             : ("Brak wydarzeń") }
         </div>
     )
 }

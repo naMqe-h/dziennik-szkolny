@@ -83,70 +83,54 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
                 dateTo: String(Date.parse(prev.dateTo))
             }))
 
-            setDatesChanged(true);
+            setDatesChanged(true)
+   }, [datesChanged]);
 
-            
-
+  const handleChange = (name: string, value: string, checked?: Boolean) => {
+    if (name === "global") {
+      setFormData((prev) => ({
+        ...prev,
+        receiver: checked ? ["global"] : [""],
+      }));
+    } else {
+      if (name === "dateFrom") {
+        let dateFrom = moment(value);
+        let dateTo = moment(formData.dateTo);
+        if (dateTo.isBefore(dateFrom)) {
+          setFormData((prev) => ({
+            ...prev,
+            dateTo: value,
+          }));
         }
-        setValidated(false);
-    }, [validated, errors])
-
-    useEffect(() => {
-      if(datesChanged){
-        if(!event){
-            add(formData)
-        } else {
-            add(formData, event);   
-        }
-        setFormData(formReset);
       }
-      setDatesChanged(false);
-    }, [datesChanged])
-    
-    
-
-
-    const handleChange = (name: string, value: string, checked?: Boolean) => {
-        if(name === 'global'){
-            setFormData((prev) => ({
-                ...prev, receiver: checked ? ['global'] : ['']
-            }))
-        }else{
-            if(name === 'dateFrom'){
-                let dateFrom = moment(value)
-                let dateTo = moment(formData.dateTo)
-                if(dateTo.isBefore(dateFrom)){
-                    setFormData((prev) => ({
-                        ...prev, 'dateTo': value
-                    }))
-                }
-            }
-            setFormData((prev) => ({
-                ...prev, [name]:value
-            }));
-        }
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
-    function handleSelectChange(currentSelected:any) {
-        let selectedInputs = currentSelected.map((val:any) => val.value);
-        setFormData((prev) => ({
-            ...prev, receiver: selectedInputs
-        }))
-    }
+  };
+  function handleSelectChange(currentSelected: any) {
+    let selectedInputs = currentSelected.map((val: any) => val.value);
+    setFormData((prev) => ({
+      ...prev,
+      receiver: selectedInputs,
+    }));
+  }
 
-    const handleSubmit = () => {
-        setValidated(false);
-        validateData(formData);
-        setValidated(true);
-    }
+  const handleSubmit = () => {
+    setValidated(false);
+    validateData(formData);
+    setValidated(true);
+  };
 
-    return(
-        <div className={`modal ${isOpen ? "modal-open" : ""} `}>
-            <div className="modal-box flex flex-col items-center gap-2 bg-base-300">
-            <AiOutlineClose
-                onClick={() => setIsOpen((prev) => !prev)}
-                size={30}
-                className="absolute top-2 right-2 cursor-pointer"
-            />
+  return (
+    <div className={`modal ${isOpen ? "modal-open" : ""} `}>
+      <div className="modal-box flex flex-col items-center gap-2 bg-base-300">
+        <AiOutlineClose
+          onClick={() => setIsOpen((prev) => !prev)}
+          size={30}
+          className="absolute top-2 right-2 cursor-pointer"
+        />
             <h2 className="mb-3">
                 {event ? "Edytuj wydarzenie" : "Dodaj wydarzenie"}
             </h2>
@@ -211,7 +195,6 @@ export const AddModal:React.FC<addModalItf> = ({isOpen, setIsOpen, userEmail, ad
                     </div>
                     
             </fieldset>
-
             <button onClick={handleSubmit} className="btn btn-primary w-44 mt-3">
                 {event ? "Zmień" : "Dodaj"}
             </button>
