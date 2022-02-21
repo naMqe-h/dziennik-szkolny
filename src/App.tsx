@@ -23,7 +23,7 @@ import { SingleStudent } from "./pages/SingleStudent";
 import { SingleTeacher } from "./pages/SingleTeacher";
 import { LessonPlan as LessonPlanView } from "./pages/LessonPlan";
 import { Profile } from "./components/profile/Profile";
-
+import { Presence } from "./pages/Presence";
 
 // wrappers
 import { LayoutWrapper } from "./components/wrappers/LayoutWrapper";
@@ -304,6 +304,14 @@ function App() {
                 element={
                   <StudentRoute loading={loading}>
                     <LessonPlanView />
+                  </StudentRoute>
+                }
+              />
+              <Route
+                path="/presence"
+                element={
+                  <StudentRoute loading={loading}>
+                    <Presence />
                   </StudentRoute>
                 }
               />

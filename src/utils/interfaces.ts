@@ -147,7 +147,19 @@ export interface SingleStudentDataFromFirebase {
   profilePicture: string;
   grades: { [key: string]: SchoolGrade[] };
   isActive: boolean;
+  presence: SingleStudentPresence[]
 }
+
+export type PresenceStatusType = 'OB' | 'NB' |  'SP' | 'ZW' | 'US'
+export interface SingleStudentPresence {
+  dayOfWeek: string,
+  hour: number,
+  lessonName: string,
+  date: string,
+  addedBy: string,
+  status: PresenceStatusType
+}
+
 //? Interface dla lepszej walidacji dostępnych godzin nauczyciela
 export interface teacherWorkingHours {
   dayOfWeek: daysOfWeek;
@@ -251,6 +263,7 @@ export interface singleHoursFromLessonPlan {
   subject: string;
   teacher: string;
   hour: number;
+  teachingClassName?: string | undefined,
 }
 
 export interface scheduleItem{

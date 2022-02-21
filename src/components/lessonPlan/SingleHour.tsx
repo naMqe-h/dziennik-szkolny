@@ -19,6 +19,7 @@ export const SingleHour: React.FC<SingleHourProps> = ({ lesson, isEmpty }) => {
   const subjects = useSelector(
     (state: RootState) => state.schoolData.schoolData?.subjects
   );
+  const userType = useSelector((state: RootState) => state.userType.userType)
   const [teacher, setTeacher] = useState<SingleTeacherData>();
   const [subject, setSubject] = useState<SubjectData>();
 
@@ -47,9 +48,12 @@ export const SingleHour: React.FC<SingleHourProps> = ({ lesson, isEmpty }) => {
             : subject?.name}
         </h1>
         <span className="text-sm text-gray-500">
-          {isEmpty
-            ? ""
-            : `${teacher?.lastName || ""} ${teacher?.firstName || ""}`}
+          {userType === "students" && !isEmpty
+            ? `${teacher?.lastName || ""} ${teacher?.firstName || ""}`
+            : ""}
+          {userType === "teachers" && !isEmpty
+            ? `${lesson?.teachingClassName}`
+            : ""}
         </span>
       </div>
     </td>

@@ -6,11 +6,11 @@ import { SingleDay } from "../components/lessonPlan/SingleDay";
 import { MobileLessonPlan } from "../components/singleClass/lessonPlan/mobileLessonPlan/MobileLessonPlan";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { RootState } from "../redux/store";
-import { SingleClassData, singleClassLessonPlan } from "../utils/interfaces";
+import {singleClassLessonPlan } from "../utils/interfaces";
+
 
 export const LessonPlan = () => {
-  const [singleUserLessonPlan, setSingleUserLessonPlan] =
-    useState<singleClassLessonPlan>();
+  const [singleUserLessonPlan, setSingleUserLessonPlan] = useState<singleClassLessonPlan>();
   const userType = useSelector((state: RootState) => state.userType.userType);
   const teacherData = useSelector((state: RootState) => state.teacher.data);
   const studentData = useSelector((state: RootState) => state.student.data);
@@ -36,6 +36,7 @@ export const LessonPlan = () => {
             teacher: teacherData.email,
             subject: teacherData.subject,
             hour: item.hour,
+            teachingClassName: item.className,
           };
         });
 

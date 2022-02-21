@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { singleHoursFromLessonPlan } from "../../utils/interfaces";
 import { SingleHour } from "./SingleHour";
+
+// interface singleHoursFromLessonPlan2 extends singleHoursFromLessonPlan {
+//   teachingClassName? : string | undefined
+// }
+
 interface SingleDayProps {
   lessons: singleHoursFromLessonPlan[] | undefined;
   dayOfWeek: string;
 }
 
 export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
-  const [sortedLessons, setSortedLessons] = useState<
-    singleHoursFromLessonPlan[] | undefined[]
-  >([]);
+  const [sortedLessons, setSortedLessons] = useState<singleHoursFromLessonPlan[]>([]);
   const [jsx, setJsx] = useState<any[]>();
 
   useEffect(() => {
