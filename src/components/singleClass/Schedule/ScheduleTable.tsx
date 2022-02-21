@@ -47,7 +47,6 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   edit,
   selectItems,
 }) => {
-
   const [isOpen, setIsOpen] = useState(false);
   const [modalOptionsEvent, setModalOptionsEvent] = useState<ModalOptionsEvent>(
     { isOpen: false, removedEvent: null }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useValidateInputs } from "../../hooks/useValidateInputs";
 import { RootState } from "../../redux/store";
-import { scheduleItem, scheduleItemsArray } from "../../utils/interfaces";
+import { scheduleItem, scheduleItemsArray, TeachersDataFromFirebase } from "../../utils/interfaces";
 import { ScheduleTable } from "../singleClass/Schedule/ScheduleTable";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -27,6 +27,7 @@ export const Event: React.FC = () => {
 
   const userData = useSelector((state: RootState) => state.principal.data);
   const userType = useSelector((state: RootState) => state.userType.userType);
+  const teachers = useSelector((state: RootState) => state.schoolData.schoolData?.teachers);
 
   // initials
   const initialFormData: Omit<scheduleItem, "isActive"> = {
@@ -136,7 +137,17 @@ export const Event: React.FC = () => {
       receiver: selectedInputs,
     }));
   }
-
+  function findTeacherName(email: string): string {
+    const allTeachers=teachers as TeachersDataFromFirebase;
+    const match = Object.keys(allTeachers).find((x) => x === email);
+    if (match) {
+      const foundedTeacher = allTeachers[match];
+      const Name = `${foundedTeacher.firstName} ${foundedTeacher.lastName}`;
+      return Name;
+    }
+    const name = `${userData?.firstName} ${userData?.lastName}`
+    return name ?? "";
+  } 
   const handleEdit = (data: scheduleItem, oldItem: scheduleItem) => {
     if (firebaseEvents && domain) {
       if (data.receiver[0] === "global" && oldItem.receiver[0] === "global") {
@@ -215,7 +226,7 @@ export const Event: React.FC = () => {
           name="dateFrom"
           value={formData.dateFrom}
           min={new Date().toISOString().split("T")[0]}
-          className={`input ${
+          className={`input  w-full ${
             inputErrors.dateFrom.error ? "border-red-500" : ""
           }`}
           onChange={(e) => handleChange(e.target.name, e.target.value)}
@@ -229,7 +240,7 @@ export const Event: React.FC = () => {
           name="dateTo"
           value={formData.dateTo}
           min={formData.dateFrom}
-          className={`input ${
+          className={`input  w-full ${
             inputErrors.dateTo.error ? "border-red-500" : ""
           }`}
           onChange={(e) => handleChange(e.target.name, e.target.value)}
@@ -286,7 +297,9 @@ export const Event: React.FC = () => {
         Twoje wydarzenia
       </div>
       <ScheduleTable
-        schedule={events}
+        schedule={events.map(x=>{
+          return {...x,addedBy:findTeacherName(x.addedBy)}
+        })}
         userEmail={userData.email}
         userType={userType}
         edit={handleEdit}

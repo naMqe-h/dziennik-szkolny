@@ -21,16 +21,20 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
   term,
 }) => {
   const { calculateAvg } = useAverage();
-
   const subject = useSelector(
     (state: RootState) => state.teacher.data?.subject
   );
   const [grades, setGrades] = useState<SchoolGrade[]>([]);
-  const [avg, setAvg] = useState<string>();
+  const [avg, setAvg] = useState<string>("0.00");
   useEffect(() => {
-    setGrades(
-      student.grades[subject as string].filter((x) => x.term === term) ?? []
-    );
+    if(student.grades[subject as string]){
+      setGrades(
+        student.grades[subject as string].filter((x) => x.term === term) ?? []
+      );
+    }else{
+      setGrades([]);
+    }
+    
     // eslint-disable-next-line
   }, [student, term]);
 
@@ -43,7 +47,6 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
     }
     // eslint-disable-next-line
   }, [grades]);
-
   return (
     <tr className="border-b-[1px] border-base-100">
       <td>{number}</td>
