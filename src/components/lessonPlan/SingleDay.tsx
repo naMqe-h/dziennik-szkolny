@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { singleHoursFromLessonPlan } from "../../utils/interfaces";
 import { SingleHour } from "./SingleHour";
 
-// interface singleHoursFromLessonPlan2 extends singleHoursFromLessonPlan {
-//   teachingClassName? : string | undefined
-// }
-
 interface SingleDayProps {
   lessons: singleHoursFromLessonPlan[] | undefined;
   dayOfWeek: string;
