@@ -4,6 +4,7 @@ import { GiTeacher } from "react-icons/gi";
 import { SingleTeacherData } from "../../utils/interfaces";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { union } from "lodash";
 
 export const Stats: React.FC = () => {
     const userData = useSelector(
@@ -70,7 +71,7 @@ export const Stats: React.FC = () => {
             <GiTeacher size={35} className="text-primary" />
             </div>
             <div className="stat-title">Uczone klasy</div>
-            <div className="stat-value">{userData.teachedClasses.length}</div>
+            <div className="stat-value">{union(userData.teachedClasses,userData.classTeacher!=="" ? [userData.classTeacher]:[]).length}</div>
         </div>
         </div>
     );

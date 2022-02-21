@@ -8,7 +8,6 @@ interface GradesTableProps {
   students: SingleStudentDataFromFirebase[];
   term: termType;
 }
-
 export const GradesTable: React.FC<GradesTableProps> = ({ students, term }) => {
   return (
     <table className="table w-full">

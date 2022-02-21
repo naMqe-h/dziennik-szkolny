@@ -14,7 +14,7 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
   grades,
 }) => {
   const { calculateAvg } = useAverage();
-
+  console.log(subject, grades);
   const isMobile = useMediaQuery("(max-width:768px)");
   const [avg, setAvg] = useState<string>("0.00");
   useEffect(() => {

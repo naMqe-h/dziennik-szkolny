@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { RootState } from "../../../redux/store";
-import { eventsFromFirebase,scheduleItemsArray, SingleClassData } from "../../../utils/interfaces"
+import { eventsFromFirebase,scheduleItemsArray, SingleClassData, TeachersDataFromFirebase } from "../../../utils/interfaces"
 import { AddModal } from "./AddModal"
 import { ScheduleTable } from "./ScheduleTable"
 
@@ -24,6 +24,7 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     // selectors
     const userType = useSelector((state: RootState) => state.userType.userType); 
     const classes = useSelector((state: RootState) => state.schoolData.schoolData?.classes)
+    const teachers = useSelector((state: RootState) => state.schoolData.schoolData?.teachers)
 
     // states
     const [classEvents, setClassEvents] = useState<scheduleItemsArray>()
@@ -57,7 +58,17 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     //   console.log(classEvents);
     // }, [classEvents])
     
-
+    function findTeacherName(email: string): string {
+        const allTeachers=teachers as TeachersDataFromFirebase;
+        const match = Object.keys(allTeachers).find((x) => x === email);
+        if (match) {
+          const foundedTeacher = allTeachers[match];
+          const Name = `${foundedTeacher.firstName} ${foundedTeacher.lastName}`;
+          return Name;
+        }
+        return "";
+      } 
+      
     const handleAdd = (data: any) => {
         if(domain && events){
             
@@ -87,7 +98,9 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
         <div>
             <AddModal isOpen={isOpen} setIsOpen={setIsOpen} userEmail={userData.email} add={handleAdd} reciever={[singleClass.name]} selectItems={selectOptions ? selectOptions : []} />
             {classEvents ?
-                <ScheduleTable schedule={classEvents} userEmail={userData.email} userType={userType} edit={handleEdit}
+                <ScheduleTable schedule={classEvents.map(x=>{
+                    return {...x,addedBy:findTeacherName(x.addedBy)}
+                })} userEmail={userData.email} userType={userType} edit={handleEdit}
                 selectItems={selectOptions ? selectOptions : []} />
              : ("Brak wydarzeń") }
         </div>
