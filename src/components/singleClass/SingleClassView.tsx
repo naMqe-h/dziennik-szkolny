@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../redux/store";
@@ -35,14 +35,14 @@ export const SingleClassView = () => {
   //modal generowanie
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
+  const [isGradeOpen, setIsGradeOpen] = useState(false);
 
   const [countGenerate, setCountGenerate] = useState<number>(1);
   const [yearGnerate, setYearGenerate] = useState<number>(2000);
   const [singleClass, setSingleClass] = useState<SingleClassData>();
   const [classTeacherName, setClassTeacherName] = useState<string>();
   const [studentsInfo, setStudentsInfo] = useState({});
-  const [isSubjectOpen, setIsSubjectOpen] = useState<boolean>(false);
-  const [isGradeOpen, setIsGradeOpen] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
@@ -134,6 +134,7 @@ export const SingleClassView = () => {
           grades: {},
           profilePicture: "",
           isActive: true,
+          presence: []
         };
 
         const objWrapper = {

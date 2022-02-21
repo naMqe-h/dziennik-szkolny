@@ -64,6 +64,7 @@ export const Student = () => {
           grades: {},
           profilePicture: "",
           isActive: true,
+          presence: []
         },
       };
       if (schoolData) {
