@@ -1,7 +1,8 @@
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillMessage } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
+import { messagesStateModalItf } from "../../../utils/interfaces";
 import {
   defaultSortingStateOfTeachers,
   ModalOptionsTeachers,
@@ -18,13 +19,16 @@ type SortTableParameters =
   | "subject";
 interface TeachersTableProps {
   teachersData: TeachersDataWithoutPassword;
-  setModalOptions: React.Dispatch<React.SetStateAction<ModalOptionsTeachers>>;
+  setModalOptions: React.Dispatch<React.
+  SetStateAction<ModalOptionsTeachers>>;
+  setMessagesModal: React.Dispatch<React.SetStateAction<messagesStateModalItf>>
   sorting: SortingOfTeachers;
   setSorting: React.Dispatch<React.SetStateAction<SortingOfTeachers>>;
 }
 export const TeachersTable: React.FC<TeachersTableProps> = ({
   teachersData,
   setModalOptions,
+  setMessagesModal,
   sorting,
   setSorting,
 }) => {
@@ -150,8 +154,17 @@ export const TeachersTable: React.FC<TeachersTableProps> = ({
               {!hideClassSubject && <td>{x.subject}</td>}
               {!hideEmailGender && <td>{x.gender}</td>}
               <td>
+               <button
+                  className="btn btn-square btn-info btn-sm "
+                  onClick={() => setMessagesModal({
+                    isOpen: true,
+                    reciever: x
+                  })}
+                >
+                  <AiFillMessage size={20} />
+                </button>
                 <button
-                  className="btn btn-square btn-warning btn-sm "
+                  className="btn btn-square btn-warning ml-2 btn-sm "
                   onClick={() => navigate(`/teachers/${x.email.split("@")[0]}`)}
                 >
                   <FaUserEdit size={20} />
