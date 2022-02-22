@@ -50,6 +50,7 @@ export interface CombinedPrincipalData
   planType: PlanTypes;
   schoolInformation: SchoolInformation;
   profilePicture: string;
+  messages:messagesObject
 }
 export type PlanTypes = "Basic" | "Premium";
 
@@ -148,6 +149,7 @@ export interface SingleStudentDataFromFirebase {
   grades: { [key: string]: SchoolGrade[] };
   isActive: boolean;
   presence: SingleStudentPresence[]
+  messages:messagesObject;
 }
 
 export type PresenceStatusType = 'OB' | 'NB' |  'SP' | 'ZW' | 'US'
@@ -181,6 +183,7 @@ export interface SingleTeacherData extends TeacherData {
   workingHours: teacherWorkingHours[];
   profilePicture: string;
   isActive: boolean;
+  messages:messagesObject;
 }
 //? Interfejs Danych z firebasa o wszystkich klasach
 export interface ClassesDataFromFirebase {
@@ -279,5 +282,17 @@ export interface eventsFromFirebase{
   classes: Array<scheduleItem>
 }
 
-
+export interface messagesObject{
+sended:singleMessage[];
+recived:singleMessage[]
+}
+export interface singleMessage{
+  date:string
+  title:string;
+  author:string;
+  status:messageStatusType;
+  content:string
+  reciver:string[];
+}
+type messageStatusType = "Seen" | "Unseen" | "Deleted"
 export type scheduleItemsArray = Array<scheduleItem>;

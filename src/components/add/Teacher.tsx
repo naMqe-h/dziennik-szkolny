@@ -80,6 +80,7 @@ export const Teacher = () => {
             workingHours: [],
             profilePicture: "",
             isActive: true,
+            messages:{sended:[],recived:[]},
           },
         };
         setDocument(
