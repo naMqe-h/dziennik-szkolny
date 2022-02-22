@@ -134,7 +134,8 @@ export const SingleClassView = () => {
           grades: {},
           profilePicture: "",
           isActive: true,
-          presence: []
+          presence: [],
+          messages:{sended:[],recived:[]},
         };
 
         const objWrapper = {
