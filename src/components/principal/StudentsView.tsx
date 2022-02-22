@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { RootState } from "../../redux/store";
 import {
+  messagesStateModalItf,
   SingleStudentDataFromFirebase,
   SortingOptions,
 } from "../../utils/interfaces";
@@ -23,10 +24,7 @@ export interface ModalOptionsStudent {
   isOpen: boolean;
   removedStudent: Omit<SingleStudentDataFromFirebase, "password"> | null;
 }
-export interface messagesStateModalItf {
-  isOpen: boolean;
-  reciever: Omit<SingleStudentDataFromFirebase, "password"> | null;
-}
+
 export interface SortingOfStudents {
   lp: SortingOptions;
   firstName: SortingOptions;

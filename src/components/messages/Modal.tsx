@@ -4,8 +4,7 @@ import { useSelector } from "react-redux";
 import makeAnimated from 'react-select/animated';
 import { useValidateInputs } from "../../hooks/useValidateInputs";
 import { RootState } from "../../redux/store";
-import { singleMessage } from "../../utils/interfaces";
-import { messagesStateModalItf } from "../principal/StudentsView";
+import { messagesStateModalItf, singleMessage } from "../../utils/interfaces";
 
 interface messagesModalItf{
     modalOptions: messagesStateModalItf ;

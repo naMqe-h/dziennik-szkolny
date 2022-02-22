@@ -296,3 +296,8 @@ export interface singleMessage{
 }
 type messageStatusType = "Seen" | "Unseen" | "Deleted"
 export type scheduleItemsArray = Array<scheduleItem>;
+
+export interface messagesStateModalItf {
+  isOpen: boolean;
+  reciever: Omit<SingleStudentDataFromFirebase, "password"> | SingleTeacherData | PrincipalPersonalInformation & PrincipalEmail | null;
+}

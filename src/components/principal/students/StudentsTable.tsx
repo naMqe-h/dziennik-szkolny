@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import {
   defaultSortingStateOfStudents,
-  messagesStateModalItf,
   ModalOptionsStudent,
   SortingOfStudents,
   StudentsDataWithoutPassword,
 } from "../StudentsView";
 import {AiFillMessage} from 'react-icons/ai'
+import { messagesStateModalItf } from "../../../utils/interfaces";
 
 type SortTableParameters =
   | "lp"
