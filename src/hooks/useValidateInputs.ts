@@ -31,6 +31,8 @@ const errorsInitial:errorsInterface = {
     dateFrom: {error: false, text: ''},
     dateTo: {error: false, text: ''},
     receiver: {error: false, text: ''},
+    title: {error: false, text: ''},
+    content: {error: false, text: ''},
 }
 
 export const useValidateInputs = () => {

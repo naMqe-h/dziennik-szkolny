@@ -4,10 +4,13 @@ import { useNavigate } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import {
   defaultSortingStateOfStudents,
+  messagesStateModalItf,
   ModalOptionsStudent,
   SortingOfStudents,
   StudentsDataWithoutPassword,
 } from "../StudentsView";
+import {AiFillMessage} from 'react-icons/ai'
+
 type SortTableParameters =
   | "lp"
   | "firstName"
@@ -18,12 +21,14 @@ type SortTableParameters =
 interface StudentsTableProps {
   studentsData: StudentsDataWithoutPassword;
   setModalOptions: React.Dispatch<React.SetStateAction<ModalOptionsStudent>>;
+  setMessagesModal: React.Dispatch<React.SetStateAction<messagesStateModalItf>>
   setSorting: React.Dispatch<React.SetStateAction<SortingOfStudents>>;
   sorting: SortingOfStudents;
 }
 export const StudentsTable: React.FC<StudentsTableProps> = ({
   studentsData,
   setModalOptions,
+  setMessagesModal,
   setSorting,
   sorting,
 }) => {
@@ -139,7 +144,16 @@ export const StudentsTable: React.FC<StudentsTableProps> = ({
               {!hideEmail && <td>{x.email}</td>}
               <td>
                 <button
-                  className="btn btn-square btn-warning btn-sm "
+                  className="btn btn-square btn-info btn-sm "
+                  onClick={() => setMessagesModal({
+                    isOpen: true,
+                    reciever: x
+                  })}
+                >
+                  <AiFillMessage size={20} />
+                </button>
+                <button
+                  className="btn btn-square btn-warning btn-sm ml-2"
                   onClick={() => navigate(`/students/${x.email.split("@")[0]}`)}
                 >
                   <FaUserEdit size={20} />
