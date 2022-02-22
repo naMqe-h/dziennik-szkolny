@@ -70,7 +70,7 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
                 type="text" 
                 name="title"
                 value={formData.title} 
-                className={`input ${inputErrors.title.error ? "border-red-500" : ''}`}
+                className={`input w-full ${inputErrors.title.error ? "border-red-500" : ''}`}
                 onChange={(e) => handleChange(e.target.name, e.target.value)} />
             <label htmlFor="content">Treść</label>
             <textarea
