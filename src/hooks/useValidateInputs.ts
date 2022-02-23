@@ -65,6 +65,8 @@ export const useValidateInputs = () => {
       class: 'Klasę',
       topic: 'Temat',
       weight: 'wagę',
+      title: 'Tytuł',
+      content: 'Treść',
     }
 
     const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher', 'addedBy'];

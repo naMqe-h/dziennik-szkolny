@@ -299,5 +299,5 @@ export type scheduleItemsArray = Array<scheduleItem>;
 
 export interface messagesStateModalItf {
   isOpen: boolean;
-  reciever: Omit<SingleStudentDataFromFirebase, "password"> | Omit<SingleTeacherData, 'password'> | PrincipalPersonalInformation & PrincipalEmail | null;
+  reciever: Omit<SingleStudentDataFromFirebase, "password"> | Omit<SingleTeacherData, 'password'> | 'principal' | null;
 }
