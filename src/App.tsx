@@ -66,6 +66,7 @@ import { Generate } from "./components/principal/lessonPlan/Generate";
 import { StudentGradesView } from "./components/student/grades/StudentGradesView";
 import { useRealTimePrincipal } from "./hooks/useRealTimePrincipal";
 import { Frequency } from "./pages/Frequency";
+import { Messages } from "./pages/Messages";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
@@ -207,7 +208,6 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   if (loading) {
     return <Loader />;
   } else {
@@ -318,6 +318,14 @@ function App() {
                   <TeacherRoute loading={loading}>
                     <Presence />
                   </TeacherRoute>
+                }
+              />
+              <Route
+                path="/messages"
+                element={
+                  <StudentRoute loading={loading}>
+                    <Messages />
+                  </StudentRoute>
                 }
               />
               <Route

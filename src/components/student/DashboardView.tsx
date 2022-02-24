@@ -34,7 +34,7 @@ export const DashboardView = () => {
             <AiOutlineCalendar size={70} />
           </Card>
         </Link>
-        <Link to={"/"}>
+        <Link to={"/messages"}>
           <Card
             text="Wiadomości"
             background="radial-gradient(circle, rgba(226,98,124,1) 9%, rgba(204,91,114,1) 37%, rgba(33,33,33,1) 100%)"

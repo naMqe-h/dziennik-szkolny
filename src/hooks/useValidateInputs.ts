@@ -31,6 +31,8 @@ const errorsInitial:errorsInterface = {
     dateFrom: {error: false, text: ''},
     dateTo: {error: false, text: ''},
     receiver: {error: false, text: ''},
+    title: {error: false, text: ''},
+    content: {error: false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -63,6 +65,8 @@ export const useValidateInputs = () => {
       class: 'Klasę',
       topic: 'Temat',
       weight: 'wagę',
+      title: 'Tytuł',
+      content: 'Treść',
     }
 
     const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher', 'addedBy'];

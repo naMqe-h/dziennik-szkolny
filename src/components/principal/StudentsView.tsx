@@ -6,12 +6,16 @@ import { Link } from "react-router-dom";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { RootState } from "../../redux/store";
 import {
+  messagesStateModalItf,
   SingleStudentDataFromFirebase,
   SortingOptions,
 } from "../../utils/interfaces";
+import { Modal as MessagesModal } from "../messages/Modal";
 import { SearchButton } from "../searchButton/SearchButton";
 import { RemoveStudentModal } from "./students/RemoveStudentModal";
 import { StudentsTable } from "./students/StudentsTable";
+
+
 export type StudentsDataWithoutPassword = Omit<
   SingleStudentDataFromFirebase,
   "password"
@@ -20,6 +24,7 @@ export interface ModalOptionsStudent {
   isOpen: boolean;
   removedStudent: Omit<SingleStudentDataFromFirebase, "password"> | null;
 }
+
 export interface SortingOfStudents {
   lp: SortingOptions;
   firstName: SortingOptions;
@@ -41,6 +46,12 @@ export const StudentsView = () => {
   const [studentsData, setStudentsData] = useState<StudentsDataWithoutPassword>(
     []
   );
+
+  const [messageModal, setMessageModal] = useState<messagesStateModalItf>({
+    isOpen: false,
+    reciever: null
+  })
+
   const [ModalOption, setModalOptions] = useState<ModalOptionsStudent>({
     isOpen: false,
     removedStudent: null,
@@ -120,6 +131,10 @@ export const StudentsView = () => {
         ModalOptions={ModalOption}
         setModalOptions={setModalOptions}
       />
+      <MessagesModal 
+        modalOptions={messageModal}
+        setModalOptions={setMessageModal}
+      />
       <section className="card bg-base-200 px-8 py-4 relative overflow-x-auto">
         <Link to="/" className="flex w-max items-center mb-2 gap-2">
           <BsFillArrowLeftCircleFill
@@ -137,6 +152,7 @@ export const StudentsView = () => {
         <StudentsTable
           studentsData={studentsData}
           setModalOptions={setModalOptions}
+          setMessagesModal={setMessageModal}
           sorting={sorting}
           setSorting={setSorting}
         />
