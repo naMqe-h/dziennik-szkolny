@@ -161,6 +161,7 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
             }
           }
           toast.success('Wiadomość została wysłana', {autoClose: 2000})
+          setFormData(initialFormData);
         }
         setValidated(false);
       }, [validated, errors]);
