@@ -98,6 +98,7 @@ export const Class = () => {
       toast.success("Udało ci się dodać klasę 😀", { autoClose: 2000 });
     }
     setValidated(false);
+    //eslint-disable-next-line
   }, [validated, errors]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {

@@ -68,6 +68,7 @@ export const Event: React.FC = () => {
         })
       );
     }
+    //eslint-disable-next-line
   }, [firebaseEvents, classes]);
 
   useEffect(() => {
@@ -105,6 +106,7 @@ export const Event: React.FC = () => {
       }
     }
     setDatesChanged(false);
+    //eslint-disable-next-line
   }, [datesChanged]);
 
   const handleChange = (name: string, value: string, checked?: Boolean) => {

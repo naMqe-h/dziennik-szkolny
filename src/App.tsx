@@ -65,6 +65,7 @@ import { Loader } from "./loader/Loader";
 import { Generate } from "./components/principal/lessonPlan/Generate";
 import { StudentGradesView } from "./components/student/grades/StudentGradesView";
 import { useRealTimePrincipal } from "./hooks/useRealTimePrincipal";
+import { Frequency } from "./pages/Frequency";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
@@ -314,9 +315,9 @@ function App() {
               <Route
                 path="/presence"
                 element={
-                  <StudentRoute loading={loading}>
+                  <TeacherRoute loading={loading}>
                     <Presence />
-                  </StudentRoute>
+                  </TeacherRoute>
                 }
               />
               <Route
@@ -324,6 +325,14 @@ function App() {
                 element={
                   <StudentRoute loading={loading}>
                     <StudentGradesView />
+                  </StudentRoute>
+                }
+              />
+              <Route
+                path="/frequency"
+                element={
+                  <StudentRoute loading={loading}>
+                    <Frequency />
                   </StudentRoute>
                 }
               />
