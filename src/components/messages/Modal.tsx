@@ -3,9 +3,10 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../hooks/useSetDocument";
+import { useDocument } from "../../hooks/useDocument";
 import { useValidateInputs } from "../../hooks/useValidateInputs";
 import { RootState } from "../../redux/store";
-import { messagesStateModalItf, singleMessage } from "../../utils/interfaces";
+import { CombinedPrincipalData, messagesStateModalItf, singleMessage } from "../../utils/interfaces";
 
 interface messagesModalItf{
     modalOptions: messagesStateModalItf ;
@@ -24,10 +25,9 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
             return state.student.data
         }
     }) 
-    const uid = useSelector((state: RootState) => state.principal.user?.uid);
+    const principalUid = useSelector((state: RootState) => state.principal.user?.uid);
     const schoolData = useSelector((state: RootState) => state.schoolData.schoolData);
     const domain = schoolData?.information?.domain;
-
     const initialFormData:singleMessage = {
         date: new Date().toISOString().split("T")[0],
         title: '',
@@ -39,42 +39,88 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
 
     const [formData, setFormData] = useState<singleMessage>(initialFormData);
     const [validated, setValidated] = useState(false)
-
+    const [principalDoc, setPrincipalDoc] = useState<CombinedPrincipalData | undefined>(undefined)
     const { validateData, inputErrors, errors } = useValidateInputs();
     const { setDocument } = useSetDocument();
+    const { getDocument, document } = useDocument();
+    
 
+    
 
+    useEffect(() => {
+        if(principalUid && (modalOptions.reciever === 'principal' || formData.reciver[0] === 'principal')){
+            getDocument('principals', principalUid) 
+        }
+    }, [principalUid, formData])
+
+    useEffect(() => {
+        if(document){
+             setPrincipalDoc(document as CombinedPrincipalData);
+        }
+    }, [document])
+    
+    
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            reciver: [modalOptions.reciever !== 'principal' ? (modalOptions.reciever?.email ? modalOptions.reciever.email : '') : ('principal')]
+        }));
+    }, [modalOptions])
+    
 
     useEffect(() => {
         if (validated) {
           if (errors) return;
+          if (!userData){
+            toast.error("brak danych użytkownika", {autoClose:2000})  
+            return
+          }
+          if(!domain) {
+              toast.error("Brak informacji o domenie szkoły", {autoClose: 2000})
+              return
+          }
           
-          const userMessages = userData?.messages;
+          // ustawienie wartosci sended
+          const userMessages = userData.messages;
           if(userType === 'principals'){
-              if(!uid || !userMessages) {
+              if(!principalUid || !userMessages) {
                   toast.error('Brak uid użytkownika lub obiektu wiadomości', {autoClose: 2000});
                   return
-              }
-            //   setDocument(userType, uid, {messages:{
-            //     recieved:[...userMessages?.recived],
-            //     sended: [...userMessages.sended, formData]
-            //   }})
+                }
+
+                setDocument(userType, principalUid, {messages:{
+                    recived:[...userMessages.recived],
+                    sended: [...userMessages.sended, formData]
+                }})
+
           } else {
-              if(!userMessages || !domain || !userType) {
+              if(!userMessages || !userType) {
                   toast.error('Brak obiektu wiadomości lub informacji o domenie szkoły lub typu użytkownika', {autoClose: 2000})
                   return
               }
-            //   setDocument(domain, userType, {messages:{
-            //     recieved:[...userMessages?.recived],
-            //     sended: [...userMessages.sended, formData]
-            //   }})
+              setDocument(domain, userType, {messages:{
+                recived:[...userMessages?.recived],
+                sended: [...userMessages.sended, formData]
+              }})
           }
-          if(modalOptions.reciever === 'principal'){
-            // useDocument dyrka zeby pobrać stare wiadomosci
+
+          // ustawienie wartości recived
+          if(formData.reciver[0] === 'principal'){
+            if(!principalDoc || !principalUid){
+                toast.error('Brak obiektu wiadomości dyrektora lub uid')
+                return
+            }
+            const principalMessages = principalDoc.messages;
+            const dbObj = {messages:{
+                recived:[...principalMessages.recived, {...formData, status: 'Unseen'}],
+                sended: [...principalMessages.sended]
+            }}
+
+            setDocument('principals', principalUid, dbObj)
 
           } else {
             if(!schoolData){
-                toast.error('Brak obiektu danych szkoły', {autoClose: 2000})
+                toast.error('Brak obiektu danych szkoły lub domeny', {autoClose: 2000})
                 return
             }
             const teacherReciever = Object.values(schoolData?.teachers).find((teacher) => teacher.email === formData.reciver[0])
@@ -82,9 +128,33 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
             const studentReciever = Object.values(schoolData?.students).find((student) => student.email === formData.reciver[0])
 
             if(teacherReciever){
-                console.log(teacherReciever);
+                const teacherMessages = teacherReciever?.messages;
+                if(!teacherMessages){
+                    toast.error('Brak obiektu wiadomości użytkownika')
+                    return
+                }
+                const dbObj = {[teacherReciever.email]: 
+                    {messages:{
+                        recived:[...teacherMessages.recived, {...formData, status: 'Unseen'}],
+                        sended: [...teacherMessages.sended]
+                    }}
+                }
+                
+                setDocument(domain, 'students', dbObj)
             } else {
-                console.log(studentReciever);
+                const studentMessages = studentReciever?.messages;
+                if(!studentMessages){
+                    toast.error('Brak obiektu wiadomości użytkownika')
+                    return
+                }
+                const dbObj = {[studentReciever.email]: 
+                    {messages:{
+                        recived:[...studentMessages.recived, {...formData, status: 'Unseen'}],
+                        sended: [...studentMessages.sended]
+                    }}
+                }
+                
+                setDocument(domain, 'students', dbObj)
             }
           }
           toast.success('Wiadomość została wysłana', {autoClose: 2000})
