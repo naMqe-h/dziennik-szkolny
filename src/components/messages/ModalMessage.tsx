@@ -14,10 +14,12 @@ export const ModalMessage: React.FC<ModalMessageProps> = ({
   return (
     <div className={`modal ${isOpen && "modal-open"}`}>
       <div className="modal-box">
-        <h3 className="font-bold text-2xl p-2">{message.title}</h3>
-        <h6 className="text-sm text-right font-bold">
-          Nadawca: {message.author}
-        </h6>
+        <div className="container flex">
+          <h3 className="font-bold text-2xl p-2">{message.title}</h3>
+          <h6 className="text-sm text-right font-bold self-end">
+            Nadawca: {message.author}
+          </h6>
+        </div>
         <div className="divider"></div>
         <p className="py-4">{message.content}</p>
         <div className="container flex justify-end">
