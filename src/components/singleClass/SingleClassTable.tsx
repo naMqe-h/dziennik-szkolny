@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { RootState } from "../../redux/store";
 import {
+  messagesStateModalItf,
   SingleStudentDataFromFirebase,
   StudentsDataFromFirebase,
   userType,
 } from "../../utils/interfaces";
 import { SingleClassTableRow } from "./SingleClassTableRow";
+import { Modal as MessagesModal } from "../messages/Modal";
+
 
 interface SingleClassTableProps {
   studentsInfo: StudentsDataFromFirebase;
@@ -24,10 +28,22 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
     (a: SingleStudentDataFromFirebase, b: SingleStudentDataFromFirebase) =>
       a.lastName.localeCompare(b.lastName, "pl")
   );
+
+  const [messageModal, setMessageModal] = useState<messagesStateModalItf>({
+    isOpen: false,
+    reciever: null
+  })
+
   const isMobile = useMediaQuery("(max-width:1000px)");
   const isExtraSmallDevice = useMediaQuery("(max-width:560px)");
+  
+  
   return (
     <div className="overflow-x-auto">
+      <MessagesModal 
+        modalOptions={messageModal}
+        setModalOptions={setMessageModal}
+      />
       <table className="table w-full table-zebra text-center">
         {!isMobile ? (
           <>
@@ -40,7 +56,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                 <th>Urodziny</th>
                 <th>Pesel</th>
                 <th>Ostatnie logowanie</th>
-                {userType === "principals" && <th></th>}
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -53,6 +69,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   isExtraSmallDevice={isExtraSmallDevice}
                   showDelete={showDelete}
                   userType={userType as userType}
+                  setMessagesModal={setMessageModal}
                 />
               ))}
             </tbody>
@@ -65,7 +82,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                 <th>Nazwisko</th>
                 <th>Imię</th>
                 {!isExtraSmallDevice && <th>Email</th>}
-                {userType === "principals" && <th></th>}
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -78,6 +95,7 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                   isExtraSmallDevice={isExtraSmallDevice}
                   showDelete={showDelete}
                   userType={userType as userType}
+                  setMessagesModal={setMessageModal}
                 />
               ))}
             </tbody>

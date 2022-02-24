@@ -3,12 +3,13 @@ import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
-import { SingleTeacherData, SortingOptions } from "../../utils/interfaces";
+import { messagesStateModalItf, SingleTeacherData, SortingOptions } from "../../utils/interfaces";
 import { omit } from "lodash";
 import { TeachersTable } from "./teachers/TeachersTable";
 import { SearchButton } from "../searchButton/SearchButton";
 import { RemoveTeacherModal } from "./teachers/RemoveTeacherModal";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { Modal as MessagesModal} from "../messages/Modal";
 export type TeachersDataWithoutPassword = Omit<SingleTeacherData, "password">[];
 export interface ModalOptionsTeachers {
   isOpen: boolean;
@@ -36,6 +37,12 @@ export const TeachersView: React.FC = () => {
   const [teachersData, setTeachersData] = useState<TeachersDataWithoutPassword>(
     []
   );
+
+  const [messageModal, setMessageModal] = useState<messagesStateModalItf>({
+    isOpen: false,
+    reciever: null
+  })
+
   const [ModalOption, setModalOptions] = useState<ModalOptionsTeachers>({
     isOpen: false,
     removedTeacher: null,
@@ -107,6 +114,10 @@ export const TeachersView: React.FC = () => {
         ModalOptions={ModalOption}
         setModalOptions={setModalOptions}
       />
+      <MessagesModal 
+        modalOptions={messageModal}
+        setModalOptions={setMessageModal}
+      />
       <section className="card bg-base-200 px-8 py-4 relative">
         <Link to="/" className="flex w-max items-center mb-2 gap-2">
           <BsFillArrowLeftCircleFill
@@ -126,6 +137,7 @@ export const TeachersView: React.FC = () => {
         <TeachersTable
           teachersData={teachersData}
           setModalOptions={setModalOptions}
+          setMessagesModal={setMessageModal}
           setSorting={setSorting}
           sorting={sorting}
         />
