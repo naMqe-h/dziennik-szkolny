@@ -22,6 +22,7 @@ interface ScheduleTableItf {
   userType: userType | undefined;
   edit: (data: any, oldItem: any) => void;
   selectItems: selectOption[];
+  teachedClasses?: string[];
 }
 interface SortingOfSchedule {
   name: SortingOptions;
@@ -46,6 +47,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   userType,
   edit,
   selectItems,
+  teachedClasses
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOptionsEvent, setModalOptionsEvent] = useState<ModalOptionsEvent>(
@@ -158,7 +160,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
 
   const isMobile = useMediaQuery("(max-width:768px)");
 
-
+  
   useEffect(() => {
     setEventEdit((prev) => ({
       ...prev,
@@ -250,13 +252,29 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                       return "Wszyscy";
                     }
                     return (
+                      !teachedClasses ? 
+                      (
                       <Link
                         to={`/class/${rec}/info`}
                         className="kbd mx-1 border-primary"
                         key={index + rec}
                       >
                         {rec}
-                      </Link>
+                      </Link>) : (
+                        teachedClasses.includes(rec)  ? (
+                          <Link
+                            to={`/class/${rec}/info`}
+                            className="kbd mx-1 border-primary"
+                            key={index + rec}
+                          >
+                            {rec}
+                          </Link>
+                        ) : (
+                          <div className="kbd mx-1 border-primary" key={index + rec}>
+                            {rec} 
+                          </div>
+                        )
+                      )
                     );
                   })}
                 </td>
@@ -330,13 +348,29 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                           return "Wszyscy";
                         }
                         return (
+                          !teachedClasses ? 
+                          (
                           <Link
                             to={`/class/${rec}/info`}
                             className={`kbd border-primary ${index !== 0 ? 'mx-1' : 'mr-1'}`}
                             key={index + rec}
                           >
                             {rec}
-                          </Link>
+                          </Link>) : (
+                            teachedClasses.includes(rec)  ? (
+                              <Link
+                                to={`/class/${rec}/info`}
+                                className={`kbd border-primary ${index !== 0 ? 'mx-1' : 'mr-1'}`}
+                                key={index + rec}
+                              >
+                                {rec}
+                              </Link>
+                            ) : (
+                              <div className={`kbd border-primary ${index !== 0 ? 'mx-1' : 'mr-1'}`} key={index + rec}>
+                                {rec} 
+                              </div>
+                            )
+                          )
                         );
                       })}
                     </div>

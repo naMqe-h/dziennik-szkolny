@@ -47,7 +47,7 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
       {userType === "principals" && (
         <>
           <Link to={`/students/${student.email.split("@")[0]}`}>
-            <button className="btn btn-square btn-warning btn-sm">
+            <button className="btn btn-square btn-warning btn-sm ml-2">
               <FaUserEdit size={20} />
             </button>
           </Link>
@@ -66,7 +66,7 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
       {!isExtraSmallDevice && <td>{student.email}</td>}
       <td className="w-1">
         <button
-          className="btn btn-square btn-info btn-sm "
+          className="btn btn-square btn-info btn-sm"
           onClick={() => setMessagesModal({
             isOpen: true,
             reciever: student
@@ -74,11 +74,10 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
         >
           <AiFillMessage size={20} />
         </button>
-
       {userType === "principals" && (
           <>
             <Link to={`/students/${student.email.split("@")[0]}`}>
-              <button className="btn btn-square btn-warning btn-sm">
+              <button className="btn btn-square btn-warning btn-sm ml-2">
                 <FaUserEdit size={20} />
               </button>
             </Link>

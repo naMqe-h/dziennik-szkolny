@@ -54,10 +54,6 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
         }
     }, [events,singleClass])
     
-    // useEffect(() => {
-    //   console.log(classEvents);
-    // }, [classEvents])
-    
     function findTeacherName(email: string): string {
         const allTeachers=teachers as TeachersDataFromFirebase;
         const match = Object.keys(allTeachers).find((x) => x === email);
@@ -101,7 +97,9 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
                 <ScheduleTable schedule={classEvents.map(x=>{
                     return {...x,addedBy:findTeacherName(x.addedBy)}
                 })} userEmail={userData.email} userType={userType} edit={handleEdit}
-                selectItems={selectOptions ? selectOptions : []} />
+                selectItems={selectOptions ? selectOptions : []} 
+                teachedClasses={userType === 'teachers' && userData?.teachedClasses}
+                />
              : ("Brak wydarzeń") }
         </div>
     )
