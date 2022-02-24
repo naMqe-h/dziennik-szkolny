@@ -26,9 +26,9 @@ export const DashboardView = () => {
             <BsJournalBookmark size={70} />
           </Card>
         </Link>
-        <Link to='/'>
+        <Link to='/messages'>
           <Card
-            text="Inne"
+            text="WIADOMOŚCI"
             background="radial-gradient(circle, rgba(81,168,0,1) 0%, rgba(33,33,33,1) 100%)"
           >
             <AiOutlineCalendar size={70} />

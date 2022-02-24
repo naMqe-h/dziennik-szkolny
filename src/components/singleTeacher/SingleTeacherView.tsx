@@ -6,10 +6,13 @@ import { Loader } from "../../loader/Loader";
 import { RootState } from "../../redux/store";
 import {
   genderType,
+  messagesStateModalItf,
   SingleClassData,
   SingleTeacherData,
   TeachersDataFromFirebase,
 } from "../../utils/interfaces";
+import { Modal as MessagesModal } from "../messages/Modal";
+
 
 // react icons
 import { HiOutlineMail } from "react-icons/hi";
@@ -30,6 +33,11 @@ export const SingleTeacherView = () => {
   const [formData, setFormData] = useState<SingleTeacherData>();
   const [freeClasses, setFreeClasses] = useState<SingleClassData[]>();
   const [validated, setValidated] = useState<Boolean>(false);
+
+  const [messageModal, setMessageModal] = useState<messagesStateModalItf>({
+    isOpen: false,
+    reciever: null
+  })
 
   const userAuth = useSelector((state: RootState) => state.principal.user);
 
@@ -155,6 +163,10 @@ export const SingleTeacherView = () => {
   if (!formData) return <Loader />;
   return (
     <div className="h-full m-4">
+      <MessagesModal 
+        modalOptions={messageModal}
+        setModalOptions={setMessageModal}
+      />
       <div className="flex justify-center">
         <div className="max-w-screen-2xl w-full rounded-box md:border bg-base-200">
           <div className="flex flex-col justify-center items-center p-10">
@@ -186,7 +198,10 @@ export const SingleTeacherView = () => {
                 </Link>
               </div>
               <div className="pt-5">
-                <button className="btn btn-info m-2" onClick={() => undefined}>
+                <button className="btn btn-info m-2" onClick={() => setMessageModal({
+                  isOpen: true,
+                  reciever: teacher
+                })}>
                   Wiadomość
                 </button>
                 <button

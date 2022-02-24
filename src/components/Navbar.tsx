@@ -8,6 +8,7 @@ import useMediaQuery from "../hooks/useMediaQuery";
 import { useSetDocument } from "../hooks/useSetDocument";
 import {
   ClassesDataFromFirebase,
+  CombinedPrincipalData,
   SchoolSubjectsDataFromFirebase,
   StudentsDataFromFirebase,
   TeachersDataFromFirebase,
@@ -58,30 +59,46 @@ export const Navbar = () => {
             state.schoolData.classes
           ) {
             const oldTeachers = state.schoolData?.teachers;
-            const oldSubjects = state.schoolData?.subjects;
             const oldStudents = state.schoolData?.students;
-            const oldClasses = state.schoolData?.classes;
+            const oldPrincipal = principal.data;
             const newTeachers: TeachersDataFromFirebase = {};
             const newStudents: StudentsDataFromFirebase = {};
-            const newSubjects: SchoolSubjectsDataFromFirebase = {};
-            const newClasses: ClassesDataFromFirebase = {};
+            const newPrincipal: Partial<CombinedPrincipalData> = {
+              ...oldPrincipal,
+              messages: {
+                recived: [],
+                sended: [],
+              },
+            };
             Object.entries(oldTeachers).forEach((item) => {
-              newTeachers[item[0]] = { ...item[1], isActive: true };
+              newTeachers[item[0]] = {
+                ...item[1],
+                messages: {
+                  recived: [],
+                  sended: [],
+                },
+              };
             });
             Object.entries(oldStudents).forEach((item) => {
-              newStudents[item[0]] = { ...item[1], isActive: true };
-            });
-            Object.entries(oldSubjects).forEach((item) => {
-              newSubjects[item[0]] = { ...item[1], isActive: true };
-            });
-            Object.entries(oldClasses).forEach((item) => {
-              newClasses[item[0]] = { ...item[1], isActive: true };
+              newStudents[item[0]] = {
+                ...item[1],
+                messages: {
+                  recived: [],
+                  sended: [],
+                },
+              };
             });
             const domain = state.schoolData.information.domain;
+            console.log(newStudents);
+            console.log(newTeachers);
+            console.log(newPrincipal);
             setDocument(domain as string, "teachers", newTeachers);
             setDocument(domain as string, "students", newStudents);
-            setDocument(domain as string, "classes", newClasses);
-            setDocument(domain as string, "subjects", newSubjects);
+            setDocument(
+              "principals",
+              state.schoolData.information.principalUID,
+              newPrincipal
+            );
           }
         }}
       >
