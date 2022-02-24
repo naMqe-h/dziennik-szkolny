@@ -64,10 +64,12 @@ import { Loader } from "./loader/Loader";
 //do uporządkowania
 import { Generate } from "./components/principal/lessonPlan/Generate";
 import { StudentGradesView } from "./components/student/grades/StudentGradesView";
+import { useRealTimePrincipal } from "./hooks/useRealTimePrincipal";
 import { Messages } from "./pages/Messages";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
+  const { realTimePrincipal } = useRealTimePrincipal()
   const { getDocument, document } = useDocument();
   const dispatch = useDispatch();
 
@@ -91,13 +93,17 @@ function App() {
     );
     // eslint-disable-next-line
   }, [realTimeDocuments]);
+  
+  useEffect(() => {
+    dispatch(
+      setPrincipalData(realTimePrincipal as CombinedPrincipalData)
+    );
+    // eslint-disable-next-line
+  }, [realTimePrincipal]);
 
   //sprawdzic nowego usera
   // sprawdza czy dyrektor czy uczen czy nauczyciel i zapisauje pobrane dane do reduxa
   useEffect(() => {
-    if (type === "principals") {
-      dispatch(setPrincipalData(document as CombinedPrincipalData));
-    }
     if (type === "students") {
       if (document) {
         for (const [key, value] of Object.entries(
@@ -181,8 +187,6 @@ function App() {
           if (_type === "principals") {
             //zapisuje uzytkownika z auth
             dispatch(setPrincipalAuth(user));
-            //pobieram z bazy danych informacje o uzytkowniku i kolekcję szkoły
-            await getDocument("principals", user.uid);
           } else if (_type === "students") {
             //zapisuje uzytkownika z auth
             dispatch(setStudentAuth(user));

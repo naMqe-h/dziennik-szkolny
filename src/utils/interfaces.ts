@@ -124,10 +124,21 @@ export interface SubjectData {
   includedAvg: boolean;
   isActive: boolean;
 }
+
+export interface SingleCompletedLesson {
+  topic: string
+  date: string
+  dayOfWeek: daysOfWeek
+  hour: number,
+  presenceCount: number
+  studentsCount: number
+}
+
 //? Interfejs Klasy ze Studentami do np sprawdzania frekwencji  || Wyświetlania informacji o danej klasie
 export interface SingleClassData extends ClassData {
   students: string[];
   isActive: boolean;
+  completedLessons: SingleCompletedLesson[],
 }
 //! Here are the interaces from Firebase
 //? Interfejs Danych z firebasa o pojedynczym uczniu

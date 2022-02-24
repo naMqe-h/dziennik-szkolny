@@ -175,8 +175,8 @@ export const Profile = () => {
                       <CgWebsite className="mr-2 text-primary" />
                       Wychowawstwo:{" "}
                       {userData?.classTeacher ? (
-                        <Link to={`/classes/${userData?.classTeacher}/info`}>
-                          userData?.classTeacher
+                        <Link to={`/class/${userData?.classTeacher}/info`}>
+                          {userData?.classTeacher}
                         </Link>
                       ) : (
                         "Brak"
