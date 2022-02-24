@@ -79,6 +79,7 @@ export const Class = () => {
           subjects: [{ name: "GodzinaWychowawcza", teacher: classTeacher }],
           students: [],
           isActive: true,
+          completedLessons: []
         },
       };
       // update firebase

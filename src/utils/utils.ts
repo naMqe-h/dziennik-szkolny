@@ -81,3 +81,17 @@ export const getDayOfTheWeek = (day: number): daysOfWeek => {
   if (day === 5) return "friday";
   return "monday";
 };
+
+export const lessonHours = [
+  `8:00 - 8:45`,
+  `8:50 - 9:35`,
+  `9:45 - 10:30`,
+  `10:40 - 11:25`,
+  `11:40 - 12:25`,
+  `12:35 - 13:20`,
+  `13:30 - 14:15`,
+  `14:20 - 15:05`,
+  `15:10 - 15:55`,
+  `16:00 - 16:45`,
+  `16:50 - 17:35`,
+]

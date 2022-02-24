@@ -4,7 +4,7 @@ import { AiOutlineClose } from "react-icons/ai"
 import { useSelector } from "react-redux"
 import { useSetDocument } from "../../../hooks/useSetDocument"
 import { RootState } from "../../../redux/store"
-import { SingleClassData, StudentsDataFromFirebase, teacherWorkingHours, PresenceStatusType, SingleStudentPresence } from "../../../utils/interfaces"
+import { SingleClassData, StudentsDataFromFirebase, teacherWorkingHours, PresenceStatusType, SingleStudentPresence, SingleCompletedLesson } from "../../../utils/interfaces"
 
 type ModalProps = {
     open: boolean
@@ -34,6 +34,7 @@ export const Modal: React.FC<ModalProps> = ({ open, setIsOpen, currentHour }) =>
 
     const [newPresence, setNewPresence] = useState<{ [key: string] : PresenceStatusType }>({})
     const [newAllPresence, setNewAllPresence] = useState<PresenceStatusType | 0>(0)
+    const [topic, setTopic] = useState<string>('')
 
     const [students, setStudents] = useState<StudentsDataFromFirebase>()
     const [currentClass, setCurrentClass] = useState<SingleClassData>()
@@ -102,7 +103,44 @@ export const Modal: React.FC<ModalProps> = ({ open, setIsOpen, currentHour }) =>
                     data[key].presence = [ newPresenceObj ]
                 }
             }
+
+            let presenceCount = 0
+
+            for(const value of Object.values(newPresence)) {
+                if(value !== 'OB') presenceCount++
+            }
+
+            const data2 = {
+                topic,
+                date: new Date().toLocaleDateString('en-CA'),
+                dayOfWeek: currentHour?.dayOfWeek,
+                hour: currentHour?.hour,
+                presenceCount: currentClass?.students.length as number - presenceCount,
+                studentsCount: currentClass?.students.length
+            }
+
+            let data3
+
+            if(currentClass?.completedLessons) {
+                data3 = {
+                    [currentClass?.name as string]: {
+                        completedLessons: [
+                            ...currentClass?.completedLessons as SingleCompletedLesson[],
+                            data2
+                        ]
+                    }
+                }
+            } else {
+                data3 = {
+                    [currentClass?.name as string]: {
+                        completedLessons: [data2]
+                    }
+                }
+            }
+
+
             setDocument(domain as string, 'students', data)
+            setDocument(domain as string, 'classes', data3)
         }
     }
 
@@ -127,15 +165,18 @@ export const Modal: React.FC<ModalProps> = ({ open, setIsOpen, currentHour }) =>
                     size={30}
                     className="absolute top-2 right-2 cursor-pointer"
                 />
-                <div className="flex justify-end items-center gap-2 mt-6">
-                    <p className="font-bold">Ustaw dla wszystkich:</p>
-                    {presenceTypes.map(p => (
-                        <span onClick={() => handleSetAllPresence(p.name)} key={p.name} className={`badge ${p.color} mx-1 p-4 font-bold flex z-10 cursor-pointer
-                        ${newAllPresence === p.name ? 'scale-[1.2]' : 'opacity-30 hover:opacity-100 hover:scale-110'} 
-                    `}>
-                        {p.name}
-                    </span>
-                    ))}
+                <div className="flex justify-between items-center mt-6">
+                    <input type="text" value={topic} onChange={(e) => setTopic(e.currentTarget.value)} placeholder="Temat lekcji" className="input input-bordered w-full max-w-xs" />
+                    <div className="flex gap-2">
+                        <p className="font-bold">Ustaw dla wszystkich:</p>
+                        {presenceTypes.map(p => (
+                            <span onClick={() => handleSetAllPresence(p.name)} key={p.name} className={`badge ${p.color} mx-1 p-4 font-bold flex z-10 cursor-pointer
+                            ${newAllPresence === p.name ? 'scale-[1.2]' : 'opacity-30 hover:opacity-100 hover:scale-110'} 
+                        `}>
+                            {p.name}
+                        </span>
+                        ))}
+                    </div>
                 </div>
                 <table className="table table-zebra w-full mt-4">
                     <thead>
