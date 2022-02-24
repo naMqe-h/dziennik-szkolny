@@ -98,10 +98,13 @@ export const Modal:React.FC<messagesModalItf> = ({modalOptions, setModalOptions}
                   toast.error('Brak obiektu wiadomości lub informacji o domenie szkoły lub typu użytkownika', {autoClose: 2000})
                   return
               }
-              setDocument(domain, userType, {messages:{
-                recived:[...userMessages?.recived],
-                sended: [...userMessages.sended, formData]
-              }})
+              const dbObj = {[userData.email]: 
+                {messages:{
+                    recived:[...userMessages.recived],
+                    sended: [...userMessages.sended, formData]
+                }}
+            }
+              setDocument(domain, userType, dbObj);
           }
 
           // ustawienie wartości recived
