@@ -10,6 +10,7 @@ import { FaCheck } from "react-icons/fa"
 
 export const LessonsList = () => {
     const workingHours = useSelector((state: RootState) => state.teacher.data?.workingHours)
+    //eslint-disable-next-line
     const allClasses = useSelector((state: RootState) => state.schoolData.schoolData?.classes) || {}
 
     const [oldPresence, setOldPresence] = useState<{ [key: string]: SingleCompletedLesson }>({})
@@ -44,11 +45,6 @@ export const LessonsList = () => {
             
         })
     }, [workingHours, allClasses])
-
-
-    useEffect(() => {
-        console.log(oldPresence);
-    }, [oldPresence])
 
     const handleOpen = (item : teacherWorkingHours) => {
         setCurrentHour(item)

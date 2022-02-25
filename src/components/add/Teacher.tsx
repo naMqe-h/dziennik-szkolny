@@ -110,6 +110,7 @@ export const Teacher = () => {
       clearForm();
       setIsAdding(false);
     }
+    //eslint-disable-next-line
   }, [validated, errors]);
 
   const generateEmailAndPassword = (e: React.SyntheticEvent) => {

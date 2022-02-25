@@ -5,7 +5,6 @@ import {
   StudentsDataFromFirebase,
 } from "../../utils/interfaces";
 import {
-  validatePesel,
   generatePassword,
   generateEmail,
 } from "../../utils/utils";
@@ -82,6 +81,7 @@ export const Student = () => {
         toast.success("Udało ci się dodać ucznia 😀", { autoClose: 2000 });
       }
     }
+    //eslint-disable-next-line
   }, [validated, errors]);
 
   const handleChange = (
