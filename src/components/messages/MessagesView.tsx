@@ -1,25 +1,26 @@
-import { MessageOptions } from "child_process";
-import { cloneDeep, intersection, isEqual, union } from "lodash";
-import moment, { unix } from "moment";
+import { doc, getDoc } from "firebase/firestore";
+import { cloneDeep, isEqual, union } from "lodash";
 import nProgress from "nprogress";
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineMail, AiOutlinePlus } from "react-icons/ai";
 import { BsFillArrowLeftCircleFill, BsTrash } from "react-icons/bs";
-import { FcDataRecovery } from "react-icons/fc";
 import { RiDeviceRecoverLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { db } from "../../firebase/firebase.config";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { RootState } from "../../redux/store";
 import {
   CombinedPrincipalData,
   messagesObject,
+  messagesStateModalItf,
   singleMessage,
   SingleStudentDataFromFirebase,
   SingleTeacherData,
 } from "../../utils/interfaces";
+import { Modal } from "./Modal";
 import { RemoveMessagesModal } from "./RemoveConfirmationModal";
 import { SingleMessage } from "./SingleMessage";
 type messagesTabType = "Recived" | "Sended" | "Deleted";
@@ -30,7 +31,12 @@ export const MessagesView = () => {
     recived: [],
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [sendMessageModal, setSendMessageModal] =
+    useState<messagesStateModalItf>({ isOpen: false, reciever: null });
   const [checkedMessages, setCheckedMessages] = useState<singleMessage[]>([]);
+  const [decodingObject, setDecodingObject] = useState<{
+    [key: string]: string;
+  }>({});
   const [selectedTab, setSelectedTab] = useState<messagesTabType>("Recived");
   const userType = useSelector((state: RootState) => state.userType.userType);
   const state = useSelector((state: RootState) => state);
@@ -91,11 +97,75 @@ export const MessagesView = () => {
   useEffect(() => {
     if (userType === "principals" && state.principal.data)
       return setMessages(cloneDeep(state.principal.data?.messages));
-    if (userType === "teachers" && state.teacher.data)
-      return setMessages(cloneDeep(state.teacher.data.messages));
-    if (userType === "students" && state.student.data)
-      return setMessages(cloneDeep(state.student.data.messages));
-  }, [userType, state.principal, state.student, state.teacher]);
+    if (
+      userType === "teachers" &&
+      state.schoolData.schoolData?.teachers &&
+      state.teacher.data
+    )
+      return setMessages(
+        cloneDeep(
+          state.schoolData.schoolData?.teachers[state.teacher.data.email]
+            .messages
+        )
+      );
+    if (
+      userType === "students" &&
+      state.schoolData.schoolData?.students &&
+      state.student.data
+    )
+      return setMessages(
+        cloneDeep(
+          state.schoolData.schoolData?.students[state.student.data.email]
+            .messages
+        )
+      );
+  }, [
+    userType,
+    state.principal,
+    state.student,
+    state.teacher,
+    state.schoolData.schoolData,
+  ]);
+  useEffect(() => {
+    const convertEmailsToFullNames = async () => {
+      const students = state.schoolData.schoolData?.students;
+      const teachers = state.schoolData.schoolData?.teachers;
+      if (teachers || students) {
+        const tempObj: { [key: string]: string } = {};
+        teachers &&
+          Object.entries(teachers).forEach((values, _N) => {
+            const email = values[0];
+            const value = values[1];
+            tempObj[email] = `${value.firstName} ${value.lastName}`;
+          });
+        students &&
+          Object.entries(students).forEach((values, _N) => {
+            const email = values[0];
+            const value = values[1];
+            tempObj[email] = `${value.firstName} ${value.lastName}`;
+          });
+        try {
+          if (Object.entries(decodingObject).length > 0)
+            throw new Error("Objekt już istnieje");
+          await getDoc(
+            doc(
+              db,
+              "principals",
+              state.schoolData.schoolData?.information.principalUID as string
+            )
+          ).then((res) => {
+            const data = res.data() as CombinedPrincipalData;
+            tempObj[data.email] = `${data.firstName} ${data.lastName}`;
+          });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setDecodingObject(tempObj);
+        }
+      }
+    };
+    convertEmailsToFullNames();
+  }, []);
   const setSingleMessageToSeen = (message: singleMessage) => {
     if (message.status === "Unseen") {
       const newMessage: singleMessage = { ...message, status: "Seen" };
@@ -205,6 +275,11 @@ export const MessagesView = () => {
         removeMessages={handleCheckedActions}
         setIsModalOpen={setIsModalOpen}
       />
+      <Modal
+        modalOptions={sendMessageModal}
+        setModalOptions={setSendMessageModal}
+        decodingObj={decodingObject}
+      />
       <div className="w-screen flex justify-center">
         <section className="card bg-base-200 md:w-3/4 w-full p-4">
           <Link
@@ -259,7 +334,9 @@ export const MessagesView = () => {
             <div className="border rounded-lg border-base-100 flex justify-center items-center p-4 gap-4 text-2xl my-4 ">
               <AiOutlinePlus
                 className="cursor-pointer"
-                onClick={() => alert("Zaimplementować wysyłanie maili")}
+                onClick={() => {
+                  setSendMessageModal({ isOpen: true, reciever: null });
+                }}
               />
               {selectedTab === "Deleted" ? (
                 <RiDeviceRecoverLine
@@ -299,6 +376,7 @@ export const MessagesView = () => {
                   .map((x) => (
                     <SingleMessage
                       message={x}
+                      decodingObj={decodingObject}
                       key={x.date}
                       setIsChecked={setCheckedMessages}
                       setMessageToSeen={setSingleMessageToSeen}
@@ -311,6 +389,7 @@ export const MessagesView = () => {
                   .map((x) => (
                     <SingleMessage
                       message={x}
+                      decodingObj={decodingObject}
                       key={x.date}
                       setIsChecked={setCheckedMessages}
                       setMessageToSeen={setSingleMessageToSeen}
@@ -320,6 +399,7 @@ export const MessagesView = () => {
                   .filter((x) => x.status === "Deleted")
                   .map((x) => (
                     <SingleMessage
+                      decodingObj={decodingObject}
                       message={x}
                       key={x.date}
                       setIsChecked={setCheckedMessages}

@@ -3,21 +3,23 @@ import { singleMessage } from "../../utils/interfaces";
 
 interface ModalMessageProps {
   message: singleMessage;
+  decodingObj: { [key: string]: string };
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const ModalMessage: React.FC<ModalMessageProps> = ({
   message,
   isOpen,
+  decodingObj,
   setIsOpen,
 }) => {
   return (
     <div className={`modal ${isOpen && "modal-open"}`}>
       <div className="modal-box">
         <div className="container flex">
-          <h3 className="font-bold text-2xl p-2">{message.title}</h3>
+          <h3 className="font-bold text-2xl p-2 break-all">{message.title}</h3>
           <h6 className="text-sm text-right font-bold self-end">
-            Nadawca: {message.author}
+            Nadawca: {decodingObj[message.author]}
           </h6>
         </div>
         <div className="divider"></div>
