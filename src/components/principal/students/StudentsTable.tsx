@@ -8,7 +8,7 @@ import {
   SortingOfStudents,
   StudentsDataWithoutPassword,
 } from "../StudentsView";
-import {AiFillMessage} from 'react-icons/ai'
+import { AiFillMessage } from "react-icons/ai";
 import { messagesStateModalItf } from "../../../utils/interfaces";
 
 type SortTableParameters =
@@ -21,7 +21,7 @@ type SortTableParameters =
 interface StudentsTableProps {
   studentsData: StudentsDataWithoutPassword;
   setModalOptions: React.Dispatch<React.SetStateAction<ModalOptionsStudent>>;
-  setMessagesModal: React.Dispatch<React.SetStateAction<messagesStateModalItf>>
+  setMessagesModal: React.Dispatch<React.SetStateAction<messagesStateModalItf>>;
   setSorting: React.Dispatch<React.SetStateAction<SortingOfStudents>>;
   sorting: SortingOfStudents;
 }
@@ -143,15 +143,19 @@ export const StudentsTable: React.FC<StudentsTableProps> = ({
               {!hideGenderLP && <td>{x.gender}</td>}
               {!hideEmail && <td>{x.email}</td>}
               <td>
-                <button
-                  className="btn btn-square btn-info btn-sm "
-                  onClick={() => setMessagesModal({
-                    isOpen: true,
-                    reciever: x
-                  })}
-                >
-                  <AiFillMessage size={20} />
-                </button>
+                {!hideDelete && (
+                  <button
+                    className="btn btn-square btn-info btn-sm "
+                    onClick={() =>
+                      setMessagesModal({
+                        isOpen: true,
+                        reciever: x,
+                      })
+                    }
+                  >
+                    <AiFillMessage size={20} />
+                  </button>
+                )}
                 <button
                   className="btn btn-square btn-warning btn-sm ml-2"
                   onClick={() => navigate(`/students/${x.email.split("@")[0]}`)}

@@ -6,12 +6,14 @@ import { ModalMessage } from "./ModalMessage";
 
 interface SingleMessageInterface {
   message: singleMessage;
+  decodingObj:{[key:string]:string};
   setIsChecked: React.Dispatch<React.SetStateAction<singleMessage[]>>;
   setMessageToSeen: (message: singleMessage) => void;
 }
 export const SingleMessage: React.FC<SingleMessageInterface> = ({
   message,
   setIsChecked,
+  decodingObj,
   setMessageToSeen,
 }) => {
   const [isCheckedLocal, setIsCheckedLocal] = useState<boolean>(false);
@@ -37,7 +39,7 @@ export const SingleMessage: React.FC<SingleMessageInterface> = ({
   }, [isCheckedLocal, message]);
   return (
     <>
-      <ModalMessage isOpen={isOpen} message={message} setIsOpen={setisOpen} />
+      <ModalMessage isOpen={isOpen} message={message} setIsOpen={setisOpen} decodingObj={decodingObj} />
       <div
         className={`flex items-center justify-center w-full gap-4  p-2 border-b-[1px] border-base-100 cursor-pointer hover:brightness-125  ${
           message.status !== "Deleted" &&

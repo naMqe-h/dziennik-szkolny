@@ -118,7 +118,6 @@ export const ClassesView: React.FC = () => {
             classTeacher: newClassTeacher,
           };
         });
-        console.log(newTeachers);
         try {
           //? Przy przywracaniu klasy należy przywrócić wychowawce
           setDocument(domain, "classes", {
