@@ -13,7 +13,7 @@ import {
 } from "../../utils/interfaces";
 import { cloneDeep } from "lodash";
 import moment from "moment";
-import Select from "react-select";
+import Select, { StylesConfig } from "react-select";
 import makeAnimated from "react-select/animated";
 interface messagesModalItf {
   modalOptions: messagesStateModalItf;
@@ -60,6 +60,7 @@ export const Modal: React.FC<messagesModalItf> = ({
         : "principal",
     ],
   };
+
   const animatedComponents = makeAnimated();
   const [formData, setFormData] = useState<singleMessage>(initialFormData);
   const [isReciverDirect, setIsReciverDirect] = useState<boolean>(true);
@@ -71,11 +72,20 @@ export const Modal: React.FC<messagesModalItf> = ({
   const { validateData, inputErrors, errors } = useValidateInputs();
   const { setDocument } = useSetDocument();
   const { getDocument, document } = useDocument();
+
+  const inputErrorStyles: StylesConfig = {
+    control: (styles) => ({...styles, border: '2px solid rgb(239 68 68)'}),
+    
+    
+  }
+
+
   useEffect(() => {
     !modalOptions.reciever
       ? setIsReciverDirect(false)
       : setIsReciverDirect(true);
   }, [modalOptions.reciever]);
+
   useEffect(() => {
     if (!isReciverDirect && decodingObj) {
       const options = Object.entries(decodingObj).map((x) => {
@@ -84,6 +94,7 @@ export const Modal: React.FC<messagesModalItf> = ({
       setSelectOptions(options);
     }
   }, [isReciverDirect, decodingObj]);
+
   useEffect(() => {
     if (principalUid) {
       getDocument("principals", principalUid);
@@ -108,13 +119,7 @@ export const Modal: React.FC<messagesModalItf> = ({
       ],
     }));
   }, [modalOptions]);
-  function handleSelectChange(currentSelected: any) {
-    let selectedInputs = currentSelected.map((val: selectOption) => val.value);
-    setFormData((prev) => ({
-      ...prev,
-      reciver: selectedInputs,
-    }));
-  }
+
   useEffect(() => {
     if (validated) {
       if (errors) return;
@@ -352,6 +357,15 @@ export const Modal: React.FC<messagesModalItf> = ({
     }
     setValidated(false);
   }, [validated, errors]);
+
+  function handleSelectChange(currentSelected: any) {
+    let selectedInputs = currentSelected.map((val: selectOption) => val.value);
+    setFormData((prev) => ({
+      ...prev,
+      reciver: selectedInputs,
+    }));
+  }
+
   const handleChange = (name: string, value: string, checked?: Boolean) => {
     setFormData((prev) => ({
       ...prev,
@@ -407,6 +421,8 @@ export const Modal: React.FC<messagesModalItf> = ({
               className="text-neutral-focus w-3/5"
               closeMenuOnSelect={false}
               components={animatedComponents}
+              value={formData.reciver.length !== 0 && formData.reciver[0].length !== 0 ? formData.reciver.map((rec) => ({value: rec, label: rec})) : null}
+              styles={inputErrors.reciver.error ? inputErrorStyles : undefined}
               isMulti
               options={selectOptions}
               onChange={handleSelectChange}

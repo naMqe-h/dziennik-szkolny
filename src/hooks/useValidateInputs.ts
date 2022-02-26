@@ -33,6 +33,7 @@ const errorsInitial:errorsInterface = {
     receiver: {error: false, text: ''},
     title: {error: false, text: ''},
     content: {error: false, text: ''},
+    reciver: {error: false, text: ''},
 }
 
 export const useValidateInputs = () => {
@@ -67,6 +68,8 @@ export const useValidateInputs = () => {
       weight: 'wagę',
       title: 'Tytuł',
       content: 'Treść',
+      receiver: 'Odbiorca',
+      reciver: 'Odbiorca'
     }
 
     const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher', 'addedBy'];
@@ -145,10 +148,10 @@ export const useValidateInputs = () => {
                     setErrors(true);
                 }
             }
-            if(fieldName === 'receiver'){
-              if(fieldVal[0].length === 0){
+            if(fieldName === 'receiver' || fieldName === 'reciver'){
+              if(fieldVal.length === 0 || fieldVal[0].length === 0){
                   setInputErrors((prev) => (
-                    {...prev, 'receiver': {'error':true, 'text':"Podaj odbiorcę"}}))
+                    {...prev, [fieldName]: {'error':true, 'text':"Podaj odbiorcę"}}))
                   setErrors(true);
               }
             }
