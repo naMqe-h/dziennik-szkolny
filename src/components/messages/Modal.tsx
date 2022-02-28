@@ -74,11 +74,8 @@ export const Modal: React.FC<messagesModalItf> = ({
   const { getDocument, document } = useDocument();
 
   const inputErrorStyles: StylesConfig = {
-    control: (styles) => ({...styles, border: '2px solid rgb(239 68 68)'}),
-    
-    
-  }
-
+    control: (styles) => ({ ...styles, border: "2px solid rgb(239 68 68)" }),
+  };
 
   useEffect(() => {
     !modalOptions.reciever
@@ -296,10 +293,7 @@ export const Modal: React.FC<messagesModalItf> = ({
           };
           setDocument("principals", principalUid as string, newPrincipal);
         }
-        const reciversWithoutPrincipal = recivers.filter(
-          (x) => x !== principalDoc?.email
-        );
-        reciversWithoutPrincipal.forEach((item) => {
+        recivers.forEach((item) => {
           if (newTeachers[item]) {
             const oldTeacherData = newTeachers[item];
             newTeachers[item] = {
@@ -339,20 +333,19 @@ export const Modal: React.FC<messagesModalItf> = ({
               },
             };
           }
-          setDocument(
-            schoolData.information.domain as string,
-            "teachers",
-            newTeachers
-          );
-          setDocument(
-            schoolData.information.domain as string,
-            "students",
-            newStudents
-          );
         });
+        setDocument(
+          schoolData.information.domain as string,
+          "teachers",
+          newTeachers
+        );
+        setDocument(
+          schoolData.information.domain as string,
+          "students",
+          newStudents
+        );
       }
       toast.success("Wiadomość została wysłana", { autoClose: 2000 });
-      setSelectOptions([]);
       setFormData(initialFormData);
     }
     setValidated(false);
@@ -421,7 +414,12 @@ export const Modal: React.FC<messagesModalItf> = ({
               className="text-neutral-focus w-3/5"
               closeMenuOnSelect={false}
               components={animatedComponents}
-              value={formData.reciver.length !== 0 && formData.reciver[0].length !== 0 ? formData.reciver.map((rec) => ({value: rec, label: rec})) : null}
+              value={
+                formData.reciver.length !== 0 &&
+                formData.reciver[0].length !== 0
+                  ? formData.reciver.map((rec) => ({ value: rec, label: rec }))
+                  : null
+              }
               styles={inputErrors.reciver.error ? inputErrorStyles : undefined}
               isMulti
               options={selectOptions}

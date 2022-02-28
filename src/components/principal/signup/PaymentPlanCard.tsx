@@ -1,6 +1,8 @@
 import { FaArrowRight } from "react-icons/fa";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { currentStepType, PlanTypes } from "../../../utils/interfaces";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import Card1 from "../../../images/card-1.jpg";
+import Card2 from "../../../images/card-2.jpg";
 import "../../../../node_modules/react-lazy-load-image-component/src/effects/blur.css";
 interface cardProps {
   name: PlanTypes;
@@ -42,7 +44,7 @@ export const PaymentPlanCard: React.FC<cardProps> = ({
       <figure>
         <LazyLoadImage
           className="h-52 w-full"
-          src={`/images/${image}`}
+          src={`${image === "card-1.jpg" ? Card1 : Card2}`}
           alt="Plan card"
           effect="blur"
         />
