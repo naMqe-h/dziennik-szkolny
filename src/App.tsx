@@ -67,10 +67,11 @@ import { StudentGradesView } from "./components/student/grades/StudentGradesView
 import { useRealTimePrincipal } from "./hooks/useRealTimePrincipal";
 import { Frequency } from "./pages/Frequency";
 import { Messages } from "./pages/Messages";
+import { NotFound } from "./pages/404";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
-  const { realTimePrincipal } = useRealTimePrincipal()
+  const { realTimePrincipal } = useRealTimePrincipal();
   const { getDocument, document } = useDocument();
   const dispatch = useDispatch();
 
@@ -94,11 +95,9 @@ function App() {
     );
     // eslint-disable-next-line
   }, [realTimeDocuments]);
-  
+
   useEffect(() => {
-    dispatch(
-      setPrincipalData(realTimePrincipal as CombinedPrincipalData)
-    );
+    dispatch(setPrincipalData(realTimePrincipal as CombinedPrincipalData));
     // eslint-disable-next-line
   }, [realTimePrincipal]);
 
@@ -348,7 +347,8 @@ function App() {
                 path="*"
                 element={
                   <StudentRoute loading={loading}>
-                    <Navigate to="/" />
+                    {/* <Navigate to="/" /> */}
+                    <NotFound />
                   </StudentRoute>
                 }
               />
