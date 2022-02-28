@@ -15,19 +15,16 @@ interface GradesProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   term: termType;
+  currentClass: string | undefined
 }
 
-export const Grades: React.FC<GradesProps> = ({
-  studentsInfo,
-  isOpen,
-  setIsOpen,
-  term,
-}) => {
+export const Grades: React.FC<GradesProps> = ({ studentsInfo, isOpen, setIsOpen, term, currentClass}) => {
   const tempStudents = Object.values(studentsInfo);
   const students = tempStudents.sort((a: SSDFF, b: SSDFF) =>
     a.lastName.localeCompare(b.lastName, "pl")
   );
   const userType = useSelector((state: RootState) => state.userType.userType);
+  const classTeacher = useSelector((state: RootState) => state.teacher.data?.classTeacher)
 
   return (
     <>
@@ -38,10 +35,9 @@ export const Grades: React.FC<GradesProps> = ({
         studentsInfo={studentsInfo}
       />
       <div className="overflow-x-auto">
-        {userType === "teachers" && (
+        {userType === "teachers" && classTeacher !== currentClass as string ? (
           <GradesTable students={students} term={term} />
-        )}
-        {userType === "principals" &&
+        ) : (
           students.map((student, index) => (
             <SingleStudentGradeRow
               key={student.email}
@@ -49,7 +45,9 @@ export const Grades: React.FC<GradesProps> = ({
               number={index + 1}
               term={term}
             />
-          ))}
+          ))
+        )}
+          
       </div>
     </>
   );

@@ -29,7 +29,7 @@ export const SingleGradeRow: React.FC<SingleGradeRowProps> = ({
   useEffect(() => {
     if(student.grades[subject as string]){
       setGrades(
-        student.grades[subject as string].filter((x) => x.term === term) ?? []
+        student.grades[subject as string].filter((x) => +x.term === term) ?? []
       );
     }else{
       setGrades([]);

@@ -4,8 +4,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import {
   eventsFromFirebase,
+  SchoolGrade,
   SingleClassData,
   SingleStudentDataFromFirebase,
+  StudentsDataFromFirebase,
   termType,
 } from "../../utils/interfaces";
 import { FcConferenceCall } from "react-icons/fc";
@@ -23,11 +25,13 @@ import { LessonPlan } from "./lessonPlan/LessonPlan";
 import { Frequency } from "./frequency/Frequency";
 import { Schedule } from "./Schedule/Schedule";
 import { MobileLessonPlan } from "./lessonPlan/mobileLessonPlan/MobileLessonPlan";
+import { useAverage } from "../../hooks/useAverage";
 
 export const SingleClassView = () => {
   const { data: users, loading, getData, setData } = useFetch();
   const { setDocument } = useSetDocument();
   const { updateCounter } = useUpdateInfoCounter();
+  const { calculateAvg } = useAverage()
 
   const { id, subpage } = useParams();
   const navigate = useNavigate();
@@ -42,7 +46,7 @@ export const SingleClassView = () => {
   const [yearGnerate, setYearGenerate] = useState<number>(2000);
   const [singleClass, setSingleClass] = useState<SingleClassData>();
   const [classTeacherName, setClassTeacherName] = useState<string>();
-  const [studentsInfo, setStudentsInfo] = useState({});
+  const [studentsInfo, setStudentsInfo] = useState<StudentsDataFromFirebase>({});
   const [checked, setChecked] = useState<boolean>(false);
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
@@ -53,6 +57,7 @@ export const SingleClassView = () => {
   const [events, setEvents] = useState<eventsFromFirebase>(
     schoolData?.events ?? { classes: [], global: [] }
   );
+  const [classAverage, setClassAverage] = useState<string>('')
 
   const classes = schoolData?.classes;
   const teachers = schoolData?.teachers;
@@ -62,6 +67,23 @@ export const SingleClassView = () => {
   const isMobile = useMediaQuery("(max-width:480px)");
   const isTablet = useMediaQuery("(max-width:700px)");
   const showMobileLessonPlan = useMediaQuery("(max-width:1024px)");
+
+  useEffect(() => {
+    let allStudentsGrades: SchoolGrade[] = []
+    if(studentsInfo) {
+      for(const {grades} of Object.values(studentsInfo)) {
+        for(const array of Object.values(grades)) {
+          allStudentsGrades = [
+            ...allStudentsGrades,
+            ...array
+          ]
+        }
+      }
+      const tempAverage = calculateAvg(allStudentsGrades)
+      setClassAverage(tempAverage)
+    }
+  }, [studentsInfo])
+
   useEffect(() => {
     setEvents(schoolData?.events as eventsFromFirebase);
   }, [schoolData?.events]);
@@ -225,10 +247,13 @@ export const SingleClassView = () => {
             <FcConferenceCall className="mr-2" size={32} />
             {isTablet ? singleClass?.name : singleClass?.fullName}
             {!isTablet && (
-              <div className="badge badge-secondary badge-outline badge-lg ml-6">
+              <div className="badge badge-primary badge-outline badge-lg ml-6">
                 Uczniów: {singleClass?.students.length}
               </div>
             )}
+          </div>
+          <div className="mx-5">
+              Średnia ocen: {classAverage}
           </div>
           <div className="mx-5">
             {!isMobile && "Wychowawca:"} {classTeacherName}
@@ -356,6 +381,7 @@ export const SingleClassView = () => {
             isOpen={isGradeOpen}
             studentsInfo={studentsInfo}
             term={term}
+            currentClass={id}
           />
         )}
         {subpage === "schedule" && (

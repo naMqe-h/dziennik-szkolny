@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useAverage } from "../../../hooks/useAverage";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import { RootState } from "../../../redux/store";
 import {
@@ -15,16 +16,14 @@ interface SingleStudentGradeRowProps {
   term: termType;
 }
 
-export const SingleStudentGradeRow: React.FC<SingleStudentGradeRowProps> = ({
-  student,
-  number,
-  term,
-}) => {
+export const SingleStudentGradeRow: React.FC<SingleStudentGradeRowProps> = ({student, number, term }) => {
   const state = useSelector((state: RootState) => state.schoolData);
-  const [studentGrades, setStudentGrades] = useState<{
-    [key: string]: SchoolGrade[];
-  }>({});
+  const [studentGrades, setStudentGrades] = useState<{[key: string]: SchoolGrade[];}>({});
   const isMobile = useMediaQuery("(max-width:768px)");
+  const [allStudentGrades, setAllStudentGrades] = useState<string>('')
+  const { calculateAvg } = useAverage()
+
+
   useEffect(() => {
     if (student && state.schoolData?.teachers) {
       const newGrades: { [key: string]: SchoolGrade[] } = {};
@@ -44,13 +43,23 @@ export const SingleStudentGradeRow: React.FC<SingleStudentGradeRowProps> = ({
           }
         });
       setStudentGrades(newGrades);
+      let tempAllStudentGrades: SchoolGrade[] = []
+
+      for(const value of Object.values(newGrades)) {
+        tempAllStudentGrades = [
+          ...tempAllStudentGrades,
+          ...value,
+        ]
+      }
+      setAllStudentGrades(calculateAvg(tempAllStudentGrades))
     }
   }, [state.schoolData?.teachers, student]);
+
   return (
     <div className="collapse w-full border rounded-box border-base-300 collapse-arrow">
       <input type="checkbox" />
       <div className="collapse-title text-xl font-medium">
-        {number} {student.lastName} {student.firstName}
+        {number} {student.lastName} {student.firstName} - {allStudentGrades}
       </div>
       <div className="collapse-content">
         <table className="table w-full">
@@ -67,7 +76,7 @@ export const SingleStudentGradeRow: React.FC<SingleStudentGradeRowProps> = ({
               <SingleGradeRow
                 key={item[0]}
                 subject={item[0]}
-                grades={item[1].filter((x) => x.term === term) ?? []}
+                grades={item[1].filter((x) => +x.term === term) ?? []}
               />
             ))}
           </tbody>
