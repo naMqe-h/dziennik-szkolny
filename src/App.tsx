@@ -68,13 +68,14 @@ import { useRealTimePrincipal } from "./hooks/useRealTimePrincipal";
 import { Frequency } from "./pages/Frequency";
 import { Messages } from "./pages/Messages";
 import { NotFound } from "./pages/404";
+import { SetLoadingContext } from "./utils/utils";
 
 function App() {
   const { realTimeDocuments } = useRealTimeCollection();
   const { realTimePrincipal } = useRealTimePrincipal();
   const { getDocument, document } = useDocument();
   const dispatch = useDispatch();
-
+  const currAuth = auth.currentUser;
   // redux
   const principal = useSelector((state: RootState) => state.principal);
   const student = useSelector((state: RootState) => state.student);
@@ -139,7 +140,7 @@ function App() {
       setLoading(false);
       nProgress.done();
     }
-  }, [principal.data, schoolData, teacher.data, student.data]);
+  }, [principal.data, schoolData, teacher.data, student.data,currAuth]);
 
   // wyświetla aktualny stan store
   useEffect(() => {
@@ -163,7 +164,6 @@ function App() {
     }
   }, [student, userType, schoolData]);
   ///
-
   // sprawdzanie stanu auth,
   useEffect(() => {
     setLoading(true);
@@ -206,12 +206,13 @@ function App() {
       unsub();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [principal.user,student.user,teacher.user]);
   if (loading) {
     return <Loader />;
   } else {
     return (
       <div>
+      <SetLoadingContext.Provider value={setLoading}>
         <BrowserRouter>
           <LayoutWrapper>
             <Routes>
@@ -353,10 +354,11 @@ function App() {
                 }
               />
               <Route path="/login" element={<Login loading={loading} />} />
-              <Route path="/signup" element={<Signup loading={loading} />} />
+              <Route path="/signup" element={<Signup loading={loading}  />} />
             </Routes>
           </LayoutWrapper>
         </BrowserRouter>
+              </SetLoadingContext.Provider>
         <ToastContainer
           position="bottom-left"
           hideProgressBar={false}

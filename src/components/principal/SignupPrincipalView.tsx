@@ -15,9 +15,6 @@ import { ChoosePlanForm } from "./signup/ChoosePlanForm";
 import { Summary } from "./signup/Summary";
 
 import { useValidateInputs } from "../../hooks/useValidateInputs";
-import { toast } from "react-toastify";
-
-
 export const SignupPrincipalView: React.FC = () => {
   
   const [currentStep, setCurrentStep] = useState<currentStepType>(1);
