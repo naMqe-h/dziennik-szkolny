@@ -33,7 +33,6 @@ export const SingleClassTableRow: React.FC<SingleClassTableRowProps> = ({
       <td>{student.email}</td>
       <td>{student.birth}</td>
       <td>{student.pesel}</td>
-      <td>4 dni temu</td>
       <td className="w-1">
       <button
           className="btn btn-square btn-info btn-sm "

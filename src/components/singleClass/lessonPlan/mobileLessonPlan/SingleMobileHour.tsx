@@ -7,12 +7,12 @@ import {
   SubjectData,
 } from "../../../../utils/interfaces";
 
-interface SingleMobileHour {
+interface SingleMobileHourProps {
   isEmpty: boolean;
   index: number;
   lesson?: singleHoursFromLessonPlan;
 }
-export const SingleMobileHour: React.FC<SingleMobileHour> = ({
+export const SingleMobileHour: React.FC<SingleMobileHourProps> = ({
   lesson,
   isEmpty,
   index,

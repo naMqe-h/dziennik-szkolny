@@ -1,6 +1,6 @@
 // biblioteki
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import nProgress from "nprogress";
 import { useSelector, useDispatch } from "react-redux";
