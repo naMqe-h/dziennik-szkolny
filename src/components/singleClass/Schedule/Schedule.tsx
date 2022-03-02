@@ -1,9 +1,10 @@
+import { isEqual } from "lodash";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { RootState } from "../../../redux/store";
-import { eventsFromFirebase,scheduleItemsArray, SingleClassData, TeachersDataFromFirebase } from "../../../utils/interfaces"
+import { eventsFromFirebase,scheduleItem,scheduleItemsArray, SingleClassData, TeachersDataFromFirebase } from "../../../utils/interfaces"
 import { AddModal } from "./AddModal"
 import { ScheduleTable } from "./ScheduleTable"
 
@@ -77,10 +78,9 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     }
 
 
-    const handleEdit = (data: any, oldItem: any) => {
+    const handleEdit = (data:scheduleItem, oldItem:scheduleItem) => {
         if(events && domain){
-            let oldEvents = events.classes.filter((ev) => ev !== oldItem);
-
+            let oldEvents = events.classes.filter((ev) => !isEqual(ev,oldItem));
             setDocument(domain as string, "events", {classes: [
                 ...oldEvents, data
             ]});

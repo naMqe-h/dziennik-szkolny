@@ -299,7 +299,7 @@ export const SingleClassView = () => {
               Wydarzenia
             </Link>
             <select
-              className="select select-bordered select-secondary  max-w-full"
+              className="select select-bordered select-secondary max-w-full col-span-2"
               defaultValue={term}
               onChange={(e) => setTerm(+e.target.value as termType)}
             >
