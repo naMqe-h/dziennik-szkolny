@@ -55,7 +55,6 @@ export const SingleClassTable: React.FC<SingleClassTableProps> = ({
                 <th>Email</th>
                 <th>Urodziny</th>
                 <th>Pesel</th>
-                <th>Ostatnie logowanie</th>
                 <th></th>
               </tr>
             </thead>

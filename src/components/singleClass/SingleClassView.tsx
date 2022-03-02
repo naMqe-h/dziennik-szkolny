@@ -374,7 +374,11 @@ export const SingleClassView = () => {
             <LessonPlan singleClass={singleClass} />
           )
         ) : null}
-        {subpage === "frequency" && <Frequency />}
+        {subpage === "frequency" && ( 
+          <Frequency 
+            studentsInfo={studentsInfo}
+          />
+        )}
         {subpage === "grades" && (
           <Grades
             setIsOpen={setIsGradeOpen}

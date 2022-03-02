@@ -1,6 +1,5 @@
 import { AuthError } from "firebase/auth";
 import React from "react";
-import reactSelect from "react-select";
 import { toast } from "react-toastify";
 import { daysOfWeek } from "./interfaces";
 

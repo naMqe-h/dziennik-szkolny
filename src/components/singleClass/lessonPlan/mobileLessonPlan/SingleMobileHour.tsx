@@ -8,12 +8,12 @@ import {
 } from "../../../../utils/interfaces";
 import { lessonHours } from "../../../../utils/utils";
 
-interface SingleMobileHour {
+interface SingleMobileHourProps {
   isEmpty: boolean;
   index: number;
   lesson?: singleHoursFromLessonPlan;
 }
-export const SingleMobileHour: React.FC<SingleMobileHour> = ({
+export const SingleMobileHour: React.FC<SingleMobileHourProps> = ({
   lesson,
   isEmpty,
   index,
