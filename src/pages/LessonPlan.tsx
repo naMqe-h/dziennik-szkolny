@@ -18,8 +18,6 @@ export const LessonPlan = () => {
     (state: RootState) => state.schoolData.schoolData?.lessonPlans
   );
   const isMobile = useMediaQuery("(max-width:480px)");
-  const showMobileLessonPlan = useMediaQuery("(max-width:1024px)");
-
   useEffect(() => {
     if (userType === "teachers") {
       if (teacherData?.workingHours) {

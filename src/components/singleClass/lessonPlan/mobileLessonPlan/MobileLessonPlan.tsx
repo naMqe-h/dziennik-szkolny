@@ -50,7 +50,7 @@ export const MobileLessonPlan: React.FC<MobileLessonPlanProps> = ({
       }
       //   console.table(dayPlan);
     }
-  }, [currentDay, singleClassLessonPlan]);
+  }, [currentDay, singleClassLessonPlan,singleTaecherData]);
   useEffect(() => {
     if (singleClass && allLessonPlans) {
       if (allLessonPlans) {
@@ -59,10 +59,12 @@ export const MobileLessonPlan: React.FC<MobileLessonPlanProps> = ({
         );
       }
     } else if (singleTaecherData) {
-      console.log(singleTaecherData);
       setSingleClassLessonPlan(singleTaecherData);
+    }else if(!singleTaecherData&&!singleClass){
+      setSingleClassLessonPlan({});
+      setMappedHours([]);
     }
-  }, [allLessonPlans, singleClass]);
+  }, [allLessonPlans, singleClass,singleTaecherData]);
   return (
     <div className="container flex flex-col items-center px-2">
       <select

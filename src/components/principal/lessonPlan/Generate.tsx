@@ -9,6 +9,11 @@ import {
 } from "../../../utils/interfaces";
 import { useGeneratePlan } from "../../../hooks/useGeneratePlan";
 import { toast } from "react-toastify";
+import useMediaQuery from "../../../hooks/useMediaQuery";
+import { MobileLessonPlan } from "../../singleClass/lessonPlan/mobileLessonPlan/MobileLessonPlan";
+import { isEmpty } from "lodash";
+import { AiOutlineWarning } from "react-icons/ai";
+import Tippy from "@tippyjs/react";
 
 interface SubjectDataWithShortName extends SubjectData {
   shortName: string;
@@ -22,7 +27,7 @@ export const Generate = () => {
   const { generatePlan, savePlan, deletePlan } = useGeneratePlan();
 
   const [isPlanNew, setIsPlanNew] = useState<boolean>(false);
-
+  const showMobileLessonPlan = useMediaQuery("(max-width:1024px)");
   // pojedyńcza wybrana klasa
   const [selectClassValue, setSelectClassValue] = useState<string>("");
   const [singleClassInfo, setSingleClassInfo] = useState<SingleClassData>();
@@ -34,16 +39,14 @@ export const Generate = () => {
 
   //tablica z nazwami przedmiotów z wybranej klasy
   const [subjectNames, setSubjectNames] = useState<string[]>([]);
-
+  console.log()
   //tablica z informacjami o wszystkich klasach
   const [allClassesArray, setAllClassesArray] = useState<SingleClassData[]>();
-
   // wartośći inputów od przedmiotów
-  const [subejctsInputsValues, setSubejctsInputsValues] =
+  const [subjectsInputsValues, setSubjectsInputsValues] =
     useState<SubejctsInputsValues>({});
   const [sumSubjectsInputsValues, setSumSubjectsInputsValues] =
     useState<number>(0);
-
   // redux
   const schoolData = useSelector(
     (state: RootState) => state.schoolData.schoolData
@@ -56,7 +59,7 @@ export const Generate = () => {
       for (const [key, value] of Object.entries(schoolData?.classes)) {
         tempArray.push(value);
       }
-      setSelectClassValue(tempArray[0]?.name);
+      setSelectClassValue(tempArray.sort((a,b)=>a.name.localeCompare(b.name))[0].name);
       // setSelectClassValue('1b');
       setAllClassesArray(tempArray);
     }
@@ -113,18 +116,18 @@ export const Generate = () => {
           [item.shortName]: 0,
         };
       });
-      setSubejctsInputsValues(tempState);
+      setSubjectsInputsValues(tempState);
     }
   }, [singleClassSubjects]);
 
   useEffect(() => {
-    if (Object.values(subejctsInputsValues).length > 0) {
-      let tempHours: number = Object.values(subejctsInputsValues).reduce(
+    if (Object.values(subjectsInputsValues).length > 0) {
+      let tempHours: number = Object.values(subjectsInputsValues).reduce(
         (a, b) => a + b
       );
       setSumSubjectsInputsValues(tempHours);
     }
-  }, [subejctsInputsValues]);
+  }, [subjectsInputsValues]);
 
   const handleGenerate = () => {
     setIsPlanNew(true);
@@ -133,7 +136,7 @@ export const Generate = () => {
         autoClose: 3000,
       });
     } else {
-      const plan = generatePlan(subejctsInputsValues, singleClassInfo);
+      const plan = generatePlan(subjectsInputsValues, singleClassInfo);
       setSingleClassLessonPlan(plan);
     }
   };
@@ -155,13 +158,13 @@ export const Generate = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     item: SubjectDataWithShortName
   ) => {
-    setSubejctsInputsValues((prev) => ({
+    setSubjectsInputsValues((prev) => ({
       ...prev,
       [item.shortName]: +e.target.value,
     }));
   };
   return (
-    <div className="mx-auto flex gap-2 pt-12 mr-8 ">
+    <div className="mx-auto flex flex-col items-center justify-center w-full lg:flex-row gap-2 pt-12 mr-8 ">
       <div className="flex-none w-72 p-4">
         <h1 className="text-xl font-bold text-center text-primary">
           Wybierz klasę:
@@ -180,13 +183,14 @@ export const Generate = () => {
         <div className="divider"></div>
 
         <div className="max-h-[450px] overflow-auto px-5 lesson lessonPlanScrollbar">
-          <h1 className="text-xl font-bold text-center text-primary">
+          <h1 className="text-xl flex items-center gap-2 font-bold text-center text-primary">
             Liczba godzin:{" "}
             <span
               className={`${sumSubjectsInputsValues >= 40 && "text-error"}`}
             >
               {sumSubjectsInputsValues}/40
             </span>
+            {isEmpty(singleClassInfo)&&<span className="flex items-end"><Tippy maxWidth={"400px"} allowHTML={true}content={<span className="p-2 text-center bg-warning rounded-xl font-bold  text-black">Dodaj klasy zanim wygenerujesz plan lekcji!</span>}><span><AiOutlineWarning className="text-warning"/></span></Tippy></span>}
           </h1>
           {singleClassSubjects.map((item) => (
             <div key={item.name} className="form-control">
@@ -196,7 +200,7 @@ export const Generate = () => {
               <input
                 min={0}
                 max={40}
-                value={subejctsInputsValues?.[item.shortName] || 0}
+                value={subjectsInputsValues?.[item.shortName] || 0}
                 onChange={(e) => handleAddSubjectValue(e, item)}
                 type="number"
                 placeholder="3"
@@ -207,7 +211,8 @@ export const Generate = () => {
         </div>
         {!singleClassLessonPlan ? (
           <button
-            className="btn btn-outline btn-primary w-full mt-4"
+            className={`btn btn-outline w-full mt-4 ${isEmpty(singleClassInfo)?"btn-disabled" : "btn-primary"}`}
+            disabled={isEmpty(singleClassInfo)}
             onClick={handleGenerate}
           >
             Generuj plan
@@ -229,6 +234,7 @@ export const Generate = () => {
           </button>
         )}
       </div>
+      {!showMobileLessonPlan?
       <div className="flex-1 w-full overflow-x-auto lessonPlanScrollbar self-baseline">
         <table className="table w-full border-2 border-base-200">
           <thead>
@@ -292,7 +298,7 @@ export const Generate = () => {
             />
           </tbody>
         </table>
-      </div>
+      </div>:<div className="w-full flex justify-center"><MobileLessonPlan singleClass={undefined} singleTaecherData={singleClassLessonPlan} /></div>}
     </div>
   );
 };

@@ -40,7 +40,6 @@ export const SingleMobileHour: React.FC<SingleMobileHour> = ({
       }
     }
   }, [subjects, isEmpty, lesson?.subject]);
-  console.log(lesson?.hour, lesson?.subject);
   return (
     <div className="border-2 relative border-base-200 w-60 h-24 flex flex-col items-center justify-center">
       <div className="absolute  text-center text-primary px-2 py-1 border-r-2 border-b-2 border-solid border-primary  top-0 left-0">

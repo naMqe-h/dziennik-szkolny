@@ -26,7 +26,7 @@ export const SingleDay: React.FC<SingleDayProps> = ({ lessons, dayOfWeek }) => {
       temp.push(
         <SingleHour
           key={i}
-          isEmpty={!sortedLessons[i]}
+          isEmpty={(sortedLessons[i]&&sortedLessons[i].subject===""&&sortedLessons[i].teacher==="")||!sortedLessons[i]}
           lesson={sortedLessons[i]}
         />
       );
