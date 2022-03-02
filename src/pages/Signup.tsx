@@ -2,6 +2,7 @@ import { SignupPrincipalView } from "../components/principal/SignupPrincipalView
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import React from "react";
 interface SingUpProps {
   loading: boolean;
 }

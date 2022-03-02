@@ -5,7 +5,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
-import { showToastError } from "../utils/utils";
+import { SetLoadingContext, showToastError } from "../utils/utils";
 import { useSetDocument } from "./useSetDocument";
 import {
   CombinedPrincipalData,
@@ -14,11 +14,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDocument } from "./useDocument";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPrincipalAuth } from "../redux/principalSlice";
 
 export const useSignup = () => {
   const { getDocument, document } = useDocument()
-
+  const dispatch = useDispatch()
+  const setLoading = useContext(SetLoadingContext);
   useEffect(() => {
     getDocument('utils', 'domains')
     // eslint-disable-next-line
@@ -32,12 +35,14 @@ export const useSignup = () => {
     data: CombinedPrincipalData,
     schoolData: CombinedSchoolInformationFromFirebase
   ) => {
+    setLoading&&setLoading(true);
     nProgress.start();
     await createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
         updateProfile(res.user, {
           displayName: `${data.schoolInformation.domain}~principals`,
-        }).then(() => {
+        }).then((_res) => {
+          dispatch(setPrincipalAuth(res.user))
           schoolData.principalUID = res.user.uid;
           setDocument("principals", res.user.uid, data);
           setDocument(data.schoolInformation.domain, "information", schoolData);

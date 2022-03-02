@@ -1,4 +1,6 @@
 import { AuthError } from "firebase/auth";
+import React from "react";
+import reactSelect from "react-select";
 import { toast } from "react-toastify";
 import { daysOfWeek } from "./interfaces";
 
@@ -95,3 +97,5 @@ export const lessonHours = [
   `16:00 - 16:45`,
   `16:50 - 17:35`,
 ]
+type setLoadingContextType = React.Dispatch<React.SetStateAction<boolean>> | null
+export const SetLoadingContext = React.createContext<setLoadingContextType>(null)
