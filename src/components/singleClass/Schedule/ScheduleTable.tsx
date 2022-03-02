@@ -1,10 +1,13 @@
+import { isEmpty } from "lodash";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
 import { FcSettings } from "react-icons/fc";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useMediaQuery from "../../../hooks/useMediaQuery";
+import { RootState } from "../../../redux/store";
 import {
   scheduleItem,
   scheduleItemsArray,
@@ -50,6 +53,8 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   teachedClasses
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const principal = useSelector((state:RootState)=>state.principal)
+  const allTeachers = useSelector((state:RootState)=>state.schoolData.schoolData?.teachers)
   const [modalOptionsEvent, setModalOptionsEvent] = useState<ModalOptionsEvent>(
     { isOpen: false, removedEvent: null }
   );
@@ -73,12 +78,14 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
     }
   }
   useEffect(() => {
-    if (schedule) {
+    if (schedule&&allTeachers) {
+      const fullName = allTeachers[userEmail] ? `${allTeachers[userEmail].firstName} ${allTeachers[userEmail].lastName}` : `${principal.data?.firstName} ${principal.data?.lastName}`
       const newSchedule = schedule
         .filter((x) => x.isActive !== false)
         .filter((x) => {
           if (showOnlyYourEvents) {
-            return x.addedBy === userEmail;
+            const realAddedBy = isEmpty(x.addedBy) ? `${principal.data?.firstName} ${principal.data?.lastName}` : x.addedBy;
+            return realAddedBy === fullName;
           } else {
             return x;
           }
@@ -278,10 +285,10 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                     );
                   })}
                 </td>
-                <td>{item.addedBy}</td>
+                <td>{isEmpty(item.addedBy) ? `${principal.data?.firstName ?? "Dyrektor"} ${principal.data?.lastName ?? ""}` : item.addedBy }</td>
                 <td>
                   {(userType === "principals" ||
-                    item.addedBy === userEmail) && (
+                     (allTeachers &&item.addedBy === `${allTeachers[userEmail].firstName} ${allTeachers[userEmail].lastName}`))  && (
                     <>
                       <AddModal
                         key={item.name + index}

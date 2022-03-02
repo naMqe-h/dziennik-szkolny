@@ -6,6 +6,7 @@ import {
   SingleTeacherData,
   SubjectData,
 } from "../../../../utils/interfaces";
+import { lessonHours } from "../../../../utils/utils";
 
 interface SingleMobileHour {
   isEmpty: boolean;
@@ -43,7 +44,7 @@ export const SingleMobileHour: React.FC<SingleMobileHour> = ({
   return (
     <div className="border-2 relative border-base-200 w-60 h-24 flex flex-col items-center justify-center">
       <div className="absolute  text-center text-primary px-2 py-1 border-r-2 border-b-2 border-solid border-primary  top-0 left-0">
-        {index + 1}
+        {index + 1}<sup className="ml-2">{lessonHours[index]}</sup>
       </div>
       <h1 className="text-lg font-bold mt-6">
         {lesson?.subject === "GodzinaWychowawcza"
