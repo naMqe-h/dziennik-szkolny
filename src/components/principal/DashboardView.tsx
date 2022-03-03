@@ -5,10 +5,11 @@ import { BsFillPeopleFill, BsJournalBookmark } from "react-icons/bs";
 import { BiMessageDots } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { Graphs } from "./dashboard/Graphs";
 
 export const DashboardView = () => {
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
         <div className="md:row-span-4 p-5 bg-base-300 rounded-xl flex flex-col justify-center">
           <Stats />
@@ -49,7 +50,11 @@ export const DashboardView = () => {
         <div className="p-10 mt-2 row-span-2 md:col-span-2 bg-base-300 rounded-xl flex flex-col items-center min-h-[480px]">
           <Events />
         </div>
+        <div className="md:col-span-3 rounded-xl bg-base-300">
+          <Graphs />
+        </div>
       </div>
+     
     </div>
   );
 };
