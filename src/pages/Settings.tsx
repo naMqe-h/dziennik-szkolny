@@ -209,7 +209,7 @@ export const Settings = () => {
                       : ""
                   }`}
                 >
-                  <Link to="/settings/plan">Plan</Link>
+                  <Link to="/settings/plan">Zmień plan</Link>
                 </li>
               </>
             ) : (
@@ -223,9 +223,6 @@ export const Settings = () => {
               }`}
             >
               <Link to="/settings/password">Zmień hasło</Link>
-            </li>
-            <li className={activeRoute === "" ? "" : ""}>
-              <Link to="/">Prywatność</Link>
             </li>
           </ul>
 
@@ -262,7 +259,7 @@ export const Settings = () => {
                           : ""
                       }`}
                     >
-                      <Link to="/settings/plan">Plan</Link>
+                      <Link to="/settings/plan">Zmień plan</Link>
                     </li>
                   </>
                 ) : (
@@ -276,9 +273,6 @@ export const Settings = () => {
                   }`}
                 >
                   <Link to="/settings/password">Zmień hasło</Link>
-                </li>
-                <li className={activeRoute === "" ? "" : ""}>
-                  <Link to="/">Prywatność</Link>
                 </li>
               </ul>
             </div>

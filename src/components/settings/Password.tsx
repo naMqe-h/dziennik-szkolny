@@ -53,7 +53,7 @@ export const Password: React.FC<passwordProps> = ({save}) => {
                 <div className="divider" />
                 <div className="form-control">
                     <label className="label w-full">
-                        <span className="label-text w-full">Hasło</span>
+                        <span className="label-text w-full">Nowe hasło</span>
                     </label>
                     <input
                         type="password"

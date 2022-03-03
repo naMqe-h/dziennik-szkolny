@@ -65,17 +65,15 @@ export const Profile = () => {
                 <span>
                   {userData?.firstName + " "} {userData?.lastName}
                 </span>
-                {(userType === "students" || userType === "teachers") && (
+                {(userType === "teachers") ? (
                   <Link
-                    to={`/class/${
-                      userType === "students"
-                        ? userData?.class
-                        : userData.classTeacher
-                    }/info`}
+                    to={`/class/${ userData.classTeacher }/info`}
                     className="mt-2"
                   >
-                    <span className="text-accent">{userData?.class}</span>{" "}
+                    <span className="text-accent">{userData?.classTeacher}</span>{" "}
                   </Link>
+                ) : (
+                  <span className="text-accent mt-2">{userData?.class}</span>
                 )}
               </div>
               <div className="pt-5">
@@ -90,7 +88,6 @@ export const Profile = () => {
           </div>
           <div className="bg-base-300 rounded-b-2xl">
             <div className="p-10 flex flex-col h-full items-center justify-evenly">
-              {/* <span className="card-title">Dane osobiste</span> */}
               <div className="card-title divider w-full">Dane osobiste</div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 mb-6 w-full">
