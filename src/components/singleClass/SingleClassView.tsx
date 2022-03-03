@@ -311,7 +311,7 @@ export const SingleClassView = () => {
             <div className="grid grid-cols-2 gap-2 xl:flex">
               <Link
                 to="/add/student"
-                className="btn btn-primary btn-outline lg:ml-2"
+                className="btn btn-primary btn-outline"
               >
                 Dodaj ucznia
               </Link>
@@ -328,7 +328,7 @@ export const SingleClassView = () => {
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsSubjectOpen((prev) => !prev)}
-                className="btn btn-primary btn-outline ml-2"
+                className="btn btn-primary btn-outline"
               >
                 Dodaj przedmiot
               </button>
@@ -338,7 +338,7 @@ export const SingleClassView = () => {
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsGradeOpen((prev) => !prev)}
-                className="btn btn-primary btn-outline ml-2"
+                className="btn btn-primary btn-outline"
               >
                 Dodaj ocenę
               </button>
@@ -348,7 +348,7 @@ export const SingleClassView = () => {
             <div className="grid grid-cols-1 gap-2 xl:flex">
               <button
                 onClick={() => setIsScheduleOpen((prev) => !prev)}
-                className="btn btn-primary btn-outline ml-2"
+                className="btn btn-primary btn-outline"
               >
                 Dodaj wydarzenie
               </button>

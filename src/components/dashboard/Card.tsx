@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const textMotion = {
   rest: {
     opacity: 1,
-    y: -30,
+    y: -22,
     transition: {
       duration: 0.3,
       type: "tween",
@@ -28,7 +28,7 @@ const iconMotion = {
     ease: "easeOut",
     duration: 0.3,
     type: "tween",
-    y: 20,
+    y: 25,
   },
   hover: {
     opacity: 1,
@@ -51,7 +51,7 @@ export const Card: React.FC<cardProps> = ({ children, text, background }) => {
       initial="rest"
       whileHover="hover"
       animate="rest"
-      className={`p-10 flex flex-col items-center content-center rounded-xl cursor-pointer min-h-100 
+      className={`p-10 flex flex-col items-center content-center rounded-xl cursor-pointer min-h-100 h-full
       ${background ? background : "bg-gradient-to-r from-indigo-500  to-pink-500"}`}
       
     >
@@ -64,11 +64,3 @@ export const Card: React.FC<cardProps> = ({ children, text, background }) => {
     </motion.div>
   );
 };
-
-// style={{
-//   background: `${
-//     background
-//       ? background
-//       : "radial-gradient(circle, rgba(221,157,6,1) 0%, rgba(163,123,0,1) 50%, rgba(152,102,0,1) 100%)"
-//   }`,
-// }}
