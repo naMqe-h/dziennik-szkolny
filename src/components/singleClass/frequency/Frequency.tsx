@@ -70,8 +70,8 @@ export const Frequency: React.FC<FrequencyProps> = ({ studentsInfo }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {item.presence?.map(p => (
-                                <tr>
+                            {item.presence?.map((p,i) => (
+                                <tr key={i}>
                                     <th>{p.date}</th>
                                     <td>{p.hour}</td>
                                     <td>{allTeachears && `${allTeachears[p.addedBy].lastName} ${allTeachears[p.addedBy].firstName}`} </td>

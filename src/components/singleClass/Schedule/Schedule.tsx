@@ -26,7 +26,7 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
     const userType = useSelector((state: RootState) => state.userType.userType); 
     const classes = useSelector((state: RootState) => state.schoolData.schoolData?.classes)
     const teachers = useSelector((state: RootState) => state.schoolData.schoolData?.teachers)
-
+    const allEvents = useSelector((state: RootState) => state.schoolData.schoolData?.events)
     // states
     const [classEvents, setClassEvents] = useState<scheduleItemsArray>()
     const [selectOptions, setSelectOptions] = useState<Array<selectOption>>();
@@ -80,10 +80,18 @@ export const Schedule:React.FC<scheduleItf> = ({singleClass, events, isOpen, set
 
     const handleEdit = (data:scheduleItem, oldItem:scheduleItem) => {
         if(events && domain){
-            let oldEvents = events.classes.filter((ev) => !isEqual(ev,oldItem));
-            setDocument(domain as string, "events", {classes: [
-                ...oldEvents, data
+            let oldEvents = events.classes.filter((ev) => !isEqual(ev, oldItem));
+            if(data.receiver.some(x=>x=='global')){
+                const oldGlobalEvents = events.global;
+                setDocument(domain as string, "events", {global: [
+                ...oldGlobalEvents,data
             ]});
+                setDocument(domain as string, "events", {classes:oldEvents});
+            }else{
+                setDocument(domain as string, "events", {classes: [
+                    ...oldEvents, data
+                ]});
+            }
             toast.success("Edycja wydarzenia została wykonana.", {autoClose: 2000});
         } else{
             toast.error("Brak obiektu klasy", {autoClose: 2000})
