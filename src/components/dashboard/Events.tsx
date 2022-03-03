@@ -125,7 +125,7 @@ export const Events: React.FC = () => {
               exit="hidden"
               transition={{ transition: 0.25 }}
             >
-              <span className="text-lg">Brak zadań</span>
+              <span className="text-lg">Brak wydarzeń</span>
               <div className="divider" />
             </motion.div>
           )}
