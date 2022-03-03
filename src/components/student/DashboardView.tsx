@@ -1,10 +1,10 @@
-import { AiOutlineCalendar, AiOutlinePartition } from "react-icons/ai";
-import { BsJournalBookmark } from "react-icons/bs";
-import { RiNumbersLine } from "react-icons/ri";
+import { AiOutlineCalendar } from "react-icons/ai";
+import { BiCalendarCheck, BiMessageDots } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { Card } from "../dashboard/Card";
 import { Events } from "../dashboard/Events";
 import { Stats } from "./Stats";
+import { RiNumbersLine } from "react-icons/ri";
 
 export const DashboardView = () => {
   return (
@@ -15,7 +15,7 @@ export const DashboardView = () => {
         </div>
         <Link to={"/lesson-plan"}>
           <Card text="Plan lekcji" background="bg-gradient-to-r from-primary to-accent">
-            <RiNumbersLine size={70} />
+            <AiOutlineCalendar size={70} />
           </Card>
         </Link>
         <Link to={"/grades"}>
@@ -23,7 +23,7 @@ export const DashboardView = () => {
             text="Oceny"
             background="bg-gradient-to-r from-primary to-accent"
           >
-            <BsJournalBookmark size={70} />
+            <RiNumbersLine size={70} />
           </Card>
         </Link>
         <Link to='/frequency'>
@@ -31,7 +31,7 @@ export const DashboardView = () => {
             text="Frekwencja"
             background="bg-gradient-to-r from-primary to-secondary"
           >
-            <AiOutlineCalendar size={70} />
+            <BiCalendarCheck size={70} />
           </Card>
         </Link>
         <Link to={"/messages"}>
@@ -39,7 +39,7 @@ export const DashboardView = () => {
             text="Wiadomości"
             background="bg-gradient-to-r from-primary to-secondary"
           >
-            <AiOutlinePartition size={70} />
+            <BiMessageDots size={70} />
           </Card>
         </Link>
 
