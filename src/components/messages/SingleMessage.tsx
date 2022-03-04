@@ -6,15 +6,18 @@ import { ModalMessage } from "./ModalMessage";
 
 interface SingleMessageInterface {
   message: singleMessage;
+  checkedMessages:singleMessage[];
   decodingObj:{[key:string]:string};
   setIsChecked: React.Dispatch<React.SetStateAction<singleMessage[]>>;
   setMessageToSeen: (message: singleMessage) => void;
+  
 }
 export const SingleMessage: React.FC<SingleMessageInterface> = ({
   message,
   setIsChecked,
   decodingObj,
   setMessageToSeen,
+  checkedMessages
 }) => {
   const [isCheckedLocal, setIsCheckedLocal] = useState<boolean>(false);
   const [isOpen, setisOpen] = useState<boolean>(false);
@@ -24,19 +27,18 @@ export const SingleMessage: React.FC<SingleMessageInterface> = ({
     }
     setisOpen(true);
   };
-  useEffect(() => {
-    if (isCheckedLocal) {
-      setIsChecked((prev) => {
-        const copy = [...prev];
-        copy.push(message);
-        return copy;
-      });
-    } else {
-      setIsChecked((prev) => {
-        return prev.filter((x) => !isEqual(x, message));
-      });
+  const isChecked = checkedMessages.some(x=>isEqual(x,message));
+    const handleCheckboxChange = ():void =>{
+      if (!isChecked) {
+        setIsChecked((prev) => {
+          return [...prev,message];
+        });
+      } else {
+        setIsChecked((prev) => {
+          return prev.filter((x) => !isEqual(x, message));
+        });
+      }
     }
-  }, [isCheckedLocal, message]);
   return (
     <>
       <ModalMessage isOpen={isOpen} message={message} setIsOpen={setisOpen} decodingObj={decodingObj} />
@@ -50,10 +52,10 @@ export const SingleMessage: React.FC<SingleMessageInterface> = ({
         <div className="w-7 flex justify-center items-center">
           <input
             type="checkbox"
-            checked={isCheckedLocal}
+            checked={checkedMessages.some(x=>isEqual(x,message))}
             className="checkbox checkbox-primary checkbox-sm"
             onChange={() => {
-              setIsCheckedLocal(!isCheckedLocal);
+              handleCheckboxChange()
             }}
           />
         </div>

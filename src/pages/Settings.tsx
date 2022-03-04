@@ -224,9 +224,6 @@ export const Settings = () => {
             >
               <Link to="/settings/password">Zmień hasło</Link>
             </li>
-            <li className={activeRoute === "" ? "" : ""}>
-              <Link to="/">Prywatność</Link>
-            </li>
           </ul>
 
           {/* // mobile view */}
@@ -276,9 +273,6 @@ export const Settings = () => {
                   }`}
                 >
                   <Link to="/settings/password">Zmień hasło</Link>
-                </li>
-                <li className={activeRoute === "" ? "" : ""}>
-                  <Link to="/">Prywatność</Link>
                 </li>
               </ul>
             </div>
