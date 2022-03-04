@@ -9,6 +9,7 @@ import makeAnimated from "react-select/animated";
 import moment from "moment";
 import { useSetDocument } from "../../hooks/useSetDocument";
 import { toast } from "react-toastify";
+import { isEqual } from "lodash";
 
 export const Event: React.FC = () => {
   //types
@@ -153,7 +154,7 @@ export const Event: React.FC = () => {
   const handleEdit = (data: scheduleItem, oldItem: scheduleItem) => {
     if (firebaseEvents && domain) {
       if (data.receiver[0] === "global" && oldItem.receiver[0] === "global") {
-        let oldEvents = firebaseEvents.global.filter((ev) => ev !== oldItem);
+        let oldEvents = firebaseEvents.global.filter((ev) => !isEqual(ev,oldItem));
         setDocument(domain as string, "events", {
           global: [...oldEvents, data],
         });
@@ -162,9 +163,8 @@ export const Event: React.FC = () => {
         oldItem.receiver[0] !== "global"
       ) {
         let oldClassesEvents = firebaseEvents.classes.filter(
-          (ev) => ev !== oldItem
+          (ev) => !isEqual(ev,oldItem)
         );
-
         setDocument(domain as string, "events", { classes: oldClassesEvents });
         setDocument(domain as string, "events", {
           global: [...firebaseEvents.global, data],
@@ -174,9 +174,8 @@ export const Event: React.FC = () => {
         oldItem.receiver[0] === "global"
       ) {
         let oldGlobalEvents = firebaseEvents.global.filter(
-          (ev) => ev !== oldItem
+          (ev) => !isEqual(ev,oldItem)
         );
-
         setDocument(domain as string, "events", { global: oldGlobalEvents });
         setDocument(domain as string, "events", {
           classes: [...firebaseEvents.classes, data],
@@ -185,7 +184,7 @@ export const Event: React.FC = () => {
         data.receiver[0] !== "global" &&
         oldItem.receiver[0] !== "global"
       ) {
-        let oldEvents = firebaseEvents.classes.filter((ev) => ev !== oldItem);
+        let oldEvents = firebaseEvents.classes.filter((ev) => !isEqual(ev,oldItem));
         setDocument(domain as string, "events", {
           classes: [...oldEvents, data],
         });

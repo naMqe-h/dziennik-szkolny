@@ -53,12 +53,14 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
   teachedClasses
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const state = useSelector((state:RootState)=>state)
   const principal = useSelector((state:RootState)=>state.principal)
   const allTeachers = useSelector((state:RootState)=>state.schoolData.schoolData?.teachers)
   const [modalOptionsEvent, setModalOptionsEvent] = useState<ModalOptionsEvent>(
     { isOpen: false, removedEvent: null }
   );
   const [showOnlyYourEvents, setshowOnlyYourEvents] = useState<boolean>(false);
+  const [decodingObj, setDecodingObj] = useState<{[key:string]:string}>({});
   const [sortedSchedule, setSortedSchedule] =
     useState<scheduleItemsArray>(schedule);
   const [sorting, setSorting] = useState<SortingOfSchedule>(
@@ -167,13 +169,39 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
 
   const isMobile = useMediaQuery("(max-width:768px)");
 
-  
   useEffect(() => {
     setEventEdit((prev) => ({
       ...prev,
       edit: isOpen,
     }));
   }, [isOpen]);
+  useEffect(()=>{
+  const convertEmailsToFullNames = async () => {
+    const students = state.schoolData.schoolData?.students;
+    const teachers = state.schoolData.schoolData?.teachers;
+    if ((teachers || students)&&principal) {
+      const tempObj: { [key: string]: string } = {};
+      teachers &&
+        Object.entries(teachers).forEach((values, _N) => {
+          const email = values[0];
+          const value = values[1];
+          const fullName = `${value.firstName} ${value.lastName}`;
+          tempObj[fullName] = email;
+        });
+      students &&
+        Object.entries(students).forEach((values, _N) => {
+          const email = values[0];
+          const value = values[1];
+          const fullName = `${value.firstName} ${value.lastName}`;
+          tempObj[fullName] = email;
+        });
+        const principalFullName =`${principal.data?.firstName} ${principal.data?.lastName}` 
+          tempObj[principalFullName] = principal.data?.email as string;
+          setDecodingObj(tempObj);
+    }
+  };
+  convertEmailsToFullNames();
+}, [principal,state.schoolData.schoolData?.students,state.schoolData.schoolData?.teachers]);
   return (
     <>
       <RemoveEventModal modalOptions={modalOptionsEvent} setModalOptions={setModalOptionsEvent}/>
@@ -314,7 +342,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                         onClick={() =>
                           setModalOptionsEvent({
                             isOpen: true,
-                            removedEvent: item,
+                            removedEvent: {...item,addedBy:decodingObj[item.addedBy]},
                           })
                         }
                       >
@@ -409,7 +437,7 @@ export const ScheduleTable: React.FC<ScheduleTableItf> = ({
                             onClick={() =>
                               setModalOptionsEvent({
                                 isOpen: true,
-                                removedEvent: item,
+                                removedEvent: {...item,addedBy:decodingObj[item.addedBy]},
                               })
                             }
                           >
