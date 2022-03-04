@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const textMotion = {
   rest: {
     opacity: 1,
-    y: -22,
+    y: -29,
     transition: {
       duration: 0.3,
       type: "tween",
@@ -13,7 +13,7 @@ const textMotion = {
   },
   hover: {
     opacity: 0,
-    y: 20,
+    y: 10,
     transition: {
       duration: 0.3,
       type: "tween",
@@ -28,7 +28,7 @@ const iconMotion = {
     ease: "easeOut",
     duration: 0.3,
     type: "tween",
-    y: 25,
+    y: 18,
   },
   hover: {
     opacity: 1,
