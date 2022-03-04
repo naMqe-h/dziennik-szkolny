@@ -8,7 +8,7 @@ import { RiNumbersLine } from "react-icons/ri";
 
 export const DashboardView = () => {
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-screen-2xl w-full">
         <div className="md:row-span-4 p-5 bg-base-300 rounded-xl flex flex-col justify-center">
           <Stats />
