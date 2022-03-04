@@ -88,19 +88,22 @@ export const Grades: React.FC<GradesProps> = ({ studentsInfo, isOpen, setIsOpen,
   };
 
   useEffect(() => {
-    let tempGrades = initialGrades;
-    
-    Object.values(studentsInfo).map((student) => Object.values(student.grades).map((item) => item.map((grade) => grade.grade)).flat().map((studentGrade) => {
-      switch(studentGrade){
-          case 1: tempGrades[1]++; break;
-          case 2: tempGrades[2]++; break;
-          case 3: tempGrades[3]++; break;
-          case 4: tempGrades[4]++; break;
-          case 5: tempGrades[5]++; break;
-          case 6: tempGrades[6]++; break;
-      }
-    }))
-    setGrades(tempGrades)
+    if(studentsInfo){
+      let tempGrades = initialGrades;
+
+
+      Object.values(studentsInfo).map((student) => Object.values(student.grades).map((item) => item.map((grade) => grade.grade)).flat().map((studentGrade) => {
+        switch(studentGrade){
+            case 1: tempGrades[1]++; break;
+            case 2: tempGrades[2]++; break;
+            case 3: tempGrades[3]++; break;
+            case 4: tempGrades[4]++; break;
+            case 5: tempGrades[5]++; break;
+            case 6: tempGrades[6]++; break;
+        }
+      }))
+      setGrades(tempGrades)
+    }
   }, [studentsInfo])
 
   useEffect(() => {
