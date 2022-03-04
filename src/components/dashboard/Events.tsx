@@ -37,11 +37,11 @@ export const Events: React.FC = () => {
         for(let val of teachedClasses){
           teachedClassesScheduleArray.push(...Object.values(firebaseEvents.classes).filter((ev) => ev.receiver.some((rec) => rec === val)));
           }
-        setEvents(teachedClassesScheduleArray);
+        setEvents(teachedClassesScheduleArray.filter(x=>x.isActive));
       } else if(userType=== 'students') {
-        setEvents(Object.values(firebaseEvents.classes).filter((ev) => ev.receiver.some((rec) => rec === userData.class)));
+        setEvents(Object.values(firebaseEvents.classes).filter((ev) => ev.receiver.some((rec) => rec === userData.class)).filter(x=>x.isActive));
       }
-      setEvents((prev) => [...prev, ...firebaseEvents.global])
+      setEvents((prev) => [...prev, ...firebaseEvents.global].filter(x=>x.isActive))
     }
   }, [])
   
@@ -50,7 +50,6 @@ export const Events: React.FC = () => {
     setTodayEvents(events.filter((ev) => {
       let dateFrom = moment(Number(ev.dateFrom.replaceAll(/\s/g, "")))
       let dateTo = moment(Number(ev.dateTo.replaceAll(/\s/g, "")))
-
       if(date.isBetween(dateFrom, dateTo) || date.isSame(dateFrom, "day") || date.isSame(dateTo, "day")){
         return ev;
       }

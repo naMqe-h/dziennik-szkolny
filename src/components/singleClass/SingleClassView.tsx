@@ -377,6 +377,7 @@ export const SingleClassView = () => {
         {subpage === "frequency" && ( 
           <Frequency 
             studentsInfo={studentsInfo}
+            singleClass={singleClass}
           />
         )}
         {subpage === "grades" && (

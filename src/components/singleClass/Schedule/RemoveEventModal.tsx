@@ -1,9 +1,11 @@
+import { doc, getDoc } from "firebase/firestore";
 import { cloneDeep, isEqual } from "lodash";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { db } from "../../../firebase/firebase.config";
 import { useSetDocument } from "../../../hooks/useSetDocument";
 import { RootState } from "../../../redux/store";
-import { eventsFromFirebase, scheduleItem } from "../../../utils/interfaces";
+import { CombinedPrincipalData, eventsFromFirebase, scheduleItem } from "../../../utils/interfaces";
 import { ModalOptionsEvent } from "./ScheduleTable";
 
 interface RemoveEventModalInterface {
@@ -18,8 +20,15 @@ export const RemoveEventModal: React.FC<RemoveEventModalInterface> = ({
     (state: RootState) => state.schoolData.schoolData
   );
   const { setDocument } = useSetDocument();
-  function removeEvent(removedEvent: scheduleItem) {
+  async function removeEvent(removedEvent: scheduleItem) {
     if (schoolData?.events) {
+      if(!removedEvent.addedBy){
+        const principalUID=schoolData.information.principalUID as string;
+        await getDoc(doc(db,'principals',principalUID)).then(x=>{
+          const data = x.data() as CombinedPrincipalData;
+          removedEvent={...removedEvent,addedBy:data.email}
+        })
+      }
       const eventType =
         removedEvent.receiver[0] === "global" ? "global" : "classes";
       const newEvents: eventsFromFirebase = cloneDeep(schoolData?.events);

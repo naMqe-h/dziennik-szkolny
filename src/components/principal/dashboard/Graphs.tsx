@@ -109,7 +109,6 @@ export const Graphs: React.FC = () => {
                 allPosiblePresences += lesson.studentsCount
             }));
             setFrequency([allPresence, allPosiblePresences-allPresence])
-            // console.log(allPresence, allPosiblePresences-allPresence);
         }
         
     }, [schoolData.classes])
@@ -161,7 +160,7 @@ export const Graphs: React.FC = () => {
           },
           title: {
             display: true,
-            text: 'Oceny',
+            text: 'Frekwencja',
           },
         },
     };
