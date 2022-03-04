@@ -140,30 +140,8 @@ function App() {
       setLoading(false);
       nProgress.done();
     }
-  }, [principal.data, schoolData, teacher.data, student.data,currAuth]);
+  }, [principal.data, schoolData, teacher.data, student.data, currAuth]);
 
-  // wyświetla aktualny stan store
-  useEffect(() => {
-    if (userType === "principals") {
-      console.log(principal);
-      console.log(schoolData);
-    }
-  }, [principal, userType, schoolData]);
-
-  useEffect(() => {
-    if (userType === "teachers") {
-      console.log(teacher);
-      console.log(schoolData);
-    }
-  }, [teacher, userType, schoolData]);
-
-  useEffect(() => {
-    if (userType === "students") {
-      console.log(student);
-      console.log(schoolData);
-    }
-  }, [student, userType, schoolData]);
-  ///
   // sprawdzanie stanu auth,
   useEffect(() => {
     setLoading(true);
@@ -206,159 +184,159 @@ function App() {
       unsub();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [principal.user,student.user,teacher.user]);
+  }, [principal.user, student.user, teacher.user]);
   if (loading) {
     return <Loader />;
   } else {
     return (
       <div>
-      <SetLoadingContext.Provider value={setLoading}>
-        <BrowserRouter>
-          <LayoutWrapper>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <StudentRoute loading={loading}>
-                    <Dashboard />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/add/:type"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <Add />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <StudentRoute loading={loading}>
-                    <Profile />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/settings/:type"
-                element={
-                  <StudentRoute loading={loading}>
-                    <Settings />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/classes"
-                element={
-                  <TeacherRoute loading={loading}>
-                    <Classes />
-                  </TeacherRoute>
-                }
-              />
-              <Route
-                path="/teachers"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <Teachers />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/teachers/:email"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <SingleTeacher />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/students"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <Students />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/students/:email"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <SingleStudent />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/class/:id/:subpage"
-                element={
-                  <TeacherRoute loading={loading}>
-                    <SingleClass />
-                  </TeacherRoute>
-                }
-              />
-              <Route
-                path="/lesson-plan/generate"
-                element={
-                  <PrincipalRoute loading={loading}>
-                    <Generate />
-                  </PrincipalRoute>
-                }
-              />
-              <Route
-                path="/lesson-plan"
-                element={
-                  <StudentRoute loading={loading}>
-                    <LessonPlanView />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/presence"
-                element={
-                  <TeacherRoute loading={loading}>
-                    <Presence />
-                  </TeacherRoute>
-                }
-              />
-              <Route
-                path="/messages"
-                element={
-                  <StudentRoute loading={loading}>
-                    <Messages />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/grades"
-                element={
-                  <StudentRoute loading={loading}>
-                    <StudentGradesView />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="/frequency"
-                element={
-                  <StudentRoute loading={loading}>
-                    <Frequency />
-                  </StudentRoute>
-                }
-              />
-              <Route
-                path="*"
-                element={
-                  <StudentRoute loading={loading}>
-                    {/* <Navigate to="/" /> */}
-                    <NotFound />
-                  </StudentRoute>
-                }
-              />
-              <Route path="/login" element={<Login loading={loading} />} />
-              <Route path="/signup" element={<Signup loading={loading}  />} />
-            </Routes>
-          </LayoutWrapper>
-        </BrowserRouter>
-              </SetLoadingContext.Provider>
+        <SetLoadingContext.Provider value={setLoading}>
+          <BrowserRouter>
+            <LayoutWrapper>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <Dashboard />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/add/:type"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <Add />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <Profile />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/settings/:type"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <Settings />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/classes"
+                  element={
+                    <TeacherRoute loading={loading}>
+                      <Classes />
+                    </TeacherRoute>
+                  }
+                />
+                <Route
+                  path="/teachers"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <Teachers />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/teachers/:email"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <SingleTeacher />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/students"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <Students />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/students/:email"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <SingleStudent />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/class/:id/:subpage"
+                  element={
+                    <TeacherRoute loading={loading}>
+                      <SingleClass />
+                    </TeacherRoute>
+                  }
+                />
+                <Route
+                  path="/lesson-plan/generate"
+                  element={
+                    <PrincipalRoute loading={loading}>
+                      <Generate />
+                    </PrincipalRoute>
+                  }
+                />
+                <Route
+                  path="/lesson-plan"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <LessonPlanView />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/presence"
+                  element={
+                    <TeacherRoute loading={loading}>
+                      <Presence />
+                    </TeacherRoute>
+                  }
+                />
+                <Route
+                  path="/messages"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <Messages />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/grades"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <StudentGradesView />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="/frequency"
+                  element={
+                    <StudentRoute loading={loading}>
+                      <Frequency />
+                    </StudentRoute>
+                  }
+                />
+                <Route
+                  path="*"
+                  element={
+                    <StudentRoute loading={loading}>
+                      {/* <Navigate to="/" /> */}
+                      <NotFound />
+                    </StudentRoute>
+                  }
+                />
+                <Route path="/login" element={<Login loading={loading} />} />
+                <Route path="/signup" element={<Signup loading={loading} />} />
+              </Routes>
+            </LayoutWrapper>
+          </BrowserRouter>
+        </SetLoadingContext.Provider>
         <ToastContainer
           position="bottom-left"
           hideProgressBar={false}

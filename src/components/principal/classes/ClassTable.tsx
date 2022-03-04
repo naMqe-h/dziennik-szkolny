@@ -59,14 +59,14 @@ export const ClassTable: React.FC<ClassTableProps> = ({
         <tr className="first:cursor-pointer">
           {isMobile ? (
             <>
-              <th
+              {/* <th
                 className={`hover:brightness-125 rounded-xl ${
                   sorting.lp !== "Default" && "brightness-150"
                 }`}
                 onClick={() => sortTable("lp")}
               >
                 LP
-              </th>
+              </th> */}
               <th
                 className={`hover:brightness-125 rounded-xl ${
                   sorting.name !== "Default" && "brightness-150"
@@ -82,6 +82,9 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                 onClick={() => sortTable("classTeacher")}
               >
                 Wychowawca
+              </th>
+              <th className={`hover:brightness-125 rounded-xl cursor-default`}>
+                Edytuj
               </th>
             </>
           ) : (
@@ -140,15 +143,18 @@ export const ClassTable: React.FC<ClassTableProps> = ({
                   key={item.classTeacher}
                   onClick={() => navigate(`/class/${item.name}/info`)}
                 >
-                  <td>
-                    {sorting.lp === "Default"
-                      ? index + 1
-                      : sorting.lp === "Descending"
-                      ? classesData.length - index
-                      : index + 1}
-                  </td>
                   <td>{item.name}</td>
                   <td>{item.classTeacher}</td>
+                  <td>
+                    {
+                      <button
+                        className="btn btn-square btn-warning btn-sm "
+                        onClick={() => navigate(`/class/${item.name}/info`)}
+                      >
+                        <FaUserEdit size={20} />
+                      </button>
+                    }
+                  </td>
                 </tr>
               );
             })

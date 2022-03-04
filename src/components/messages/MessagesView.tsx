@@ -3,7 +3,7 @@ import { cloneDeep, isEqual, union } from "lodash";
 import nProgress from "nprogress";
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineMail, AiOutlinePlus } from "react-icons/ai";
-import { BsFillArrowLeftCircleFill, BsTrash } from "react-icons/bs";
+import { BsCheckAll, BsFillArrowLeftCircleFill, BsTrash } from "react-icons/bs";
 import { RiDeviceRecoverLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -177,6 +177,45 @@ export const MessagesView = () => {
       setMessages(newMessages);
     }
   };
+  const handleCheckAllMessages = () => {
+    if (selectedTab === "Recived") {
+      if (messages.recived.filter((x) => x.status !== "Deleted").length === 0)
+        return;
+      if (checkedMessages.length === messages.recived.length) {
+        setCheckedMessages([]);
+      } else {
+        setCheckedMessages(messages.recived);
+      }
+    } else if (selectedTab === "Sended") {
+      if (messages.sended.filter((x) => x.status !== "Deleted").length === 0)
+        return;
+      if (checkedMessages.length === messages.sended.length) {
+        setCheckedMessages([]);
+      } else {
+        setCheckedMessages(messages.sended);
+      }
+    } else {
+      if (
+        union(messages.sended, messages.recived).filter(
+          (x) => x.status === "Deleted"
+        ).length === 0
+      )
+        return;
+      if (
+        union(messages.sended, messages.recived).filter(
+          (x) => x.status === "Deleted"
+        ).length === checkedMessages.length
+      ) {
+        setCheckedMessages([]);
+      } else {
+        setCheckedMessages(
+          union(messages.sended, messages.recived).filter(
+            (x) => x.status === "Deleted"
+          )
+        );
+      }
+    }
+  };
   const handleCheckedActions = (type: "Delete" | "MarkAsSeen" | "Recover") => {
     const oldMessages = cloneDeep(messages);
     if (type === "MarkAsSeen") {
@@ -199,6 +238,7 @@ export const MessagesView = () => {
         return { ...prev, recived: newMessages };
       });
       setMessagesDocument(newMessagesForDB);
+      setCheckedMessages([]);
       toast.success("Oznaczono wiadomości jako przeczytane", {
         autoClose: 2000,
       });
@@ -225,8 +265,8 @@ export const MessagesView = () => {
       };
       setMessages(newMessagesObject);
       setMessagesDocument(newMessagesObject);
-      toast.success("Udało ci się usunąć wiadomości", { autoClose: 2000 });
       setCheckedMessages([]);
+      toast.success("Udało ci się usunąć wiadomości", { autoClose: 2000 });
       nProgress.done();
     } else {
       if (selectedTab !== "Deleted") return;
@@ -338,6 +378,22 @@ export const MessagesView = () => {
                   setSendMessageModal({ isOpen: true, reciever: null });
                 }}
               />
+              <BsCheckAll
+                className={`cursor-pointer transition-all ${
+                  selectedTab === "Recived"
+                    ? messages.recived.filter((x) => x.status !== "Deleted")
+                        .length === 0 && "brightness-50 cursor-not-allowed"
+                    : selectedTab === "Sended"
+                    ? messages.sended.filter((x) => x.status !== "Deleted")
+                        .length === 0 && "brightness-50 cursor-not-allowed"
+                    : selectedTab === "Deleted" &&
+                      union(messages.sended, messages.recived).filter(
+                        (x) => x.status === "Deleted"
+                      ).length === 0 &&
+                      "brightness-50 cursor-not-allowed"
+                }`}
+                onClick={() => handleCheckAllMessages()}
+              />
               {selectedTab === "Deleted" ? (
                 <RiDeviceRecoverLine
                   className={`cursor-pointer transition-all ${
@@ -375,6 +431,7 @@ export const MessagesView = () => {
                   .filter((x) => x.status === "Seen" || x.status === "Unseen")
                   .map((x) => (
                     <SingleMessage
+                      checkedMessages={checkedMessages}
                       message={x}
                       decodingObj={decodingObject}
                       key={x.date}
@@ -389,6 +446,7 @@ export const MessagesView = () => {
                   .map((x) => (
                     <SingleMessage
                       message={x}
+                      checkedMessages={checkedMessages}
                       decodingObj={decodingObject}
                       key={x.date}
                       setIsChecked={setCheckedMessages}
@@ -399,6 +457,7 @@ export const MessagesView = () => {
                   .filter((x) => x.status === "Deleted")
                   .map((x) => (
                     <SingleMessage
+                      checkedMessages={checkedMessages}
                       decodingObj={decodingObject}
                       message={x}
                       key={x.date}
