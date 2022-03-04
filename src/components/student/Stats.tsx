@@ -74,7 +74,7 @@ export const Stats: React.FC = () => {
 
   return (
     <div className="stats grid-flow-row w-full">
-      <div className="stat bg-base-200">
+      <div className="stat bg-base-300">
         <div className="stat-figure text-info">
           {userPhoto ? (
             <div className="avatar online">
@@ -101,7 +101,7 @@ export const Stats: React.FC = () => {
         <div className="stat-value">{userData.firstName}</div>
       </div>
 
-      <div className="stat bg-base-200">
+      <div className="stat bg-base3200">
         <div className="stat-figure text-primary items-center">
           <AiFillInfoCircle size={35} className="text-primary" />
         </div>
@@ -109,7 +109,7 @@ export const Stats: React.FC = () => {
         <div className="stat-value">{userData.class}</div>
       </div>
 
-      <div className="stat bg-base-200">
+      <div className="stat bg-base-300">
         <div className="stat-figure text-primary items-center">
           <RiBookMarkFill size={35} className="text-primary" />
         </div>
@@ -121,7 +121,7 @@ export const Stats: React.FC = () => {
         </div>
       </div>
 
-      <div className="stat bg-base-200">
+      <div className="stat bg-base-300">
         <div className="stat-figure text-secondary">
           <GiTeacher size={35} className="text-primary" />
         </div>

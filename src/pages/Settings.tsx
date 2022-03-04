@@ -209,7 +209,7 @@ export const Settings = () => {
                       : ""
                   }`}
                 >
-                  <Link to="/settings/plan">Plan</Link>
+                  <Link to="/settings/plan">Zmień plan</Link>
                 </li>
               </>
             ) : (
@@ -259,7 +259,7 @@ export const Settings = () => {
                           : ""
                       }`}
                     >
-                      <Link to="/settings/plan">Plan</Link>
+                      <Link to="/settings/plan">Zmień plan</Link>
                     </li>
                   </>
                 ) : (

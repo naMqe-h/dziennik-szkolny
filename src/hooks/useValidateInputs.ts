@@ -69,7 +69,8 @@ export const useValidateInputs = () => {
       title: 'Tytuł',
       content: 'Treść',
       receiver: 'Odbiorca',
-      reciver: 'Odbiorca'
+      reciver: 'Odbiorca',
+      subject: 'Uczony przedmiot',
     }
 
     const skipInputs:string[] = ['teachedClasses', 'workingHours', 'profilePicture', 'classTeacher', 'addedBy'];
@@ -102,7 +103,7 @@ export const useValidateInputs = () => {
           if(skipInputs.includes(fieldName)) return;
           
           if(fieldName !== 'address' && fieldName !== 'passwords'){
-            if(fieldVal.length === 0){
+            if(!fieldVal || fieldVal.length === 0){
               setInputErrors((prev) => (
                 {...prev, [field[0]]: {'error':true, 'text': `Podaj ${mappedNames[fieldName] ? mappedNames[fieldName] : fieldName}`}}
               ))

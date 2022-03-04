@@ -84,15 +84,17 @@ export const ClassesView: React.FC = () => {
         //? Przy przywracaniu klasy należy przywrócić uczniów do klasy chyba że zostali przypisani do innej
         const oldStudents = cloneDeep(schoolData.students);
         const newStudents: StudentsDataFromFirebase = {};
-        Object.entries(oldStudents).forEach((values, _N) => {
-          const studentEmail = values[0];
-          const studentData = values[1];
-          if (studentData.class === removedClassData.name) {
-            newStudents[studentEmail] = { ...studentData, class: "" };
-          } else {
-            newStudents[studentEmail] = studentData;
-          }
-        });
+        
+        if(oldStudents)
+          Object.entries(oldStudents).forEach((values, _N) => {
+            const studentEmail = values[0];
+            const studentData = values[1];
+            if (studentData.class === removedClassData.name) {
+              newStudents[studentEmail] = { ...studentData, class: "" };
+            } else {
+              newStudents[studentEmail] = studentData;
+            }
+          });
         const removedClassObject: SingleClassData =
           schoolData.classes[removedClassData.name];
         //?Przy przywracaniu klasy będzie trzeba dodać godziny pracowania dla nauczycieli zgodnie z planem lekcji

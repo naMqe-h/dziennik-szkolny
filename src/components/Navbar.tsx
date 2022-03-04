@@ -111,21 +111,33 @@ export const Navbar = () => {
           onChange={(e) => setTheme(e.target.value)}
           value={theme}
         >
-          <option value="halloween">Podstawowy ❌</option>
-          <option value="aqua">Aqua 🌊</option>
-          <option value="dracula">Dracula 🧛</option>
-          <option value="fantasy">Fantasy 🐉</option>
-          <option value="valentine">Walentynkowy 🌸</option>
-          <option value="wireframe">Ostry 📝</option>
-          <option value="luxury" disabled={!isPremiumUser}>
-            {isPremiumUser ? "Prestiżowy 🥂" : "🔒 Prestiżowy 🥂"}
-          </option>
-          <option value="synthwave" disabled={!isPremiumUser}>
-            {isPremiumUser ? "SynthWave ☀️" : "🔒 SynthWave ☀️"}
-          </option>
-          <option value="emerald" disabled={!isPremiumUser}>
-            {isPremiumUser ? "Szmaragdowy 💎" : "🔒 Szmaragdowy 💎"}
-          </option>
+          <optgroup label="Dark">
+            <option value="halloween">Podstawowy 🎃</option>
+            <option value="dark">Dark 🌛</option>
+            <option value="forest">Forest 🌲</option>
+          </optgroup>
+          <optgroup label="Light">
+            <option value="cupcake">Cupcake 🧁</option>
+            <option value="cmyk">CMYK 🎏</option>
+            <option value="fantasy">Fantasy 🐉</option>
+          </optgroup>
+          <optgroup label="Inne">
+            <option value="valentine">Walentynkowy 🌸</option>
+            <option value="wireframe">Ostry 📝</option>
+            <option value="cyberpunk">Cyberpunk 🤖</option>
+            <option value="retro">Retro 🛕</option>
+          </optgroup>
+          <optgroup label="Premium">
+            <option value="synthwave" disabled={!isPremiumUser}>
+              {isPremiumUser ? "SynthWave ☀️" : "🔒 SynthWave ☀️"}
+            </option>
+            <option value="emerald" disabled={!isPremiumUser}>
+              {isPremiumUser ? "Szmaragdowy 💎" : "🔒 Szmaragdowy 💎"}
+            </option>
+            <option value="dracula" disabled={!isPremiumUser}>
+              {isPremiumUser ? "Dracula 🧛" : "🔒 Dracula 🧛"}
+            </option>
+          </optgroup>
         </select>
       )}
       {/* zmienic ze tylko dyrektor widzi te linki do /add */}

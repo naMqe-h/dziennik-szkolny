@@ -3,10 +3,33 @@ import { BsFillCheckCircleFill } from "react-icons/bs"
 import { useSelector } from "react-redux"
 import { useSetDocument } from "../../../hooks/useSetDocument"
 import { RootState } from "../../../redux/store"
-import { SingleStudentPresence, StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { SingleClassData, SingleStudentPresence, StudentsDataFromFirebase } from "../../../utils/interfaces"
+import { Pie } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement
+} from 'chart.js';
+import { useEffect, useState } from "react"
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement
+);
 
 type FrequencyProps = {
-    studentsInfo: StudentsDataFromFirebase
+    studentsInfo: StudentsDataFromFirebase;
+    singleClass: SingleClassData | undefined;
 }
 
 
@@ -19,11 +42,50 @@ const presenceTypes = {
 }
 
 
-export const Frequency: React.FC<FrequencyProps> = ({ studentsInfo }) => {
+export const Frequency: React.FC<FrequencyProps> = ({ studentsInfo, singleClass }) => {
     const { setDocument } = useSetDocument()
     
     const domain = useSelector((state: RootState) => state.schoolData.schoolData?.information.domain)
     const allTeachears = useSelector((state: RootState) => state.schoolData.schoolData?.teachers)
+
+    const [frequency, setFrequency] = useState([0,0])
+    const [frequencyGraphData, setFrequencyGraphData] = useState({
+        labels: ['Obecności', 'Nieobecności'],
+        datasets: [
+          {
+            label: '% Frekwencji',
+            data: frequency,
+            backgroundColor: ['rgba(27, 162, 49, 0.5)', 'rgba(220, 40, 40, 0.5)'],
+            borderColor: ['transparent']
+          },
+        ],
+      })
+
+    useEffect(() => {
+        if(singleClass){
+            let allPresence = 0;
+            let allPosiblePresences = 0;
+
+            singleClass.completedLessons.map(({presenceCount, studentsCount}) => {
+                allPresence += presenceCount
+                allPosiblePresences += studentsCount 
+            });
+
+            setFrequency([allPresence, allPosiblePresences-allPresence])
+        }
+        
+    }, [singleClass]);
+
+    useEffect(() => {
+        setFrequencyGraphData((prev) => (
+            {...prev, datasets: [{
+                label: '% Frekwencji',
+                data: frequency,
+                backgroundColor: ['rgba(27, 162, 49, 0.5)', 'rgba(220, 40, 40, 0.5)'],
+                borderColor: ['transparent']
+            }]}
+        ))
+      }, [frequency])
 
     const excusingAbsence = (email: string, p: SingleStudentPresence) => {
         const oldPresence = cloneDeep(studentsInfo[email].presence)
@@ -49,8 +111,26 @@ export const Frequency: React.FC<FrequencyProps> = ({ studentsInfo }) => {
         setDocument(domain as string, 'students', data)
     }
 
+    const FrequencyOptions = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top' as const,
+          },
+          title: {
+            display: true,
+            text: 'Frekwencja',
+          },
+        },
+    };
+
     return (
         <>
+            <div className="w-full flex flex-col items-center justify-center mb-4">
+                <div>
+                    <Pie data={frequencyGraphData} options={FrequencyOptions} />
+                </div>
+            </div>
             {Object.values(studentsInfo)?.map((item, index) => (
                 <div key={item.email} className="collapse w-full border rounded-box border-base-300 collapse-arrow">
                     <input type="checkbox" />

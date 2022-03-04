@@ -84,11 +84,13 @@ export const Class = () => {
       };
       // update firebase
       setDocument(domain as string, "classes", objWrapper);
-      setDocument(domain as string, "teachers", {
-        [classTeacher]: {
-          classTeacher: name,
-        },
-      });
+
+      if(classTeacher.length !== 0)
+        setDocument(domain as string, "teachers", {
+          [classTeacher]: {
+            classTeacher: name,
+          },
+        });
 
       updateCounter(domain as string, "classesCount", "increment");
 
