@@ -112,7 +112,9 @@ export const Navbar = () => {
           value={theme}
         >
           <option value="halloween">Podstawowy ❌</option>
-          <option value="aqua">Aqua 🌊</option>
+          <option value="dark">Dark 🌛</option>
+          <option value="cupcake">Cupcake 🧁</option>
+          <option value="cmyk">Cupcake 🧁</option>
           <option value="dracula">Dracula 🧛</option>
           <option value="fantasy">Fantasy 🐉</option>
           <option value="valentine">Walentynkowy 🌸</option>
